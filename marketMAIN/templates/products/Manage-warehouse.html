@@ -1,0 +1,305 @@
+{% extends 'top navbar/top-navbar.html' %}
+{% block title %} Manage warehouse {% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+<style>
+
+</style>
+
+<div class="container-fluid mt-5 "> <!-- Agregamos la clase mt-5 para añadir margen superior -->
+  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0 ">
+
+    <h6 class="mt-1 d-none d-sm-flex">Manage warehouse</h6>
+
+    <!--fadeIn: Hace que un elemento se desvanezca y aparezca gradualmente.
+    fadeOut: Hace que un elemento se desvanezca gradualmente y desaparezca.
+    bounceIn: Hace que un elemento haga un pequeño rebote al aparecer.
+    bounceOut: Hace que un elemento haga un pequeño rebote al desaparecer.
+    zoomIn: Hace que un elemento crezca gradualmente al aparecer.
+    zoomOut: Hace que un elemento disminuya gradualmente al desaparecer.   SE CAYO EL SERVEEEEEEEEEEEEERRRRRRRRRRRRr YA
+    flipInX: Hace que un elemento gire desde arriba al aparecer.
+    flipOutX: Hace que un elemento gire hacia arriba al desaparecer.
+    slideInLeft: Hace que un elemento se deslice desde la izquierda al aparecer.
+    slideOutRight: Hace que un elemento se deslice hacia la derecha al desaparecer.-->
+
+    <div class="col-12 col-lg-3 border border-Tertiary rounded p-0">
+      <nav class="nav flex-column">
+        <div class="list-group d-flex flex-column">
+          <a class="list-group-button-home list-group-item list-group-item-action"
+            href="{{ url_for('shortcut.shortcut') }}">Home</a>
+          <a class="list-group-buttons list-group-item list-group-item-action"
+            href="{{ url_for('products.warehouse') }}">warehouse</a>
+          <a class="list-group-item list-group-item-action active animate__animated animate__bounceIn"
+            href="{{ url_for('products.managewarehouse') }}">Manage warehouse</a>
+          <a class="list-group-buttons list-group-item list-group-item-action"
+            href="{{ url_for('products.managepresentation') }}">Manage Presentation</a>
+          <a class="list-group-buttons list-group-item list-group-item-action "
+            href="{{ url_for('products.managecompany') }}">Manage Companys</a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="col-12 col-lg-9 mt-3"> <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
+      <form class="d-flex mt-3">
+        <div class="flex-grow-1"></div> <!-- Este div se expandirá para ocupar el espacio disponible -->
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createmodal"
+          data-bs-whatever="@mdo">Create
+        </button>
+      </form>
+
+      <table class="table table-bordered  table-striped mt-3 mb-3">
+        <!-- Mantenemos las clases existentes y agregamos espaciado -->
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Price</th>
+            <th scope="col">Actions</th>
+
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          {% for product in products %}
+          <tr>
+            <td>{{ product[0] }}</td>
+            <td>{{ product[1] }}</td>
+            <td>{{ product[3] }}</td>
+            <td>{{ product[2] }}</td>
+            <td class="text-center d-flex justify-content-center align-items-center ">
+              <button type="button" class="square-btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#editproduct"
+                data-product-id="{{ product[0] }}">
+                <span class="material-symbols-outlined">edit</span>
+              </button>
+              <button type="button" class="square-btn btn-danger mx-2 delete-product-btn" data-product-id="{{ product[0] }}"
+                data-bs-toggle="modal" data-bs-target="#deleteproduct" onclick="captureProductId('{{ product[0] }}')">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="createmodal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="createmodallabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create Nnew Product</h5>
+        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ url_for('products.create_product') }}" method="post" class="needs-validation" novalidate>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <!--NOMBRE-PRODUCTOS-->
+                <label for="nombre" class="form-label">Name:</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+                <div class="invalid-feedback">Por favor ingresa un nombre.</div>
+              </div>
+              <div class="mb-3">
+                
+                <label for="presentacion" class="form-label">Presentation:</label>
+                
+                <select class="form-select form-select-sm" id="presentacion" aria-label="Small select example"
+                  onchange="actualizarCantidadOptions()">
+                  <option value="lote" selected>Lote</option>
+                  <option value="botella">Botella</option>
+                  <option value="empaquetado">Empaquetado</option>
+                  <option value="granel">Granel</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="cantidadInput" class="form-label">Quantity:</label>
+                <input type="number" class="form-control" id="cantidadInput" name="cantidad" required>
+                <div class="invalid-feedback">Por favor ingresa una cantidad válida.</div>
+              </div>
+              <div class="mb-3">
+                <label for="compania" class="form-label">Company:</label>
+                <select class="form-select form-select-sm" id="compania" aria-label="Small select example">
+                  {% for compania in company %}
+                  <option value=>{{ compania }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="cantidadSelect" class="form-label">Quantity:</label>
+                <select class="form-select form-select-sm" id="cantidadSelect" name="cantidad" required>
+                  <!-- Las opciones se actualizarán dinámicamente aquí -->
+                </select>
+                <div class="invalid-feedback">Por favor seleccione una cantidad.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="precio" class="form-label">Price:</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="precio" name="precio" step="0.01" required>
+                  <div class="invalid-feedback">Por favor ingresa un precio válido.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-none">
+            <div class="mb-3">
+
+              <label for="cantidad" class="form-label">Codebars Scan Preview:</label>
+            </div>
+
+            <!-- Vista previa de la cámara -->
+            <div class="container-fluid bg-light rounded py-3">
+              <div class="preview-camera col-12 " id="camera"></div>
+            </div>
+          </div>
+          <!-- Selector para los códigos de barras escaneados -->
+          <div class="mb-3">
+            <label for="qrCodes" class="form-label mt-3">Codebar Scanned:</label>
+            <select class="form-select form-select-sm" id="qrCodes" aria-label="Small select example">
+              <!-- Aquí se agregarán dinámicamente los códigos de barras escaneados -->
+            </select>
+          </div>
+
+          <div class="text-end">
+            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal"
+              onclick="limpiarModal()">Close</button>
+            <button type="submit" class="btn btn-success">Save Products</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editproduct" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editproductlabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editproductlabel">Edit Product</h5>
+        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post" class="needs-validation" novalidate>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="newnombre" class="form-label">New Name:</label>
+                <input type="text" class="form-control" id="newnombre" name="newnombre" required>
+                <div class="invalid-feedback">Please enter a name.</div>
+              </div>
+              <div class="mb-3">
+                <label for="newpresentacion" class="form-label">Presentation:</label>
+                <select class="form-select form-select-sm" id="newpresentacion" aria-label="Small select example"
+                  onchange="updateNewQuantityOptions()">
+                  <option value="lote" selected>Lote</option>
+                  <option value="botella">Botella</option>
+                  <option value="empaquetado">Empaquetado</option>
+                  <option value="granel">Granel</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="newcantidadInput" class="form-label">New Quantity:</label>
+                <input type="number" class="form-control" id="newcantidadInput" name="newcantidadInput" required>
+                <div class="invalid-feedback">Please enter a valid quantity.</div>
+              </div>
+              <div class="mb-3">
+                <label for="newcompania" class="form-label">Company:</label>
+                <select class="form-select form-select-sm" id="newcompania" aria-label="Small select example">
+                  {% for compania in company %}
+                  <option value=>{{ compania[0] }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="newcantidadSelect" class="form-label">Quantity:</label>
+                <select class="form-select form-select-sm" id="newcantidadSelect" name="newcantidadSelect" required>
+                  <!-- Options will be dynamically updated here -->
+                </select>
+                <div class="invalid-feedback">Please select a quantity.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="newprecio" class="form-label">Price:</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="newprecio" name="newprecio" step="0.01" required>
+                  <div class="invalid-feedback">Please enter a valid price.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-end">
+            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal"
+              onclick="limpiarEditModal()">Close</button>
+            <button type="submit" class="btn btn-success">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteproduct" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteproductlabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Product</h5>
+        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning" role="alert">
+          Are you sure you want to delete this product?
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+        <form id="delete-product-form" action="{{ url_for('products.delete_product') }}" method="post">
+          <input id="product-id-input" type="hidden" name="product_id" value="{{ product_id }}">
+          <button type="submit" class="btn btn-danger">Delete Product</button>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Función para capturar el ID del producto al hacer clic en el botón de eliminar
+  function captureProductId(productId) {
+    // Actualizar el valor del campo de entrada 'product_id' en el formulario
+    document.getElementById('product-id-input').value = productId;
+  }
+</script>
+
+<script src="{{ url_for('static', filename='js/modalCreate.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/modalEdit.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/qrScan.js') }}"></script>
+
+
+
+{% endblock %}

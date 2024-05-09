@@ -1,0 +1,84 @@
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Estilos para el modo claro */
+body:not(.dark-mode) .buttons {
+    background-color: #6c6a6a43;
+    /* Color de fondo para el modo claro */
+    color: #000;
+    /* Color de texto para el modo claro */
+}
+
+/* Estilos para el modo oscuro */
+body.dark-mode .buttons {
+    background-color: #b6b1b18a;
+    /* Color de fondo para el modo oscuro */
+    color: #fff;
+    /* Color de texto para el modo oscuro */
+}
+
+.square-btn {
+    width: 9vw;
+    /* Utilizamos 10% del ancho de la ventana */
+    height: 9vw;
+    /* Utilizamos 10% del ancho de la ventana */
+    /* Otros estilos */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* Oculta el texto que se desborda */
+}
+
+:root {
+    --bd-violet-bg: #686363bb;
+    /* Morado */
+    --bs-white: #fff;
+    /* Blanco */
+}
+
+.custom-tooltip {
+    --bs-tooltip-bg: var(--bd-violet-bg);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+/* Estilos para el modo claro */
+body:not(.dark-mode) .form-control {
+    background-color: #fff;
+    color: #000;
+
+}
+
+/* Estilos para el modo oscuro */
+body.dark-mode .form-control {
+    background-color: #333;
+    color: #fff;
+
+}
+
+/* Estilos para el modo claro */
+body:not(.dark-mode) .form-control::placeholder {
+    color: #000000;
+    /* Color del texto predeterminado en modo claro */
+}
+
+/* Estilos para el modo oscuro */
+body.dark-mode .form-control::placeholder {
+    color: #ffffff;
+    /* Color del texto predeterminado en modo oscuro */
+}

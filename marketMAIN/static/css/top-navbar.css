@@ -1,0 +1,78 @@
+.main-content {
+  max-width: 100%;
+  overflow-x: hidden;
+  transition: margin-top 0.5s ease; /* Agregar transición para cambios de margen */
+}
+
+.main-content.collapsed {
+  margin-top: 0; /* Cuando está contraída, no hay margen superior */
+}
+
+.navbar-expanded {
+  margin-top: 95px; /* ajusta según sea necesario */
+  transition: margin-top 0.5s ease 0.1s; /* agrega una transición suave con un pequeño retraso */
+}
+
+
+body.dark-mode {
+  background-color: #1b1a1a;
+  color: #fff;
+}
+
+body:not(.dark-mode) {
+  background-color: #F5F5F5;
+}
+
+/* Estilos adicionales para la barra de navegación lateral izquierda */
+.sidebar {
+  position: fixed;
+  left: 0;
+  height: 100%;
+  width: 50px;
+  /* Ancho de la barra de navegación */
+  padding-top: 3.5rem;
+  /* Espacio para evitar la superposición con la barra de navegación superior */
+}
+
+/* Ajustes para los iconos en modo claro */
+.sidebar .nav-link .bi {
+  color: #000;
+  /* Color de los iconos en modo claro */
+}
+
+/* Ajustes para los iconos en modo oscuro */
+.dark-mode .sidebar .nav-link .bi {
+  color: #fff;
+  /* Color de los iconos en modo oscuro */
+}
+
+.nav-link .ms-2 {
+  display: none;
+  /* Oculta el texto inicialmente */
+}
+
+.nav-link i:hover+.ms-2 {
+  display: inline;
+  /* Muestra el texto cuando el cursor está sobre el icono */
+}
+
+/* Estilos para modo claro */
+body:not(.dark-mode) .btn {
+  background-color: #4631311b;
+  border-color: #4631311b; /* Color del borde en modo claro */
+  color: #000;
+}
+
+/* Estilos para el modo obscuro */
+body.dark-mode .btn {
+  background-color: #ffffffd6;
+  border-color: #ffffff; /* Color del borde en modo oscuro */
+  color: #000000;
+}
+
+
+
+.focus-outline-none:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}

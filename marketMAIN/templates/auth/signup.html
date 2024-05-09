@@ -1,0 +1,255 @@
+{% extends 'top navbar/top-navbar.html' %} {% block title %} Sign Up {% endblock
+%} {% block content %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/auth.css') }}"
+/>
+
+<div class="container-fluid mx-4">
+  <div
+    class="d-flex justify-content-center align-items-center"
+    style="height: 120vh"
+  >
+    <div class="col-xl-10">
+      <div class="row">
+        <!-- Columnas para la imagen -->
+        <div class="col-xl-4 offset-xl-1 mb-4 mb-xl-0 d-none d-lg-block">
+          <!-- Aquí se coloca la imagen -->
+          <img
+            src="{{ url_for('send_static', path='img/signup.png') }}"
+            class="img-fluid"
+            alt="Phone image"
+          />
+        </div>
+
+        <!-- Columnas para el formulario -->
+        <div class="col-xl-5 offset-xl-1">
+          <!-- Aquí comienza la sección del formulario -->
+          <form method="post" action="">
+            <h1 class="fw-bold mb-4 signin__titulo text-center">sign Up</h1>
+            <!-- Nombre input -->
+            <div class="form-outline mb-4">
+              <label for="username">Name</label>
+              <div class="col-sm-10">
+                <input
+                  type="text"
+                  class="form-control mt-2 {% if user_found %}is-invalid{% endif %}"
+                  id="name"
+                  name="name"
+                  required
+                  data-bs-toggle="tooltip-user-found"
+                  data-bs-placement="left"
+                  data-bs-custom-class="custom-tooltip"
+                  data-bs-title="{% if user_found %}User already registered.{% endif %}"
+                />
+              </div>
+              {% if name_error %}
+              <div class="invalid-feedback">Error name.</div>
+              {% endif %}
+            </div>
+            <!-- Apellidos input -->
+            <div class="form-outline mb-4">
+              <label for="username">Last name</label>
+              <div class="col-sm-10">
+                <input
+                  type="text"
+                  class="form-control mt-2 {% if user_found %}is-invalid{% endif %}"
+                  id="lastname"
+                  name="lastname"
+                  required
+                  data-bs-toggle="tooltip-email-found"
+                  data-bs-placement="left"
+                  data-bs-custom-class="custom-tooltip"
+                  data-bs-title="{% if lastname_error %}Last name error.{% endif %}"
+                />
+              </div>
+              {% if lastname_error %}
+              <div class="invalid-feedback">Error last name.</div>
+              {% endif %}
+            </div>
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+              <label for="email">Email address</label>
+              <div class="col-sm-10">
+                <input
+                  type="email"
+                  class="form-control mt-2 {% if email_found %}is-invalid{% endif %}"
+                  id="email"
+                  name="email"
+                  required
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="left"
+                  data-bs-custom-class="custom-tooltip"
+                  data-bs-title="Please enter a valid email address with @gmail.com, @hotmail.com, @live.com, or @outlook.com domain."
+                  data-bs-toggle="tooltip-email-found"
+                  data-bs-placement="right"
+                  data-bs-custom-class="custom-tooltip"
+                  data-bs-title="{% if email_found %}Email already registered.{% endif %}"
+                />
+              </div>
+              {% if email_found %}
+              <div class="invalid-feedback">
+                The email is already registered.
+              </div>
+              {% endif %}
+            </div>
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+              <label for="password">Password</label>
+              <div class="col-sm-10">
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control mt-2 signup__password"
+                    id="password"
+                    name="password"
+                    required
+                  />
+                  <div class="mt-2">
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      id="generatePassword"
+                    >
+                      Generate
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="d-flex flex-column align-items-left mb-4 sigin__remember"
+            >
+              <!-- <p class="informacion__mensaje">*Create your Specify account with your work email to sync 
+                          all your design data across your design system</p>  -->
+              <a class="informacion__mensaje" href="{{url_for('auth.signin')}}"
+                >Already have an account?</a
+              >
+            </div>
+            <!-- Submit button -->
+            <button
+              type="submit"
+              class="btn__form btn btn-primary btn-lg btn-block"
+            >
+              Sign Up
+            </button>
+          </form>
+          <!-- Fin del formulario -->
+        </div>
+        <!-- Fin de la columna -->
+      </div>
+      <!-- Fin de la fila -->
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var tooltipTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    document.getElementById("email").addEventListener("input", function () {
+      var emailInput = this.value;
+      var emailIsValid =
+        /^[\w-\.]+@(?:(?:[\w]+\.)+)?(?:gmail\.com|hotmail\.com|live\.com|outlook\.com)$/.test(
+          emailInput
+        );
+      var tooltip = bootstrap.Tooltip.getInstance(this);
+
+      if (!emailIsValid) {
+        this.classList.add("is-invalid");
+        this.classList.remove("is-valid");
+        if (!tooltip) {
+          tooltip = new bootstrap.Tooltip(this);
+        }
+        tooltip.show();
+      } else {
+        this.classList.remove("is-invalid");
+        this.classList.add("is-valid");
+        if (tooltip) {
+          tooltip.hide();
+          tooltip.dispose(); // Destruir la instancia del tooltip
+        }
+      }
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document
+      .getElementById("generatePassword")
+      .addEventListener("click", function () {
+        var length = 10; // Longitud de la contraseña
+        var charset =
+          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/#@"; // Caracteres para la contraseña
+        var password = "";
+        for (var i = 0; i < length; i++) {
+          password += charset.charAt(
+            Math.floor(Math.random() * charset.length)
+          );
+        }
+        var passwordField = document.getElementById("password");
+        passwordField.value = password;
+        passwordField.type = "text"; // Cambiar temporalmente el tipo de entrada a "text"
+        setTimeout(function () {
+          passwordField.type = "password"; // Volver a cambiar el tipo de entrada a "password" después de 3 segundos
+        }, 4000);
+      });
+  });
+</script>
+
+<script>
+  var tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="tooltip-user-found"]')
+  );
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+
+  var tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="tooltip-email-found"]')
+  );
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+
+  var tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="tooltip-lastname-error"]')
+  );
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var emailInput = document.getElementById("email");
+      var tooltipEmailFound = document.getElementById("tooltip-email-found");
+      var tooltipEmailValidation = document.getElementById("tooltip-email-validation");
+
+      // Mostrar u ocultar el tooltip según el estado de email_found
+      emailInput.addEventListener("input", function () {
+          if (emailInput.value && email_found) {
+              tooltipEmailFound.classList.remove("d-none");
+              tooltipEmailValidation.classList.add("d-none");
+          } else {
+              tooltipEmailFound.classList.add("d-none");
+              tooltipEmailValidation.classList.remove("d-none");
+          }
+      });
+
+      // Ocultar el tooltip de validación cuando se hace clic en el tooltip de correo electrónico ya encontrado
+      tooltipEmailFound.addEventListener("click", function () {
+          tooltipEmailValidation.classList.add("d-none");
+      });
+  });
+</script>
+
+
+{% endblock %}

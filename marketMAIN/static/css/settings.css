@@ -1,0 +1,56 @@
+
+body.dark-mode .border {
+    border-color: #333333 !important;
+
+}
+
+body.dark-mode .table-bordered,
+body.dark-mode .table-striped,
+body.dark-mode .table-group-divider th,
+body.dark-mode .table-group-divider td {
+    border-color: #1b1a1a!important;
+    /* Cambiar color de borde */
+    color: #F5F5F5 !important;
+    /* Cambiar color de texto */
+    background-color: #333333 !important;
+    /* Cambiar color de fondo */
+}
+
+/* Estilos para el modo oscuro */
+body.dark-mode .modal-content {
+    background-color: #333 !important;
+    color: #fff !important;
+  }
+  
+  body.dark-mode .modal-header {
+    border-bottom: 1px solid #666 !important;
+  }
+  
+  body.dark-mode .modal-footer {
+    border-top: 1px solid #666 !important;
+  }
+  
+  body.dark-mode .btn-secondary {
+    color: #fff !important;
+    background-color: #666 !important;
+  }
+  
+  body.dark-mode .btn-primary {
+    color: #fff !important;
+    background-color: #007bff !important;
+  }
+
+  
+body.dark-mode .list-group-buttons {
+  background-color: #333333;
+  color: #F5F5F5;
+  border-color: #333333;
+}
+
+/* Estilos para el modo claro */
+body.dark-mode .list-group-buttons:active {
+  background-color: #706f6fa9;
+  /* Color de fondo cuando se presiona el botón en modo claro */
+
+}
+

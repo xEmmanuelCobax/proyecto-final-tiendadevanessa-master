@@ -1,0 +1,172 @@
+{% extends 'top navbar/top-navbar.html' %} {% block title %} Sign In {% endblock
+%} {% block content %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/auth.css') }}"
+/>
+
+<div class="container-fluid mx-4">
+  <div
+    class="d-flex justify-content-center align-items-center"
+    style="height: 100vh"
+  >
+    <!-- 56px es la altura aproximada del navbar, ajusta este valor según sea necesario -->
+    <div class="col-xl-10">
+      <div class="row">
+        <!-- Columnas para la imagen -->
+        <div class="col-xl-4 offset-xl-1 mb-4 mb-xl-0 d-none d-lg-block">
+          <!-- Aquí se coloca la imagen -->
+          <img
+            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
+            class="img-fluid"
+            alt="Phone image"
+          />
+        </div>
+        <!-- Columnas para el formulario -->
+        <div class="col-xl-5 offset-xl-1">
+          <!-- Aquí comienza la sección del formulario -->
+          <form method="post" action="">
+            <!-- Eliminar la clase text-end del formulario -->
+            <h1 class="fw-bold mb-4 signin__titulo text-center">sign in</h1>
+            <!-- Agregar la clase text-center para centrar el título -->
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+              <label for="email">Email address</label>
+              <!-- Eliminar la clase text-end de la etiqueta -->
+              <div class="col-sm-10">
+                <input
+                  type="email"
+                  value="{{ email }}"
+                  class="form-control mt-2 {% if email_not_found %}is-invalid{% endif %}"
+                  id="email"
+                  name="email"
+                  required
+                  data-bs-toggle="tooltip-bademail"
+                  data-bs-placement="left"
+                  data-bs-custom-class="custom-tooltip"
+                  data-bs-title="{% if email_not_found %}Email not found.{% endif %}"
+                />
+                <!-- Eliminar la clase text-end del campo de entrada -->
+              </div>
+              {% if email_not_found %}
+              <div class="invalid-feedback">Email not found.</div>
+              <!-- Eliminar la clase text-end del mensaje de error -->
+              {% endif %}
+            </div>
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+              <label for="password">Password</label>
+              <!-- Eliminar la clase text-end de la etiqueta -->
+              <div class="col-sm-10">
+                <input
+                  type="password"
+                  class="form-control mt-2 {% if bad_password %}is-invalid{% endif %}"
+                  id="password"
+                  name="password"
+                  required
+                  data-bs-toggle="tooltip-badpassword"
+                  data-bs-placement="left"
+                  data-bs-custom-class="custom-tooltip"
+                  data-bs-title="{% if bad_password %}Invalid password.{% endif %}"
+                />
+              </div>
+              <!-- Eliminar la clase text-end del campo de entrada -->
+              {% if bad_password %}
+              <div class="invalid-feedback">Invalid password.</div>
+              <!-- Eliminar la clase text-end del mensaje de error -->
+              {% endif %}
+            </div>
+
+            <div
+              class="d-flex flex-column align-items-left mb-4 sigin__remember"
+            >
+              <!-- Checkbox -->
+              <div class="form-check mb-2">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="form1Example3"
+                  checked
+                />
+                <label class="form-check-label" for="form1Example3"
+                  >Remember me</label
+                >
+              </div>
+              <!-- Enlace "Forgot password?" -->
+              <a href="#!" class="forget">Forgot password?</a>
+            </div>
+            <!-- Submit button -->
+            <button
+              type="submit"
+              class="btn__form btn btn-primary btn-lg btn-block"
+            >
+              Sign in
+            </button>
+            <!-- Eliminar la clase text-end del botón -->
+          </form>
+          <!-- Fin del formulario -->
+        </div>
+        <!-- Fin de la columna -->
+      </div>
+      <!-- Fin de la fila -->
+    </div>
+  </div>
+</div>
+
+{% if registration_successful %}
+<div class="modal fade show" id="successfulRegistrationModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Successful Account</h5>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" role="alert">
+          <p>Your registration was successful.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if registration_successful %}
+
+<script>
+  // Show the successful registration modal if the 'successful' variable is true
+  $(document).ready(function () {
+    console.log("test 1");
+    $("#successfulRegistrationModal").modal("show");
+  });
+</script>
+{% endif %} 
+
+<script>
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-bademail"]'));
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+</script>
+
+<script>
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-badpassword"]'));
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+</script>
+
+
+{% endblock %}

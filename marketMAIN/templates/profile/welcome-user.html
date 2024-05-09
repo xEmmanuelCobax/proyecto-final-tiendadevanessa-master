@@ -1,0 +1,22 @@
+{% extends 'top navbar/top-navbar.html' %} {% block title %} profile {% endblock
+%} {%block content %}
+<style>
+  ::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+<div class="container-fluid mx-4">
+  <div class="d-flex justify-content-center align-items-center" style="height: 100vh">
+    <!-- 56px es la altura aproximada del navbar, ajusta este valor según sea necesario -->
+    <div class="col-xl-10">
+      <div class="row">
+        <h1>Bienvenido {{ user }}</h1>
+
+      </div>
+      <a href="{{ url_for('shortcut.shortcut') }}" class="btn__form btn btn-primary btn-lg btn-block">shortcut</a>
+      <!-- Fin de la fila -->
+    </div>
+  </div>
+</div>
+
+{% endblock %}
