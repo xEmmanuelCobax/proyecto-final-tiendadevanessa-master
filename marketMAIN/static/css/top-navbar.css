@@ -1,16 +1,20 @@
 .main-content {
   max-width: 100%;
   overflow-x: hidden;
-  transition: margin-top 0.5s ease; /* Agregar transición para cambios de margen */
+  transition: margin-top 0.5s ease;
+  /* Agregar transición para cambios de margen */
 }
 
 .main-content.collapsed {
-  margin-top: 0; /* Cuando está contraída, no hay margen superior */
+  margin-top: 0;
+  /* Cuando está contraída, no hay margen superior */
 }
 
 .navbar-expanded {
-  margin-top: 95px; /* ajusta según sea necesario */
-  transition: margin-top 0.5s ease 0.1s; /* agrega una transición suave con un pequeño retraso */
+  margin-top: 95px;
+  /* ajusta según sea necesario */
+  transition: margin-top 0.5s ease 0.1s;
+  /* agrega una transición suave con un pequeño retraso */
 }
 
 
@@ -59,14 +63,16 @@ body:not(.dark-mode) {
 /* Estilos para modo claro */
 body:not(.dark-mode) .btn {
   background-color: #4631311b;
-  border-color: #4631311b; /* Color del borde en modo claro */
+  border-color: #4631311b;
+  /* Color del borde en modo claro */
   color: #000;
 }
 
 /* Estilos para el modo obscuro */
 body.dark-mode .btn {
   background-color: #ffffffd6;
-  border-color: #ffffff; /* Color del borde en modo oscuro */
+  border-color: #ffffff;
+  /* Color del borde en modo oscuro */
   color: #000000;
 }
 
@@ -76,3 +82,4 @@ body.dark-mode .btn {
   outline: none !important;
   box-shadow: none !important;
 }
+

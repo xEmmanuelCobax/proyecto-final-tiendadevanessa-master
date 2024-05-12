@@ -7,7 +7,7 @@ def CUD(query):
     try:
         # Conectar a la BD DRIVER={SQL Server};SERVER=NOMBRE DEL SERVIDOR;DATABASE=NOMBRE DE LA BASE DE DATOS;Trusted_Connection=yes; EL TRUSTED ES PARA PODER CONECTAR SIN TENER CONTRASENAS
         connection = pyodbc.connect(
-            "DRIVER={SQL Server};SERVER=PCEMMANUEL;DATABASE=Proyecto;Trusted_Connection=yes;"
+            "DRIVER={SQL Server};SERVER=DESKTOP-ACD3GSV;DATABASE=Proyecto;Trusted_Connection=yes;"
         )
         print("========================================\nConexión exitosa")
         cursor = connection.cursor()
@@ -21,12 +21,12 @@ def CUD(query):
         print("========================================\nConexión finalizada")
 
 
-# Funcion para poder realizar consultas Read, devuelve UNA MATRIZ 
+# Funcion para poder realizar consultas Read, devuelve UNA MATRIZ
 def Read(query):
     print("Conectando...")
     try:
         connection = pyodbc.connect(
-            "DRIVER={SQL Server};SERVER=PCEMMANUEL;DATABASE=Proyecto;Trusted_Connection=yes;"
+            "DRIVER={SQL Server};SERVER=DESKTOP-ACD3GSV;DATABASE=Proyecto;Trusted_Connection=yes;"
         )
         print("========================================\nConexion exitosa")
         cursor = connection.cursor()

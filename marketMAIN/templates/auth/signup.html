@@ -27,7 +27,7 @@
         <div class="col-xl-5 offset-xl-1">
           <!-- Aquí comienza la sección del formulario -->
           <form method="post" action="">
-            <h1 class="fw-bold mb-4 signin__titulo text-center">sign Up</h1>
+            <h1 class="fw-bold mb-4 signin__titulo text-center">Sign Up</h1>
             <!-- Nombre input -->
             <div class="form-outline mb-4">
               <label for="username">Name</label>
@@ -38,6 +38,9 @@
                   id="name"
                   name="name"
                   required
+                  pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+"
+                  title="Solo se permiten letras y espacios"
+                  oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
                   data-bs-toggle="tooltip-user-found"
                   data-bs-placement="left"
                   data-bs-custom-class="custom-tooltip"
@@ -52,22 +55,30 @@
             <div class="form-outline mb-4">
               <label for="username">Last name</label>
               <div class="col-sm-10">
-                <input
-                  type="text"
-                  class="form-control mt-2 {% if user_found %}is-invalid{% endif %}"
-                  id="lastname"
-                  name="lastname"
-                  required
-                  data-bs-toggle="tooltip-email-found"
-                  data-bs-placement="left"
-                  data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if lastname_error %}Last name error.{% endif %}"
-                />
+                  <input
+                      type="text"
+                      class="form-control mt-2 {% if lastname_error %}is-invalid{% endif %} {% if two_lastnames %}is-valid{% endif %}"
+                      id="lastname"
+                      name="lastname"
+                      required
+                     
+                      oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
+
+                      data-bs-toggle="tooltip-email-found"
+                      data-bs-placement="left"
+                      data-bs-custom-class="custom-tooltip"
+                      data-bs-title="{% if lastname_error %}Last name error.{% else %}Enter your two last names{% endif %}"
+                  />
+                  {% if two_lastnames %}
+                  <div class="valid-feedback">
+                      <i class="bi bi-check-circle"></i> Two last names provided
+                  </div>
+                  {% endif %}
               </div>
               {% if lastname_error %}
               <div class="invalid-feedback">Error last name.</div>
               {% endif %}
-            </div>
+          </div>
             <!-- Email input -->
             <div class="form-outline mb-4">
               <label for="email">Email address</label>
@@ -81,11 +92,7 @@
                   data-bs-toggle="tooltip"
                   data-bs-placement="left"
                   data-bs-custom-class="custom-tooltip"
-                  data-bs-title="Please enter a valid email address with @gmail.com, @hotmail.com, @live.com, or @outlook.com domain."
-                  data-bs-toggle="tooltip-email-found"
-                  data-bs-placement="right"
-                  data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if email_found %}Email already registered.{% endif %}"
+                  data-bs-title="{% if email_found %}Email already registered.{% else %}Please enter a valid email address with @gmail.com, @hotmail.com, @live.com, or @outlook.com domain.{% endif %}"
                 />
               </div>
               {% if email_found %}
@@ -229,27 +236,57 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-      var emailInput = document.getElementById("email");
-      var tooltipEmailFound = document.getElementById("tooltip-email-found");
-      var tooltipEmailValidation = document.getElementById("tooltip-email-validation");
+    var emailInput = document.getElementById("email");
+    var tooltipEmailFound = document.getElementById("tooltip-email-found");
+    var tooltipEmailValidation = document.getElementById(
+      "tooltip-email-validation"
+    );
 
-      // Mostrar u ocultar el tooltip según el estado de email_found
-      emailInput.addEventListener("input", function () {
-          if (emailInput.value && email_found) {
-              tooltipEmailFound.classList.remove("d-none");
-              tooltipEmailValidation.classList.add("d-none");
-          } else {
-              tooltipEmailFound.classList.add("d-none");
-              tooltipEmailValidation.classList.remove("d-none");
-          }
-      });
+    // Mostrar u ocultar el tooltip según el estado de email_found
+    emailInput.addEventListener("input", function () {
+      if (emailInput.value && email_found) {
+        tooltipEmailFound.classList.remove("d-none");
+        tooltipEmailValidation.classList.add("d-none");
+      } else {
+        tooltipEmailFound.classList.add("d-none");
+        tooltipEmailValidation.classList.remove("d-none");
+      }
+    });
 
-      // Ocultar el tooltip de validación cuando se hace clic en el tooltip de correo electrónico ya encontrado
-      tooltipEmailFound.addEventListener("click", function () {
-          tooltipEmailValidation.classList.add("d-none");
-      });
+    // Ocultar el tooltip de validación cuando se hace clic en el tooltip de correo electrónico ya encontrado
+    tooltipEmailFound.addEventListener("click", function () {
+      tooltipEmailValidation.classList.add("d-none");
+    });
   });
 </script>
 
+<script>
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-email-found"]'));
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+
+  document.getElementById('lastname').addEventListener('input', function () {
+      var lastnameInput = this.value.trim();
+      var words = lastnameInput.split(' ');
+      var tooltip = document.querySelector('[data-bs-toggle="tooltip-email-found"]');
+      var tooltipInstance = bootstrap.Tooltip.getInstance(tooltip);
+      var two_lastnames = false;
+
+      if (words.length === 2 && words[1].length > 1) {
+          // Mostrar el mensaje de validación y resaltar en verde si se proporcionan dos apellidos
+          tooltip.setAttribute('data-bs-original-title', '');
+          tooltipInstance.hide();
+          two_lastnames = true;
+      } else {
+          // Mostrar el mensaje de error en el tooltip si no se proporcionan dos apellidos
+          tooltip.setAttribute('data-bs-original-title', 'Por favor, proporciona dos apellidos');
+          tooltipInstance.show();
+      }
+
+      // Actualizar la clase del campo de entrada según la condición
+      this.classList.toggle('is-valid', two_lastnames);
+  });
+</script>
 
 {% endblock %}

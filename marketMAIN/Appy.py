@@ -22,115 +22,117 @@ app.config["SECRET_KEY"] = config.HEX_SEC_KEY
 
 @auth.route("/signin", methods=["GET", "POST"])
 def signin():
+    print("========================================\nRUTA-Signing\n")
     if "email" in session:
-        return render_template("profile.welcomeuser", email=session["email"])
-    else:
-        if request.method == "POST":
-            email = request.form["email"]
-            password = request.form["password"]
+        print("========================================\nEmail In Session\n")
+        return render_template("profile.weclomeuser", email=session["email"])
+    elif request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        print("========================================\nDATOS OBTENIDOS>\n")
+        print("Email - {}".format(email))
+        print("Password - {}".format(password))
+        print("========================================")
+        existing_email = config.Read(
+            "SELECT * FROM dbo.Usuarios WHERE CORREO = '{0}'".format(email)
+        )
 
-            print("========================================\nDATOS OBTENIDOS>\n")
-            print("Email - {}".format(email))
-            print("Password - {}".format(password))
-            print("========================================")
-
-            existing_email = config.Read(
-                "SELECT * FROM dbo.Usuarios WHERE CORREO = '{0}'".format(email)
+        if not existing_email:
+            # El correo electrónico no está registrado
+            email_not_found = True
+            print(
+                "========================================\ncorreo electrónico no está registrado\n========================================"
             )
-
-            if not existing_email:
-                # El correo electrónico no está registrado
-                email_not_found = True
+            return render_template(
+                "auth/signin.html", email_not_found=email_not_found
+            )
+        
+        else:
+            # El correo electrónico está registrado
+            if existing_email[0][6] == password:
+                # Contraseña correcta
+                session["email"] = email
                 print(
-                    "========================================\ncorreo electrónico no está registrado\n========================================"
+                    "========================================\nContraseña correcta\n========================================"
+                )
+                return redirect(url_for("profile.welcomeuser", user=email))
+            
+            else:
+                # Contraseña incorrecta
+                bad_password = True
+                print(
+                    "========================================\nContraseña incorrecta\n========================================"
                 )
                 return render_template(
-                    "auth/signin.html", email_not_found=email_not_found
+                    "auth/signin.html", bad_password=bad_password, email=email
                 )
-            else:
-                # El correo electrónico está registrado
-                if existing_email[0][6] == password:
-                    # Contraseña correcta
-                    session["email"] = email
-                    print(
-                        "========================================\nContraseña correcta\n========================================"
-                    )
-                    return redirect(url_for("profile.welcomeuser", user=email))
-                else:
-                    # Contraseña incorrecta
-                    bad_password = True
-                    print(
-                        "========================================\nContraseña incorrecta\n========================================"
-                    )
-                    return render_template(
-                        "auth/signin.html", bad_password=bad_password, email=email
-                    )
-        return render_template("auth/signin.html")
+    print("========================================\nReturn to auth/signin.html\n")
+    return render_template("auth/signin.html")
 
 
 @auth.route("/signup", methods=["GET", "POST"])  # Altas
 def signup():
+    print("========================================\nRUTA-Signup\n")
     # Verificar si hay una dirreccion de correo dentro de session
     if "email" in session:
         return render_template("index.html", email=session["email"])
+    elif request.method == "POST":
+        email_found = False
+        user_found = False
+        lastname_error = False
+
+        name = request.form.get("name")
+        lastname = request.form.get("lastname")
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        print("========================================\nDATOS OBTENIDOS>\n")
+        print("Name - {}".format(name))
+        print("Lastname - {}".format(lastname))
+        print("Email - {}".format(email))
+        print("Password - {}".format(password))
+        print("========================================")
+
+        aux = lastname.split()
+        if len(aux) >= 2:
+            apellido_paterno = aux[0]  # El primer elemento es el apellido paterno
+            apellido_materno = aux[-1]  # El último elemento es el apellido materno
+        else:
+            lastname_error = True
+
+        existing_email = config.Read(
+            "SELECT * FROM dbo.Usuarios WHERE CORREO = '{0}'".format(email)
+        )
+
+        existing_user = config.Read(
+            "SELECT * FROM dbo.Usuarios WHERE NOMBRE = '{0}' AND AP_PAT = '{1}' AND AP_MAT = '{2}'".format(name, apellido_paterno, apellido_materno)
+        )
+
+        # Existe el correo en la base de datos
+        if existing_email:
+            email_found = True
+        # Existe el usuario en la base de datos
+        if existing_user:
+            user_found = True
+        if existing_email or existing_user or lastname_error:
+            return render_template(
+                "auth/signup.html",
+                user_found=user_found,
+                email_found=email_found,
+                lastname_error=lastname_error,
+            )
+
+        # No hay ningun error
+        else:
+            # registrar en base de datos
+            config.CUD(
+                "INSERT INTO dbo.Usuarios (NOMBRE, AP_PAT , AP_MAT , CORREO , CONTRASENA, ESTATUS) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}' , 1)".format(
+                    name, apellido_paterno, apellido_materno, email, password
+                )
+            )
+            print("Renderizar auth/sigin")
+            return url_for("auth.signin.html", registration_successful=True)
     else:
-        if request.method == "POST":
-            email_found = False
-            user_found = False
-            lastname_error = False
-
-            name = request.form.get("name")
-            lastname = request.form.get("lastname")
-            email = request.form.get("email")
-            password = request.form.get("password")
-
-            print("========================================\nDATOS OBTENIDOS>\n")
-            print("Name - {}".format(name))
-            print("Lastname - {}".format(lastname))
-            print("Email - {}".format(email))
-            print("Password - {}".format(password))
-            print("========================================")
-
-            aux = lastname.split()
-            if len(aux) >= 2:
-                apellido_paterno = aux[0]  # El primer elemento es el apellido paterno
-                apellido_materno = aux[-1]  # El último elemento es el apellido materno
-            else:
-                lastname_error = True
-
-            existing_email = config.Read(
-                "SELECT * FROM dbo.Usuarios WHERE CORREO = '{0}'".format(email)
-            )
-
-            existing_user = config.Read(
-                "SELECT * FROM dbo.Usuarios WHERE NOMBRE = '{0}' AND AP_PAT = '{1}' AND AP_MAT = '{2}'".format(name, apellido_paterno, apellido_materno)
-            )
-
-            # Existe el correo en la base de datos
-            if existing_email:
-                email_found = True
-            # Existe el usuario en la base de datos
-            if existing_user:
-                user_found = True
-            if existing_email or existing_user or lastname_error:
-                return render_template(
-                    "auth/signup.html",
-                    user_found=user_found,
-                    email_found=email_found,
-                    lastname_error=lastname_error,
-                )
-
-            # No hay ningun error
-            else:
-                # registrar en base de datos
-                config.CUD(
-                    "INSERT INTO dbo.Usuarios (NOMBRE, AP_PAT , AP_MAT , CORREO , CONTRASENA, ID_ESTATUS) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}' , '1')".format(
-                        name, apellido_paterno, apellido_materno, email, password
-                    )
-                )
-
-                return render_template("auth/signin.html", registration_successful=True)
-
         return render_template("auth/signup.html")
 
 
@@ -144,12 +146,12 @@ def create_product():
     if "email" in session:
         if request.method == "POST":
             nombre = request.form.get("nombre")
-            presentacion = request.form.get("presentacion")
             cantidad = request.form.get("cantidad")
             compania = request.form.get("compania")
             precio = request.form.get("precio")
-
-
+            config.CUD(
+                "INSERT INTO tasks (nombre, cantidad, descripcion, email, fecha) VALUES (%s, %s, %s, %s, %s)", (nombre, cantidad , compalia,session['email'])
+            )
             return redirect(url_for("products.warehouse"))
     else:
         return redirect(url_for("auth.signin"))
@@ -250,13 +252,14 @@ def settings():
 @app.route("/Signout")
 def Signout():
     if "email" in session:
-        email = session.get("email")  # Obtener el valor de 'email' de la sesión
         session.pop(
             "email", None
         )  # Eliminar la clave 'email' de la sesión si está presente
-        return render_template("auth/signin.html")
+        print("CERRANDO SESSION...")
+        return redirect("auth/signin")
     else:
-        return redirect(url_for("signin"))
+        print("NO HAY SESSION")
+    return redirect(url_for("auth/signin"))
 
 
 # Registrar los Blueprints en la App

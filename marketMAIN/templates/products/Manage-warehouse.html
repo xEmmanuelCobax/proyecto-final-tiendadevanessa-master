@@ -128,7 +128,7 @@
                 <label for="compania" class="form-label">Company:</label>
                 <select class="form-select form-select-sm" id="compania" aria-label="Small select example">
                   {% for compania in company %}
-                  <option value=>{{ compania }}</option>
+                  <option value>{{ compania[0] }}</option>
                   {% endfor %}
                 </select>
               </div>
