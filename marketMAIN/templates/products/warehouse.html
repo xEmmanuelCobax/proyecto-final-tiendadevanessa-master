@@ -26,9 +26,9 @@
     </div>
 
     <div class="col-12 col-lg-9 mt-3"> <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
-      <form class="d-flex mt-3">
+      <form class="d-flex mt-3" method="GET" action="{{ url_for('products.search_product') }}">
         <div class="col-sm-4">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_term">
         </div>
         <div class="flex-grow-1"></div> <!-- Este div se expandirá para ocupar el espacio disponible -->
         <button class="btn btn-primary" type="submit">Search</button>

@@ -62,7 +62,7 @@
               <button type="button" class="square-btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#editCompany">
                 <span class="material-symbols-outlined">Edit</span>
               </button>
-              <button type="button" class="square-btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#deleteCompany">
+              <button type="button" class="square-btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#deleteCompany" onclick="setCompaniaId('{{ compania[6] }}')">
                 <span class="material-symbols-outlined">Delete</span>
               </button>
             </td>
@@ -176,11 +176,18 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-danger">Delete</button>
+        <form id="delete-product-form" action="{{ url_for('products.delete_company') }}" method="post">
+          <input id="company_id-input" type="hidden" name="company_id" value="">
+          <button id="delete-company-btn" type="submit" class="btn btn-danger">Delete Company</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
 
-
+<script>
+  function setCompaniaId(productId) {
+    document.getElementById('company_id-input').value = productId;
+  }
+</script>
 {% endblock %}

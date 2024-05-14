@@ -51,31 +51,29 @@
       </form>
 
       <table class="table table-bordered  table-striped mt-3 mb-3">
-        <!-- Mantenemos las clases existentes y agregamos espaciado -->
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Price</th>
-            <th scope="col">Actions</th>
-
+            <th>ID</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody class="table-group-divider">
+        <tbody>
           {% for product in products %}
           <tr>
             <td>{{ product[0] }}</td>
             <td>{{ product[1] }}</td>
             <td>{{ product[3] }}</td>
             <td>{{ product[2] }}</td>
-            <td class="text-center d-flex justify-content-center align-items-center ">
+            <td class="text-center d-flex justify-content-center align-items-center">
               <button type="button" class="square-btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#editproduct"
                 data-product-id="{{ product[0] }}">
                 <span class="material-symbols-outlined">edit</span>
               </button>
               <button type="button" class="square-btn btn-danger mx-2 delete-product-btn" data-product-id="{{ product[0] }}"
-                data-bs-toggle="modal" data-bs-target="#deleteproduct" onclick="captureProductId('{{ product[0] }}')">
+                data-bs-toggle="modal" data-bs-target="#deleteproduct" onclick="setProductId('{{ product[0] }}')">
                 <span class="material-symbols-outlined">delete</span>
               </button>
             </td>
@@ -105,17 +103,15 @@
                 <input type="text" class="form-control" id="nombre" name="nombre" required>
                 <div class="invalid-feedback">Por favor ingresa un nombre.</div>
               </div>
+            </div>
+            <div class="col-md-6">
               <div class="mb-3">
-                
-                <label for="presentacion" class="form-label">Presentation:</label>
-                
-                <select class="form-select form-select-sm" id="presentacion" aria-label="Small select example"
-                  onchange="actualizarCantidadOptions()">
-                  <option value="lote" selected>Lote</option>
-                  <option value="botella">Botella</option>
-                  <option value="empaquetado">Empaquetado</option>
-                  <option value="granel">Granel</option>
-                </select>
+                <label for="newprecio" class="form-label">Price:</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="newprecio" name="newprecio" step="0.01" required>
+                  <div class="invalid-feedback">Please enter a valid price.</div>
+                </div>
               </div>
             </div>
             <div class="col-md-6">
@@ -124,56 +120,50 @@
                 <input type="number" class="form-control" id="cantidadInput" name="cantidad" required>
                 <div class="invalid-feedback">Por favor ingresa una cantidad válida.</div>
               </div>
+              
               <div class="mb-3">
-                <label for="compania" class="form-label">Company:</label>
-                <select class="form-select form-select-sm" id="compania" aria-label="Small select example">
-                  {% for compania in company %}
-                  <option value>{{ compania[0] }}</option>
+                <label for="company-select">Select Company:</label>
+                <select class="form-select form-select-sm" id="company-select" name="company_id" onchange="filterIntermediaries()">
+                  <option value="" disabled selected>Select a company</option>
+                  {% for company in members %}
+                  <option value="{{ company[0] }}">{{ company[2] }}</option>
+                  <!-- Assuming company[1] is the ID and company[2] is the name -->
                   {% endfor %}
                 </select>
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
+              
               <div class="mb-3">
-                <label for="cantidadSelect" class="form-label">Quantity:</label>
-                <select class="form-select form-select-sm" id="cantidadSelect" name="cantidad" required>
-                  <!-- Las opciones se actualizarán dinámicamente aquí -->
+                <label for="intermediary-select">Select Intermediary:</label>
+                <select class="form-select form-select-sm" id="intermediary-select" name="intermediary_id" disabled>
+                  <option value="" disabled selected>Select an intermediary</option>
+                  {% for member in members %}
+                  <option value="{{ member[1] }}" data-company-id="{{ member[0] }}">{{ member[3] }} {{ member[4] }} {{ member[5] }}
+                  </option>
+                  {% endfor %}
                 </select>
-                <div class="invalid-feedback">Por favor seleccione una cantidad.</div>
               </div>
-            </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="precio" class="form-label">Price:</label>
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input type="number" class="form-control" id="precio" name="precio" step="0.01" required>
-                  <div class="invalid-feedback">Por favor ingresa un precio válido.</div>
-                </div>
-              </div>
+
             </div>
           </div>
 
-          <div class="d-none">
+          <!-- <div class="d-none">
             <div class="mb-3">
 
               <label for="cantidad" class="form-label">Codebars Scan Preview:</label>
             </div>
 
-            <!-- Vista previa de la cámara -->
+          
             <div class="container-fluid bg-light rounded py-3">
               <div class="preview-camera col-12 " id="camera"></div>
             </div>
           </div>
-          <!-- Selector para los códigos de barras escaneados -->
+          
           <div class="mb-3">
             <label for="qrCodes" class="form-label mt-3">Codebar Scanned:</label>
             <select class="form-select form-select-sm" id="qrCodes" aria-label="Small select example">
-              <!-- Aquí se agregarán dinámicamente los códigos de barras escaneados -->
+              
             </select>
-          </div>
+          </div> -->
 
           <div class="text-end">
             <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal"
@@ -203,15 +193,15 @@
                 <input type="text" class="form-control" id="newnombre" name="newnombre" required>
                 <div class="invalid-feedback">Please enter a name.</div>
               </div>
+            </div>
+            <div class="col-md-6">
               <div class="mb-3">
-                <label for="newpresentacion" class="form-label">Presentation:</label>
-                <select class="form-select form-select-sm" id="newpresentacion" aria-label="Small select example"
-                  onchange="updateNewQuantityOptions()">
-                  <option value="lote" selected>Lote</option>
-                  <option value="botella">Botella</option>
-                  <option value="empaquetado">Empaquetado</option>
-                  <option value="granel">Granel</option>
-                </select>
+                <label for="newprecio2" class="form-label">Price:</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="newprecio2" name="newprecio2" step="0.01" required>
+                  <div class="invalid-feedback">Please enter a valid price.</div>
+                </div>
               </div>
             </div>
             <div class="col-md-6">
@@ -223,32 +213,20 @@
               <div class="mb-3">
                 <label for="newcompania" class="form-label">Company:</label>
                 <select class="form-select form-select-sm" id="newcompania" aria-label="Small select example">
-                  {% for compania in company %}
-                  <option value=>{{ compania[0] }}</option>
+                  {% for member in members %}
+                  <option value=>{{ member[1] }}</option>
                   {% endfor %}
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="newcantidadSelect" class="form-label">Quantity:</label>
-                <select class="form-select form-select-sm" id="newcantidadSelect" name="newcantidadSelect" required>
-                  <!-- Options will be dynamically updated here -->
-                </select>
-                <div class="invalid-feedback">Please select a quantity.</div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="newprecio" class="form-label">Price:</label>
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input type="number" class="form-control" id="newprecio" name="newprecio" step="0.01" required>
-                  <div class="invalid-feedback">Please enter a valid price.</div>
+                  </select>
+                  
                 </div>
-              </div>
+                <div class="mb-3">
+                  <label for="company-select">Select intermediary:</label>
+                  <select class="form-select form-select-sm" id="intermediary-select2" name="intermediary_id">
+                    {% for member in members %}
+                    <option value="{{ member[0] }}">{{ member[1] ~ member[2] ~ member[3] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>   
             </div>
           </div>
 
@@ -278,21 +256,15 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
         <form id="delete-product-form" action="{{ url_for('products.delete_product') }}" method="post">
-          <input id="product-id-input" type="hidden" name="product_id" value="{{ product_id }}">
-          <button type="submit" class="btn btn-danger">Delete Product</button>
-      </form>
+          <input id="product-id-input" type="hidden" name="product_id" value="">
+          <button id="delete-product-btn" type="submit" class="btn btn-danger">Delete Product</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
 
-<script>
-  // Función para capturar el ID del producto al hacer clic en el botón de eliminar
-  function captureProductId(productId) {
-    // Actualizar el valor del campo de entrada 'product_id' en el formulario
-    document.getElementById('product-id-input').value = productId;
-  }
-</script>
+
 
 <script src="{{ url_for('static', filename='js/modalCreate.js') }}"></script>
 
@@ -301,5 +273,32 @@
 <script src="{{ url_for('static', filename='js/qrScan.js') }}"></script>
 
 
+<script>
+  function setProductId(productId) {
+      document.getElementById('product-id-input').value = productId;
+    }
+  function filterIntermediaries() {
+      var companySelect = document.getElementById('company-select');
+      var intermediarySelect = document.getElementById('intermediary-select');
+      var selectedCompanyId = companySelect.value;
 
+      // Enable the intermediary select
+      intermediarySelect.disabled = false;
+
+      // Clear current options in intermediary select except the default option
+      intermediarySelect.innerHTML = '<option value="" disabled selected>Select an intermediary</option>';
+
+      // Get all intermediary options
+      var allIntermediaries = document.querySelectorAll('#intermediary-select option[data-company-id]');
+
+      // Filter and append the appropriate intermediaries based on selected company
+      allIntermediaries.forEach(function (intermediaryOption) {
+        var companyId = intermediaryOption.getAttribute('data-company-id');
+        if (companyId === selectedCompanyId) {
+          intermediarySelect.appendChild(intermediaryOption.cloneNode(true));
+        }
+      });
+    }
+
+</script>
 {% endblock %}
