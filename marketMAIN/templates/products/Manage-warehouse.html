@@ -212,11 +212,13 @@
               </div>
               <div class="mb-3">
                 <label for="newcompania" class="form-label">Company:</label>
-                <select class="form-select form-select-sm" id="newcompania" aria-label="Small select example">
-                  {% for member in members %}
-                  <option value=>{{ member[1] }}</option>
+                <select class="form-select form-select-sm" id="company-select2" name="company_id" onchange="filterIntermediaries()">
+                  <option value="" disabled selected>Select a company</option>
+                  {% for company in members %}
+                  <option value="{{ company[0] }}">{{ company[2] }}</option>
+                  <!-- Assuming company[1] is the ID and company[2] is the name -->
                   {% endfor %}
-                  </select>
+                </select>
                   
                 </div>
                 <div class="mb-3">
@@ -241,7 +243,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="deleteproduct" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteproductlabel">
+<div class="modal fade " id="deleteproduct" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteproductlabel">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -278,27 +280,38 @@
       document.getElementById('product-id-input').value = productId;
     }
   function filterIntermediaries() {
-      var companySelect = document.getElementById('company-select');
-      var intermediarySelect = document.getElementById('intermediary-select');
-      var selectedCompanyId = companySelect.value;
+    var companySelect = document.getElementById('company-select');
+    var intermediarySelect = document.getElementById('intermediary-select');
+    var selectedCompanyId = parseInt(companySelect.value); // Ensure selectedCompanyId is a number
 
-      // Enable the intermediary select
-      intermediarySelect.disabled = false;
+    console.log(companySelect);
+    console.log(intermediarySelect);
+    console.log(selectedCompanyId);
 
-      // Clear current options in intermediary select except the default option
-      intermediarySelect.innerHTML = '<option value="" disabled selected>Select an intermediary</option>';
+    // Enable the intermediary select
+    intermediarySelect.disabled = false;
 
-      // Get all intermediary options
-      var allIntermediaries = document.querySelectorAll('#intermediary-select option[data-company-id]');
+    // Clear current options in intermediary select except the default option
+    intermediarySelect.innerHTML = '<option value="" disabled selected>Select an intermediary</option>';
+    console.log(intermediarySelect.innerHTML);
 
-      // Filter and append the appropriate intermediaries based on selected company
-      allIntermediaries.forEach(function (intermediaryOption) {
-        var companyId = intermediaryOption.getAttribute('data-company-id');
-        if (companyId === selectedCompanyId) {
-          intermediarySelect.appendChild(intermediaryOption.cloneNode(true));
-        }
-      });
-    }
+    // Initialize an empty array to hold the filtered results
+    var filteredIntermediaries = [];
+    
+    // Iterate over the members and filter based on selectedCompanyId
+    members.forEach(function (member) {
+      if (member[0] === selectedCompanyId) {
+        filteredIntermediaries.push(member);
+        // Create a new option element for the intermediary select
+        var option = document.createElement('option');
+        option.value = member[1]; // You can adjust this if needed
+        option.textContent = member.slice(2).join(' '); // Join the rest of the member details as the option text
+        intermediarySelect.appendChild(option);
+      }
+    });
+
+    console.log(filteredIntermediaries);
+  }
 
 </script>
 {% endblock %}
