@@ -1,82 +1,45 @@
-function limpiarModal() {
-  // Código para limpiar los campos del formulario modal
-  document.getElementById("nombre").value = "";
-  document.getElementById("presentacion").selectedIndex = 0;
-  document.getElementById("cantidadInput").value = "";
-  document.getElementById("compania").selectedIndex = 0;
-  document.getElementById("cantidadSelect").value = 0;
-  document.getElementById("precio").value = "";
-  document.getElementById("qrCodes").innerHTML = "";
-  // Detener la captura de QuaggaJS si está activa
-  // Detener la captura de QuaggaJS si está activa
-  // Agregar un evento cuando el modal se oculta
-  var myModalEl = document.getElementById('createmodal');
-  myModalEl.addEventListener('hidden.bs.modal', function (event) {
-    // Detener QuaggaJS si está activo
-    if (window.Quagga) {
-      Quagga.stop();
-      stopCamera(); // Detener QuaggaJS al cambiar el tamaño de la ventana
+  // Función para limpiar los campos del formulario de creación de producto
+  function limpiarCreateModal() {
+    // Obtener el formulario
+    var form = document.getElementById('createproductmodal');
 
-    }
-  });
-}
+    // Restablecer el formulario
+    form.reset();
 
-function actualizarCantidadOptions() {
-  var presentacion = document.getElementById("presentacion").value;
-  console.log("Presentación seleccionada:", presentacion); // Agregar este console.log() para depurar
-  var cantidadSelect = document.getElementById("cantidadSelect");
-  cantidadSelect.innerHTML = ""; // Limpiar las opciones existentes
+    // Limpiar manualmente los campos que puedan necesitarlo
+    document.getElementById('marca').value = '';
+    document.getElementById('producto').value = '';
+    document.getElementById('SelectUnitOfMeasure').selectedIndex = 0;
+    document.getElementById('unitquantity').value = '';
+    document.getElementById('unitLabel').textContent = '';
+    document.getElementById('company-select').selectedIndex = 0;
+    document.getElementById('intermediary-select').selectedIndex = 0;
+    document.getElementById('intermediary-select').disabled = true;
+    document.getElementById('cantidadInput').value = '';
+    document.getElementById('newprecio').value = '';
 
-  switch (presentacion) {
-    case "botella":
-      // Opciones específicas para botella
-      addOption(cantidadSelect, "300 ml", "300ml");
-      addOption(cantidadSelect, "1 litro", "1l");
-      addOption(cantidadSelect, "500 ml", "500ml");
-      addOption(cantidadSelect, "175 ml", "175ml");
-      break;
-    case "empaquetado":
-      // Opciones específicas para empaquetado
-      addOption(cantidadSelect, "10 unidades", "10 unidades");
-      addOption(cantidadSelect, "20 unidades", "20 unidades");
-      addOption(cantidadSelect, "50 unidades", "50 unidades");
-      addOption(cantidadSelect, "100 unidades", "100 unidades");
-      break;
-    case "granel":
-      // Opciones específicas para granel
-      addOption(cantidadSelect, "1 kg", "1kg");
-      addOption(cantidadSelect, "500 g", "500g");
-      addOption(cantidadSelect, "250 g", "250g");
-      addOption(cantidadSelect, "100 g", "100g");
-      break;
-    default:
-      // Opciones por defecto
-      addOption(cantidadSelect, "1", "1");
-      addOption(cantidadSelect, "2", "2");
-      addOption(cantidadSelect, "3", "3");
-      break;
+    // Remover clases de validación
+    var inputs = form.querySelectorAll('input, select');
+    inputs.forEach(function(input) {
+      input.classList.remove('is-valid');
+      input.classList.remove('is-invalid');
+    });
   }
-  cantidadSelect.selectedIndex = 0;
-}
 
-// Función auxiliar para agregar opciones a un elemento select
-function addOption(selectElement, text, value) {
-  var option = document.createElement("option");
-  option.text = text;
-  option.value = value;
-  selectElement.appendChild(option);
-}
+  // Escuchar el evento de cierre del modal
+  var createProductModal = document.getElementById('createmodal');
+  createProductModal.addEventListener('hidden.bs.modal', limpiarCreateModal);
 
 // Bloquear números negativos en el campo de precio
-document.getElementById('precio').addEventListener('input', function () {
+document.getElementById("precio").addEventListener("input", function () {
   if (this.value < 0) {
-    this.value = '';
+    this.value = "";
   }
 });
 
 // Bloquear números negativos en el campo de cantidad
-document.getElementById('cantidadInput').addEventListener('input', function () {
+document.getElementById("cantidadInput").addEventListener("input", function () {
   if (this.value < 0) {
-    this.value = '';
+    this.value = "";
   }
 });

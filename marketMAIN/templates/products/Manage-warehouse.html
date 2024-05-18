@@ -1,16 +1,17 @@
-{% extends 'top navbar/top-navbar.html' %}
-{% block title %} Manage warehouse {% endblock %}
-{% block content %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}">
+{% extends 'top navbar/top-navbar.html' %} {% block title %} Manage warehouse {%
+endblock %} {% block content %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/products.css') }}"
+/>
 
 <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
-<style>
+<style></style>
 
-</style>
-
-<div class="container-fluid mt-5 "> <!-- Agregamos la clase mt-5 para añadir margen superior -->
-  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0 ">
-
+<div class="container-fluid mt-5">
+  <!-- Agregamos la clase mt-5 para añadir margen superior -->
+  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
     <h6 class="mt-1 d-none d-sm-flex">Manage warehouse</h6>
 
     <!--fadeIn: Hace que un elemento se desvanezca y aparezca gradualmente.
@@ -27,30 +28,48 @@
     <div class="col-12 col-lg-3 border border-Tertiary rounded p-0">
       <nav class="nav flex-column">
         <div class="list-group d-flex flex-column">
-          <a class="list-group-button-home list-group-item list-group-item-action"
-            href="{{ url_for('shortcut.shortcut') }}">Home</a>
-          <a class="list-group-buttons list-group-item list-group-item-action"
-            href="{{ url_for('products.warehouse') }}">warehouse</a>
-          <a class="list-group-item list-group-item-action active animate__animated animate__bounceIn"
-            href="{{ url_for('products.managewarehouse') }}">Manage warehouse</a>
-          <a class="list-group-buttons list-group-item list-group-item-action"
-            href="{{ url_for('products.managepresentation') }}">Manage Presentation</a>
-          <a class="list-group-buttons list-group-item list-group-item-action "
-            href="{{ url_for('products.managecompany') }}">Manage Companys</a>
+          <a
+            class="list-group-button-home list-group-item list-group-item-action"
+            href="{{ url_for('shortcut.shortcut') }}"
+            >Home</a
+          >
+          <a
+            class="list-group-buttons list-group-item list-group-item-action"
+            href="{{ url_for('products.warehouse') }}"
+            >warehouse</a
+          >
+          <a
+            class="list-group-item list-group-item-action active animate__animated animate__bounceIn"
+            href="{{ url_for('products.managewarehouse') }}"
+            >Manage warehouse</a
+          >
+          <a
+            class="list-group-buttons list-group-item list-group-item-action"
+            href="{{ url_for('products.managecompany') }}"
+            >Manage Companys</a
+          >
         </div>
       </nav>
     </div>
 
-    <div class="col-12 col-lg-9 mt-3"> <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
+    <div class="col-12 col-lg-9 mt-3">
+      <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
       <form class="d-flex mt-3">
-        <div class="flex-grow-1"></div> <!-- Este div se expandirá para ocupar el espacio disponible -->
+        <div class="flex-grow-1"></div>
+        <!-- Este div se expandirá para ocupar el espacio disponible -->
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createmodal"
-          data-bs-whatever="@mdo">Create
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#createmodal"
+          data-bs-whatever="@mdo"
+        >
+          Create
         </button>
       </form>
 
-      <table class="table table-bordered  table-striped mt-3 mb-3">
+      <table class="table table-bordered table-striped mt-3 mb-3">
         <thead>
           <tr>
             <th>ID</th>
@@ -60,89 +79,219 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider">
           {% for product in products %}
           <tr>
             <td>{{ product[0] }}</td>
             <td>{{ product[1] }}</td>
             <td>{{ product[3] }}</td>
             <td>{{ product[2] }}</td>
-            <td class="text-center d-flex justify-content-center align-items-center">
-              <button type="button" class="square-btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#editproduct"
-                data-product-id="{{ product[0] }}">
-                <span class="material-symbols-outlined">edit</span>
+            <td
+            class="text-center d-flex justify-content-center align-items-center"
+            >
+              <button
+                type="button"
+                class="square-btn btn-warning mx-2"
+                data-bs-toggle="modal"
+                data-bs-target="#editproduct"
+                data-product-id="{{ product[0] }}"
+              >
+                <span class="material-symbols-outlined">edit_square</span>
               </button>
-              <button type="button" class="square-btn btn-danger mx-2 delete-product-btn" data-product-id="{{ product[0] }}"
-                data-bs-toggle="modal" data-bs-target="#deleteproduct" onclick="setProductId('{{ product[0] }}')">
-                <span class="material-symbols-outlined">delete</span>
+              <button
+                type="button"
+                class="square-btn btn-danger mx-2 delete-product-btn"
+                data-product-id="{{ product[0] }}"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteproduct"
+                onclick="setProductId('{{ product[0] }}')"
+              >
+                <span class="material-symbols-outlined">delete_forever</span>
               </button>
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+
     </div>
+
   </div>
 </div>
 
-<div class="modal fade" id="createmodal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="createmodallabel"
-  aria-hidden="true">
+<!--CREAR PRODUCTOS-->
+<div
+  class="modal fade"
+  id="createmodal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="createmodallabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create Nnew Product</h5>
-        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="exampleModalLabel">Create New Product</h5>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
-        <form action="{{ url_for('products.create_product') }}" method="post" class="needs-validation" novalidate>
+        <form
+          id="createproductmodal"
+          action="{{ url_for('products.create_product') }}"
+          method="post"
+          class="needs-validation"
+          novalidate
+        >
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <!--NOMBRE-PRODUCTOS-->
-                <label for="nombre" class="form-label">Name:</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" required>
-                <div class="invalid-feedback">Por favor ingresa un nombre.</div>
+                <!--MARCA-PRODUCTOS-id>marca-->
+                <label for="nombre" class="form-label">Brand:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="marca"
+                  name="marca"
+                  required
+                />
+                <div class="invalid-feedback">Por favor ingresa una marca.</div>
               </div>
-            </div>
-            <div class="col-md-6">
+
               <div class="mb-3">
-                <label for="newprecio" class="form-label">Price:</label>
+                <!--PRODUCTO-PRODUCTOS-id>producto-->
+                <label for="nombre" class="form-label">Name Product:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="producto"
+                  name="producto"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Por favor ingresa un producto.
+                </div>
+              </div>
+
+              <!--SELECCIONA UNA CANTIDAD DE MEDIDA-id>SelectUnitOfMeasure-->
+              <div class="mb-3">
+                <label for="SelectUnitOfMeasure" class="form-label"
+                  >Select Unit of Measure:</label
+                >
+                <select
+                  class="form-select"
+                  id="SelectUnitOfMeasure"
+                  name="SelectUnitOfMeasure"
+                  onchange="updateQuantityIncrement()"
+                >
+                  <option value="" disabled selected>
+                    Select Unit Of Measure
+                  </option>
+                  <option value="pieces">Pieces</option>
+                  <option value="liters">Liters</option>
+                  <option value="milliliters">Milliliters</option>
+                  <option value="kilogram">Kilogram</option>
+                  <option value="grams">Grams</option>
+                  <option value="customize">Customized</option>
+                  <!-- Agrega más opciones según sea necesario -->
+                </select>
+              </div>
+              <!--UNIDAD DE PRESENTACIÓN-id>unitquantity-->
+              <div class="mb-3">
+                <label for="unitquantity" class="form-label"
+                  >Unit Quantity:</label
+                >
                 <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input type="number" class="form-control" id="newprecio" name="newprecio" step="0.01" required>
-                  <div class="invalid-feedback">Please enter a valid price.</div>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="unitquantity"
+                    name="unitquantity"
+                    maxlength="4"
+                    min="0"
+                    required
+                    disabled
+                  />
+                  <span class="input-group-text" id="unitLabel"></span>
+                </div>
+                <div class="invalid-feedback">
+                  Please enter a non-negative quantity.
                 </div>
               </div>
             </div>
+
             <div class="col-md-6">
-              <div class="mb-3">
-                <label for="cantidadInput" class="form-label">Quantity:</label>
-                <input type="number" class="form-control" id="cantidadInput" name="cantidad" required>
-                <div class="invalid-feedback">Por favor ingresa una cantidad válida.</div>
-              </div>
-              
+              <!--COMPANIA-SELECCIONADO-id>company-select-->
               <div class="mb-3">
                 <label for="company-select">Select Company:</label>
-                <select class="form-select form-select-sm" id="company-select" name="company_id" onchange="filterIntermediaries()">
-                  <option value="" disabled selected>Select a company</option>
-                  {% for company in members %}
-                  <option value="{{ company[0] }}">{{ company[2] }}</option>
-                  <!-- Assuming company[1] is the ID and company[2] is the name -->
+                <select
+                  class="form-select"
+                  id="company-select"
+                  name="company_id"
+                >
+                  <option value="" disabled selected>Select Company</option>
+                  {% for company in companies %}
+                  <option value="{{ company[0] }}">{{ company[1] }}</option>
                   {% endfor %}
                 </select>
               </div>
-              
+
+              <!--INTERMEDIARIO-SELECCIONADO-id>intermedary-select-->
               <div class="mb-3">
-                <label for="intermediary-select">Select Intermediary:</label>
-                <select class="form-select form-select-sm" id="intermediary-select" name="intermediary_id" disabled>
-                  <option value="" disabled selected>Select an intermediary</option>
-                  {% for member in members %}
-                  <option value="{{ member[1] }}" data-company-id="{{ member[0] }}">{{ member[3] }} {{ member[4] }} {{ member[5] }}
+                <label for="intermedary-select">Select Intermedary:</label>
+                <select
+                  class="form-select"
+                  id="intermedary-select"
+                  name="intermedary_id"
+                >
+                  <option value="" disabled selected>Select intermedary</option>
+                  {% for relation in relations%}
+                  <option value="{{ relation[2] }}">
+                    {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
+                    relation[5] }}
                   </option>
                   {% endfor %}
                 </select>
               </div>
 
+              <!--CANTIDAD-PRODUCTO-id>cantidad-->
+              <div class="mb-3">
+                <label for="cantidadInput" class="form-label">Quantity:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="cantidadInput"
+                  name="cantidad"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Por favor ingresa una cantidad válida.
+                </div>
+              </div>
+              <!--PRECIOS-PRODUCTOS-id>precio-->
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="newprecio" class="form-label">Unit Price:</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="newprecio"
+                      name="precio"
+                      step="0.001"
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Please enter a valid price.
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -166,8 +315,14 @@
           </div> -->
 
           <div class="text-end">
-            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal"
-              onclick="limpiarModal()">Close</button>
+            <button
+              type="button"
+              class="btn btn-warning me-2"
+              data-bs-dismiss="modal"
+              onclick="limpiarModal()"
+            >
+              Close
+            </button>
             <button type="submit" class="btn btn-success">Save Products</button>
           </div>
         </form>
@@ -176,65 +331,190 @@
   </div>
 </div>
 
-<div class="modal fade" id="editproduct" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editproductlabel"
-  aria-hidden="true">
+<!--EDITAR-PRODUCTOS-->
+<div
+  class="modal fade"
+  id="editproduct"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="editproductlabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editproductlabel">Edit Product</h5>
-        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
-        <form action="" method="post" class="needs-validation" novalidate>
+        <form
+          id="editproductform"
+          action=""
+          method="post"
+          class="needs-validation"
+          novalidate
+        >
           <div class="row">
             <div class="col-md-6">
+              <!--MARCA-PRODUCTOS-id>newmarca-->
               <div class="mb-3">
-                <label for="newnombre" class="form-label">New Name:</label>
-                <input type="text" class="form-control" id="newnombre" name="newnombre" required>
-                <div class="invalid-feedback">Please enter a name.</div>
+                <label for="newmarca" class="form-label">New Brand:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="newmarca"
+                  name="newmarca"
+                  required
+                />
+                <div class="invalid-feedback">Por favor ingresa una marca.</div>
               </div>
-            </div>
-            <div class="col-md-6">
+              <!--NEW-NAME-PRODUCTOS-id>newproducto-->
               <div class="mb-3">
-                <label for="newprecio2" class="form-label">Price:</label>
+                <label for="newproducto" class="form-label"
+                  >New Name Product:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="newproducto"
+                  name="newproducto"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Por favor ingresa un producto.
+                </div>
+              </div>
+              <!--SLECT-NEW-UNIT-id>EditSelectUnitOfMeasure-->
+              <div class="mb-3">
+                <label for="EditSelectUnitOfMeasure" class="form-label"
+                  >Select Unit of Measure:</label
+                >
+                <select
+                  class="form-select"
+                  id="EditSelectUnitOfMeasure"
+                  name="EditSelectUnitOfMeasure"
+                  onchange="updateQuantityIncrement()"
+                >
+                  <option value="" disabled selected>
+                    Select Unit Of Measure
+                  </option>
+                  <option value="pieces">Pieces</option>
+                  <option value="liters">Liters</option>
+                  <option value="milliliters">Milliliters</option>
+                  <option value="kilogram">Kilogram</option>
+                  <option value="grams">Grams</option>
+                  <option value="customize">Customized</option>
+                </select>
+              </div>
+              <!--NEW-UNIT-QUANTITY-id>editunitquantity-->
+              <div class="mb-3">
+                <label for="editunitquantity" class="form-label"
+                  >New Unit Quantity:</label
+                >
                 <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input type="number" class="form-control" id="newprecio2" name="newprecio2" step="0.01" required>
-                  <div class="invalid-feedback">Please enter a valid price.</div>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="editunitquantity"
+                    name="editunitquantity"
+                    maxlength="4"
+                    min="0"
+                    required
+                    disabled
+                  />
+                  <span class="input-group-text" id="editunitLabel"></span>
+                </div>
+                <div class="invalid-feedback">
+                  Please enter a non-negative quantity.
                 </div>
               </div>
             </div>
+
             <div class="col-md-6">
+              <!--EDITAR-COMPANIA-SELECCIONADO-id>company-new-select-->
               <div class="mb-3">
-                <label for="newcantidadInput" class="form-label">New Quantity:</label>
-                <input type="number" class="form-control" id="newcantidadInput" name="newcantidadInput" required>
-                <div class="invalid-feedback">Please enter a valid quantity.</div>
-              </div>
-              <div class="mb-3">
-                <label for="newcompania" class="form-label">Company:</label>
-                <select class="form-select form-select-sm" id="company-select2" name="company_id" onchange="filterIntermediaries()">
-                  <option value="" disabled selected>Select a company</option>
-                  {% for company in members %}
-                  <option value="{{ company[0] }}">{{ company[2] }}</option>
-                  <!-- Assuming company[1] is the ID and company[2] is the name -->
+                <label for="company-select">Select New Company:</label>
+                <select
+                  class="form-select"
+                  id="company-new-select"
+                  name="company_id"
+                >
+                  <option value="" disabled selected>Select Company</option>
+                  {% for company in companies %}
+                  <option value="{{ company[0] }}">{{ company[1] }}</option>
                   {% endfor %}
                 </select>
-                  
+              </div>
+
+              <!--EDITAR-INTERMEDIARIO-SELECCIONADO-id>intermedary-new-select-->
+              <div class="mb-3">
+                <label for="intermedary-new-select">Select Intermedary:</label>
+                <select
+                  class="form-select"
+                  id="intermedary-new-select"
+                  name="intermedary_id"
+                >
+                  <option value="" disabled selected>Select intermedary</option>
+                  {% for relation in relations%}
+                  <option value="{{ relation[2] }}">
+                    {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
+                    relation[5] }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <!--NUEVA-CANTIDAD-id>newcantidadInput-->
+              <div class="mb-3">
+                <label for="newcantidadInput" class="form-label"
+                  >New Quantity:</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="newcantidadInput"
+                  name="newcantidad"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Please enter a valid quantity.
                 </div>
-                <div class="mb-3">
-                  <label for="company-select">Select intermediary:</label>
-                  <select class="form-select form-select-sm" id="intermediary-select2" name="intermediary_id">
-                    {% for member in members %}
-                    <option value="{{ member[0] }}">{{ member[1] ~ member[2] ~ member[3] }}</option>
-                    {% endfor %}
-                  </select>
-                </div>   
+              </div>
+              <!--NUEVO-PRECIO-id>newprecio2-->
+              <div class="mb-3">
+                <label for="newprecio2" class="form-label"
+                  >New Unit Price:</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="newprecio2"
+                    name="newprecio"
+                    step="0.001"
+                    required
+                  />
+                  <div class="invalid-feedback">
+                    Please enter a valid price.
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
           <div class="text-end">
-            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal"
-              onclick="limpiarEditModal()">Close</button>
+            <button
+              type="button"
+              class="btn btn-warning me-2"
+              data-bs-dismiss="modal"
+              onclick="limpiarEditModal()"
+            >
+              Close
+            </button>
             <button type="submit" class="btn btn-success">Save Changes</button>
           </div>
         </form>
@@ -243,12 +523,24 @@
   </div>
 </div>
 
-<div class="modal fade " id="deleteproduct" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteproductlabel">
+<!--ELIMINAR PRODUCTO-->
+<div
+  class="modal fade"
+  id="deleteproduct"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="deleteproductlabel"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Delete Product</h5>
-        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-warning" role="alert">
@@ -256,62 +548,372 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
-        <form id="delete-product-form" action="{{ url_for('products.delete_product') }}" method="post">
-          <input id="product-id-input" type="hidden" name="product_id" value="">
-          <button id="delete-product-btn" type="submit" class="btn btn-danger">Delete Product</button>
+        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
+          Close
+        </button>
+        <form
+          id="delete-product-form"
+          action="{{ url_for('products.delete_product') }}"
+          method="post"
+        >
+          <input
+            id="product-id-input"
+            type="hidden"
+            name="product_id"
+            value=""
+          />
+          <button id="delete-product-btn" type="submit" class="btn btn-danger">
+            Delete Product
+          </button>
         </form>
       </div>
     </div>
   </div>
 </div>
 
-
+<!-- Elemento oculto para almacenar los datos de 'members' -->
+<div id="members-data" data-members="{{members}}" style="display: none"></div>
 
 <script src="{{ url_for('static', filename='js/modalCreate.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/modalEdit.js') }}"></script>
 
-<script src="{{ url_for('static', filename='js/qrScan.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/qrScan.js') }}"></script>-->
 
+<!-- create modal script list-->
+<script>
+  // Función para filtrar intermediarios basados en la compañía seleccionada
+  function filterIntermediaries() {
+    // Obtener la opción seleccionada de la compañía
+    var selectedOption =
+      document.getElementById("company-select").options[
+        document.getElementById("company-select").selectedIndex
+      ];
+
+    // Obtener el texto de la opción seleccionada (nombre de la compañía)
+    var selectedCompany = selectedOption.textContent.toLowerCase().trim();
+    
+
+    // Obtener todas las opciones de intermediarios
+    var intermediaries = document.querySelectorAll(
+      "#intermedary-select option"
+    );
+
+    // Recorrer todas las opciones de intermediarios
+    intermediaries.forEach(function (option) {
+      // Obtener la compañía asociada con el intermediario (formato: "Compañía Nombre Apellido Apellido")
+      var companyAndName = option.textContent.trim().toLowerCase();
+
+      // Obtener solo el nombre de la compañía del intermediario
+      var intermediaryCompany = companyAndName.split(" ")[0];
+
+      // Comparar la compañía seleccionada con la compañía del intermediario
+      if (intermediaryCompany !== selectedCompany) {
+        // Ocultar el intermediario si no coincide con la compañía seleccionada
+        option.style.display = "none";
+      } else {
+        // Mostrar el intermediario si coincide con la compañía seleccionada
+        option.style.display = "block";
+      }
+    });
+  }
+
+  // Agregar un event listener para el cambio en la selección de compañía
+  document
+    .getElementById("company-select")
+    .addEventListener("change", filterIntermediaries);
+
+  // Filtrar las opciones de intermediarios al cargar la página
+  filterIntermediaries();
+</script>
+
+<!-- edit modal script list-->
+<script>
+  // Función para filtrar intermediarios basados en la compañía seleccionada
+  function filterIntermediaries() {
+    // Obtener la opción seleccionada de la compañía
+    var selectedOption =
+      document.getElementById("company-new-select").options[
+        document.getElementById("company-new-select").selectedIndex
+      ];
+
+    // Obtener el texto de la opción seleccionada (nombre de la compañía)
+    var selectedCompany = selectedOption.textContent.toLowerCase().trim();
+
+    // Obtener todas las opciones de intermediarios
+    var intermediaries = document.querySelectorAll(
+      "#intermedary-new-select option"
+    );
+
+    // Recorrer todas las opciones de intermediarios
+    intermediaries.forEach(function (option) {
+      // Obtener la compañía asociada con el intermediario (formato: "Compañía Nombre Apellido Apellido")
+      var companyAndName = option.textContent.trim().toLowerCase();
+
+      // Obtener solo el nombre de la compañía del intermediario
+      var intermediaryCompany = companyAndName.split(" ")[0];
+
+      // Comparar la compañía seleccionada con la compañía del intermediario
+      if (intermediaryCompany !== selectedCompany) {
+        // Ocultar el intermediario si no coincide con la compañía seleccionada
+        option.style.display = "none";
+      } else {
+        // Mostrar el intermediario si coincide con la compañía seleccionada
+        option.style.display = "block";
+      }
+    });
+  }
+
+  // Agregar un event listener para el cambio en la selección de compañía
+  document
+    .getElementById("company-new-select")
+    .addEventListener("change", filterIntermediaries);
+
+  // Filtrar las opciones de intermediarios al cargar la página
+  filterIntermediaries();
+</script>
 
 <script>
-  function setProductId(productId) {
-      document.getElementById('product-id-input').value = productId;
+  function updateQuantityIncrement() {
+    var unitOfMeasure = document.getElementById("SelectUnitOfMeasure").value;
+    var quantityInput = document.getElementById("unitquantity"); // Conseguir el id del apartado
+    var unitLabel = document.getElementById("unitLabel"); //
+
+    // Verificar si la unidad de medida ha cambiado manualmente
+    var selectElement = document.getElementById("SelectUnitOfMeasure");
+    selectElement.addEventListener("change", function () {
+      quantityInput.value = ""; // Vaciar el campo de entrada al cambiar la unidad de medida
+      updateQuantityIncrement(); // Llamar a la función para actualizar el incremento de cantidad
+    });
+
+    if (!unitOfMeasure) {
+      quantityInput.disabled = true;
+      quantityInput.value = "";
+      unitLabel.textContent = "";
+      return;
     }
-  function filterIntermediaries() {
-    var companySelect = document.getElementById('company-select');
-    var intermediarySelect = document.getElementById('intermediary-select');
-    var selectedCompanyId = parseInt(companySelect.value); // Ensure selectedCompanyId is a number
 
-    console.log(companySelect);
-    console.log(intermediarySelect);
-    console.log(selectedCompanyId);
+    // Habilita el input ya que se ha seleccionado una unidad de medida
+    quantityInput.disabled = false;
 
-    // Enable the intermediary select
-    intermediarySelect.disabled = false;
+    // Actualiza el paso del input según la unidad de medida seleccionada
+    if (unitOfMeasure === "liters") {
+      quantityInput.step = "0.25";
+    } else if (unitOfMeasure === "milliliters") {
+      quantityInput.step = "250";
+    } else if (unitOfMeasure === "grams") {
+      quantityInput.step = "100";
+    } else if (unitOfMeasure === "kilogram") {
+      quantityInput.step = "0.10";
+    } else if (unitOfMeasure === "pieces") {
+      quantityInput.step = "1";
+    }
 
-    // Clear current options in intermediary select except the default option
-    intermediarySelect.innerHTML = '<option value="" disabled selected>Select an intermediary</option>';
-    console.log(intermediarySelect.innerHTML);
+    // Actualiza el texto del span con la unidad de medida seleccionada
+    switch (unitOfMeasure) {
+      case "pieces":
+        unitLabel.textContent = "Pcs";
+        break;
+      case "liters":
+        unitLabel.textContent = "L";
+        break;
+      case "milliliters":
+        unitLabel.textContent = "ml";
+        break;
+      case "kilogram":
+        unitLabel.textContent = "kg";
+        break;
+      case "grams":
+        unitLabel.textContent = "g";
+        break;
+      default:
+        unitLabel.textContent = "";
+        break;
+    }
+  }
 
-    // Initialize an empty array to hold the filtered results
-    var filteredIntermediaries = [];
-    
-    // Iterate over the members and filter based on selectedCompanyId
-    members.forEach(function (member) {
-      if (member[0] === selectedCompanyId) {
-        filteredIntermediaries.push(member);
-        // Create a new option element for the intermediary select
-        var option = document.createElement('option');
-        option.value = member[1]; // You can adjust this if needed
-        option.textContent = member.slice(2).join(' '); // Join the rest of the member details as the option text
-        intermediarySelect.appendChild(option);
+  function convertUnitIfNecessary() {
+    var unitOfMeasure = document.getElementById("SelectUnitOfMeasure").value;
+    var quantityInput = document.getElementById("unitquantity");
+
+    if (unitOfMeasure === "milliliters" && quantityInput.value >= 1000) {
+      // Convert to liters
+      quantityInput.value = (quantityInput.value / 1000).toFixed(2); // Cambiado a toFixed(3)
+      document.getElementById("SelectUnitOfMeasure").value = "liters";
+      updateQuantityIncrement();
+    } else if (unitOfMeasure === "grams" && quantityInput.value >= 1000) {
+      // Convert to kilograms
+      quantityInput.value = (quantityInput.value / 1000).toFixed(2); // Cambiado a toFixed(3)
+      document.getElementById("SelectUnitOfMeasure").value = "kilogram";
+      updateQuantityIncrement();
+    }
+
+    // Ajusta el valor para incrementar en pasos de 0.25 si es necesario
+    if (unitOfMeasure === "liters") {
+      quantityInput.value = Math.ceil(quantityInput.value / 0.25) * 0.25;
+    }
+  }
+
+  // Limitar la entrada del usuario a un máximo de cuatro dígitos
+  document
+    .getElementById("unitquantity")
+    .addEventListener("input", function () {
+      var inputValue = this.value;
+      var maxLength = 6;
+
+      if (inputValue.length > maxLength) {
+        this.value = inputValue.slice(0, maxLength); // Truncar el valor según el límite establecido
       }
     });
 
-    console.log(filteredIntermediaries);
+  // Actualiza el incremento de la cantidad cuando se carga la página
+  window.onload = function () {
+    updateQuantityIncrement();
+  };
+
+  // Escucha cambios en el valor del input para convertir unidades si es necesario
+  document
+    .getElementById("unitquantity")
+    .addEventListener("input", convertUnitIfNecessary);
+  document
+    .getElementById("SelectUnitOfMeasure")
+    .addEventListener("change", updateQuantityIncrement);
+</script>
+
+<script>
+  function updateQuantityIncrement() {
+    var unitOfMeasure = document.getElementById(
+      "EditSelectUnitOfMeasure"
+    ).value;
+    var quantityInput = document.getElementById("editunitquantity"); // Conseguir el id del apartado
+    var unitLabel = document.getElementById("editunitLabel"); //
+
+    // Verificar si la unidad de medida ha cambiado manualmente
+    var selectElement = document.getElementById("EditSelectUnitOfMeasure");
+    selectElement.addEventListener("change", function () {
+      quantityInput.value = ""; // Vaciar el campo de entrada al cambiar la unidad de medida
+      updateQuantityIncrement(); // Llamar a la función para actualizar el incremento de cantidad
+    });
+
+    if (!unitOfMeasure) {
+      quantityInput.disabled = true;
+      quantityInput.value = "";
+      unitLabel.textContent = "";
+      return;
+    }
+
+    // Habilita el input ya que se ha seleccionado una unidad de medida
+    quantityInput.disabled = false;
+
+    // Actualiza el paso del input según la unidad de medida seleccionada
+    if (unitOfMeasure === "liters") {
+      quantityInput.step = "0.25";
+    } else if (unitOfMeasure === "milliliters") {
+      quantityInput.step = "250";
+    } else if (unitOfMeasure === "grams") {
+      quantityInput.step = "100";
+    } else if (unitOfMeasure === "kilogram") {
+      quantityInput.step = "0.10";
+    } else if (unitOfMeasure === "pieces") {
+      quantityInput.step = "1";
+    }
+
+    // Actualiza el texto del span con la unidad de medida seleccionada
+    switch (unitOfMeasure) {
+      case "pieces":
+        unitLabel.textContent = "Pcs";
+        break;
+      case "liters":
+        unitLabel.textContent = "L";
+        break;
+      case "milliliters":
+        unitLabel.textContent = "ml";
+        break;
+      case "kilogram":
+        unitLabel.textContent = "kg";
+        break;
+      case "grams":
+        unitLabel.textContent = "g";
+        break;
+      default:
+        unitLabel.textContent = "";
+        break;
+    }
   }
 
+  function convertUnitIfNecessary() {
+    var unitOfMeasure = document.getElementById(
+      "EditSelectUnitOfMeasure"
+    ).value;
+    var quantityInput = document.getElementById("editunitquantity");
+
+    if (unitOfMeasure === "milliliters" && quantityInput.value >= 1000) {
+      // Convert to liters
+      quantityInput.value = (quantityInput.value / 1000).toFixed(2); // Cambiado a toFixed(3)
+      document.getElementById("EditSelectUnitOfMeasure").value = "liters";
+      updateQuantityIncrement();
+    } else if (unitOfMeasure === "grams" && quantityInput.value >= 1000) {
+      // Convert to kilograms
+      quantityInput.value = (quantityInput.value / 1000).toFixed(2); // Cambiado a toFixed(3)
+      document.getElementById("EditSelectUnitOfMeasure").value = "kilogram";
+      updateQuantityIncrement();
+    }
+
+    // Ajusta el valor para incrementar en pasos de 0.25 si es necesario
+    if (unitOfMeasure === "liters") {
+      quantityInput.value = Math.ceil(quantityInput.value / 0.25) * 0.25;
+    }
+  }
+
+  // Limitar la entrada del usuario a un máximo de cuatro dígitos
+  document
+    .getElementById("editunitquantity")
+    .addEventListener("input", function () {
+      var inputValue = this.value;
+      var maxLength = 6;
+
+      if (inputValue.length > maxLength) {
+        this.value = inputValue.slice(0, maxLength); // Truncar el valor según el límite establecido
+      }
+    });
+
+  // Actualiza el incremento de la cantidad cuando se carga la página
+  window.onload = function () {
+    updateQuantityIncrement();
+  };
+
+  // Escucha cambios en el valor del input para convertir unidades si es necesario
+  document
+    .getElementById("editunitquantity")
+    .addEventListener("input", convertUnitIfNecessary);
+  document
+    .getElementById("EditSelectUnitOfMeasure")
+    .addEventListener("change", updateQuantityIncrement);
+</script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const table = document.querySelector(".table");
+    const tbody = table.querySelector("tbody");
+    const rows = tbody.querySelectorAll("tr");
+
+    const maxHeight = 400; // Altura máxima en píxeles
+    const scrollable = rows.length > 10; // Por ejemplo, si hay más de 10 filas
+
+    if (scrollable) {
+      // Calcular el ancho de la scrollbar
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      const tableWidth = table.offsetWidth;
+      const newWidth = tableWidth - scrollBarWidth;
+      table.style.width = newWidth + "px";
+
+      // Calcular la altura de la tabla
+      const rowHeight = rows[0].offsetHeight; // Altura estimada de una fila
+      const newHeight = maxHeight + "px";
+      tbody.style.height = newHeight;
+      tbody.style.overflowY = "auto";
+    }
+  });
 </script>
 {% endblock %}

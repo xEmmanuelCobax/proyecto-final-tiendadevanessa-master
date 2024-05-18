@@ -16,6 +16,7 @@ body.dark-mode .table-group-divider td {
   /* Cambiar color de fondo */
 }
 
+
 /* Estilos para el modo oscuro */
 body.dark-mode .modal-content {
   background-color: #333 !important;
@@ -68,15 +69,6 @@ background-color: #333;
 transition: background-color 0.3s; /* Agrega una transición suave */
 }
 
-body.dark-mode .square-btn:hover,
-body.dark-mode .square-btn:focus {
-background-color: #FFC107; /* Cambia el color de fondo al pasar el cursor sobre el botón o al tener foco */
-}
-
-body.dark-mode .square-btn:active {
-background-color: #FFC107; /* Cambia el color de fondo cuando se presiona el botón */
-}
-
 .square-btn {
   width: 4vw; /* Utilizamos 10% del ancho de la ventana */
   height: 4vw; /* Utilizamos 10% del ancho de la ventana */
@@ -89,12 +81,20 @@ background-color: #FFC107; /* Cambia el color de fondo cuando se presiona el bot
   transition: background-color 0.3s; /* Agrega una transición suave */
 }
 
-.square-btn:hover,
-.square-btn:focus {
+.square-btn:hover {
   background-color: #FFC107; /* Cambia el color de fondo al pasar el cursor sobre el botón o al tener foco */
 }
 
-.square-btn:not(:focus):active {
-  background-color: #FFC107; /* Cambia el color de fondo cuando se presiona el botón */
+.square-btn:focus {
+  outline: none; /* Eliminar el contorno del foco si es necesario */
+}
+
+/* Estilos para modo oscuro */
+.dark-mode .square-btn:hover {
+  background-color: #FFC107; /* Cambia el color de fondo al pasar el cursor sobre el botón o al tener foco */
+}
+
+.dark-mode .square-btn:focus {
+  outline: none; /* Eliminar el contorno del foco si es necesario */
 }
 

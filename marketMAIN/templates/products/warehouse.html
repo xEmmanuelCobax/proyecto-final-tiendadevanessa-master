@@ -1,67 +1,92 @@
-{% extends 'top navbar/top-navbar.html' %}
-{% block title %} Warehouse {% endblock %}
-{% block content %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}">
+{% extends 'top navbar/top-navbar.html' %} {% block title %} Warehouse {%
+endblock %} {% block content %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/products.css') }}"
+/>
 
-<div class="container-fluid mt-5 "> <!-- Agregamos la clase mt-5 para añadir margen superior -->
-  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0 ">
-
+<div class="container-fluid mt-5">
+  <!-- Agregamos la clase mt-5 para añadir margen superior -->
+  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
     <h6 class="mt-1 d-none d-sm-flex">Warehouse</h6>
 
     <div class="col-12 col-lg-3 border border-Tertiary rounded p-0">
       <nav class="nav flex-column">
         <div class="list-group d-flex flex-column">
-          <a class="list-group-button-home list-group-item list-group-item-action"
-            href="{{ url_for('shortcut.shortcut') }}">Home</a>
-          <a class="list-group-item list-group-item-action active animate__animated animate__bounceIn"
-            href="{{ url_for('products.warehouse') }}">Warehouse</a>
-          <a class="list-group-buttons list-group-item list-group-item-action"
-            href="{{ url_for('products.managewarehouse') }}">Manage warehouse</a>
-          <a class="list-group-buttons list-group-item list-group-item-action "
-            href="{{ url_for('products.managepresentation') }}">Manage Presentation</a>
-            <a class="list-group-buttons list-group-item list-group-item-action "
-            href="{{ url_for('products.managecompany') }}">Manage Companys</a>
+          <a
+            class="list-group-button-home list-group-item list-group-item-action"
+            href="{{ url_for('shortcut.shortcut') }}"
+            >Home</a
+          >
+          <a
+            class="list-group-item list-group-item-action active animate__animated animate__bounceIn"
+            href="{{ url_for('products.warehouse') }}"
+            >Warehouse</a
+          >
+          <a
+            class="list-group-buttons list-group-item list-group-item-action"
+            href="{{ url_for('products.managewarehouse') }}"
+            >Manage warehouse</a
+          >
+          <a
+            class="list-group-buttons list-group-item list-group-item-action"
+            href="{{ url_for('products.managecompany') }}"
+            >Manage Companys</a
+          >
         </div>
       </nav>
     </div>
 
-    <div class="col-12 col-lg-9 mt-3"> <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
-      <form class="d-flex mt-3" method="GET" action="{{ url_for('products.search_product') }}">
+    <div class="col-12 col-lg-9 mt-3">
+      <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
+      <form
+        class="d-flex mt-3"
+        method="POST"
+        action="{{ url_for('products.search_product') }}"
+      >
         <div class="col-sm-4">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_term">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            name="search_term"
+          />
         </div>
-        <div class="flex-grow-1"></div> <!-- Este div se expandirá para ocupar el espacio disponible -->
+        <div class="flex-grow-1"></div>
+        <!-- Este div se expandirá para ocupar el espacio disponible -->
         <button class="btn btn-primary" type="submit">Search</button>
       </form>
 
-      <table class="table table-bordered table-striped mt-3 mb-3">
-        <!-- Mantenemos las clases existentes y agregamos espaciado -->
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Price</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <!-- Enviar mediante un array llamada task los valores (el nombre lo vamos a cambiar a futuro) -->
-          {% for product in products %}
-          <tr>
-            <td>{{ product[0] }}</td>
-            <td>{{ product[1] }}</td>
-            <td>{{ product[3] }}</td>
-            <td>{{ product[2] }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+ 
+        <table class="table table-bordered table-striped mt-3 mb-3">
+          <!-- Mantenemos las clases existentes y agregamos espaciado -->
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Price</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <!-- Enviar mediante un array llamada task los valores (el nombre lo vamos a cambiar a futuro) -->
+            {% for product in products %}
+            <tr>
+              <td>{{ product[0] }}</td>
+              <td>{{ product[1] }}</td>
+              <td>{{ product[3] }}</td>
+              <td>{{ product[2] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      
     </div>
   </div>
 </div>
 
-<script>
-
-</script>
+<script></script>
 
 {% endblock %}
