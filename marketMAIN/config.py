@@ -1,16 +1,20 @@
 import pyodbc
 HEX_SEC_KEY = "d5fb8c4fa8bd46638dadc4e751e0d68d"
 
+
 # Metodo para poder realizar CUD> CREATE, UPDATE Y DELETE
-def CUD(query):
+def CUD(query, params=None):
     print("<-------------------- Conectando... --------------------")
     try:
-        # Conectar a la BD DRIVER={SQL Server};SERVER=NOMBRE DEL SERVIDOR;DATABASE=NOMBRE DE LA BASE DE DATOS;Trusted_Connection=yes; EL TRUSTED ES PARA PODER CONECTAR SIN TENER CONTRASENAS
+        # Conectar a la BD
         connection = pyodbc.connect(
             "DRIVER={SQL Server};SERVER=PCEMMANUEL;DATABASE=Proyecto;Trusted_Connection=yes;"
         )
         cursor = connection.cursor()
-        cursor.execute(query)
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
         connection.commit()  # Confirmar los cambios en la base de datos
         print("<-------------------- Conexión exitosa --------------------")
     except Exception as ex:

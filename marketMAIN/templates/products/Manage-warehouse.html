@@ -95,15 +95,16 @@ endblock %} {% block content %}
                 data-bs-toggle="modal"
                 data-bs-target="#editproduct"
                 data-product-id="{{ product[0] }}"
+                onclick="setEditProductId('{{ product[0] }}')"
               >
                 <span class="material-symbols-outlined">edit_square</span>
               </button>
               <button
                 type="button"
                 class="square-btn btn-danger mx-2 delete-product-btn"
-                data-product-id="{{ product[0] }}"
                 data-bs-toggle="modal"
                 data-bs-target="#deleteproduct"
+                data-product-id="{{ product[0] }}"
                 onclick="setProductId('{{ product[0] }}')"
               >
                 <span class="material-symbols-outlined">delete_forever</span>
@@ -354,7 +355,7 @@ endblock %} {% block content %}
       <div class="modal-body">
         <form
           id="editproductform"
-          action=""
+          action="{{ url_for('products.update_product') }}"
           method="post"
           class="needs-validation"
           novalidate
@@ -442,7 +443,7 @@ endblock %} {% block content %}
                 <select
                   class="form-select"
                   id="company-new-select"
-                  name="company_id"
+                  name="company-new-select"
                 >
                   <option value="" disabled selected>Select Company</option>
                   {% for company in companies %}
@@ -457,7 +458,7 @@ endblock %} {% block content %}
                 <select
                   class="form-select"
                   id="intermedary-new-select"
-                  name="intermedary_id"
+                  name="intermedary-new-select"
                 >
                   <option value="" disabled selected>Select intermedary</option>
                   {% for relation in relations%}
@@ -468,7 +469,7 @@ endblock %} {% block content %}
                   {% endfor %}
                 </select>
               </div>
-              <!--NUEVA-CANTIDAD-id>newcantidadInput-->
+              <!--NUEVA-CANTIDAD-id>newcantidad-->
               <div class="mb-3">
                 <label for="newcantidadInput" class="form-label"
                   >New Quantity:</label
@@ -515,6 +516,8 @@ endblock %} {% block content %}
             >
               Close
             </button>
+            <!---->
+            <input id="editproduct_id" type="hidden" name="editproduct_id" value="" />
             <button type="submit" class="btn btn-success">Save Changes</button>
           </div>
         </form>
@@ -915,5 +918,15 @@ endblock %} {% block content %}
       tbody.style.overflowY = "auto";
     }
   });
+</script>
+<script>
+  function setProductId(productId) {
+      document.getElementById('product-id-input').value = productId;
+      console.log("productId BORRAR>" + productId);
+    }
+  function setEditProductId(productId) {
+      document.getElementById('editproduct_id').value = productId;
+      console.log("productId EDITAR>" + productId);
+    }
 </script>
 {% endblock %}

@@ -80,7 +80,7 @@ endblock %} {% block content %}
         <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="" method="post" class="needs-validation" novalidate>
+        <form action="{{ url_for('products.create_company') }}" method="post" class="needs-validation" novalidate>
 
           <div class="mb-3">
             <label for="company-select">Select Company:</label>

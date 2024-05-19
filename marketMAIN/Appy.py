@@ -131,9 +131,8 @@ def signup():
         else:
             # Registrar en base de datos
             config.CUD(
-                "INSERT INTO dbo.Usuarios (NOMBRE, AP_PAT , AP_MAT , CORREO , CONTRASENA, ESTATUS) VALUES ('{}', '{}', '{}', '{}', '{}' , 1)".format(
-                    name, apellido_paterno, apellido_materno, email, password
-                )
+                "INSERT INTO dbo.Usuarios (NOMBRE, AP_PAT, AP_MAT, CORREO, CONTRASENA, ESTATUS) VALUES (?, ?, ?, ?, ?, 1)",
+                (name, apellido_paterno, apellido_materno, email, password),
             )
             print("#################### Renderizar auth/signin ####################>")
             return redirect(url_for("auth.signin", registration_successful=True))
@@ -227,17 +226,11 @@ def create_product():
                 print("#################### FIN ####################>")
                 return redirect(url_for("products.warehouse"))
             elif existe:
-                # Insertar el nuevo producto en la base de datos
-                
+                # Insertar el nuevo producto en la base de datos   
                 config.CUD(
                     "INSERT INTO dbo.Almacen (NOMBRE, PRECIO_UNITARIO, EXISTENCIAS, PRECIO_EXISTENCIA, ID_INTERMEDIARIO, ESTATUS) "
-                    "VALUES ('{}', {}, {}, {}, {}, 1)".format(
-                        nombre,
-                        precio,
-                        cantidad,
-                        (float(precio) * int(cantidad)),
-                        intermediario,
-                    )
+                    "VALUES (?, ?, ?, ?, ?, 1)",
+                    (nombre, precio, cantidad, float(precio) * int(cantidad), intermediario)
                 )
                 print(
                     "====================!Producto creado exitosamente.!====================>"
@@ -258,7 +251,111 @@ def create_product():
 @products.route("/update_product", methods=["POST"])
 def update_product():
     if "email" in session:
-            return redirect(url_for("products.warehouse"))
+        print("<#################### Actualizar PRODUCTOS ####################")
+        if request.method == "POST":
+            # Obtener datos del formulario
+            product_id = request.form.get("editproduct_id")
+            marca = request.form.get("newmarca")
+            producto = request.form.get("newproducto")
+            # Unidad de medida
+            unit_quantity = request.form.get("editunitquantity")  # Cantidad
+            seslect_unit_quantity = request.form.get(
+                "EditSelectUnitOfMeasure"
+            )  # Unidad de medida
+            # Piezas
+            if seslect_unit_quantity == "pieces":
+                quantity = unit_quantity + "Pzs"
+            # Litros
+            elif seslect_unit_quantity == "liters":
+                quantity = unit_quantity + "l"
+            # Milimetros
+            elif seslect_unit_quantity == "milliliters":
+                quantity = unit_quantity + "ml"
+            # Kilogramos
+            elif seslect_unit_quantity == "kilogram":
+                quantity = unit_quantity + "kg"
+            # Gramos
+            elif seslect_unit_quantity == "grams":
+                quantity = unit_quantity + "gr"
+            # custom?
+            else:
+                quantity = unit_quantity + "No se"
+            # Datos formados
+            nombre = f"{marca}_{producto}_{quantity}"
+            cantidad = request.form.get("newcantidad")
+            precio = request.form.get("newprecio")
+            compania = request.form.get("company-new-select")
+            intermediario = request.form.get("intermedary-new-select")
+            # Pruebas
+            print("<==================== DATOS OBTENIDOS ====================")
+            print(f"product_id - {product_id}")
+            print(f"nombre - {nombre}")
+            print(f"cantidad - {cantidad}")
+            print(f"precio - {precio}")
+            print(f"compania - {compania}")
+            print(f"intermediario - {intermediario}")
+            print("========================================>")
+            # Verificar las condiciones de existencia y relación de la compañía e intermediario
+            print(
+                "<==================== VERIFICAR RELACION COMPANIA - INTERMEDIARIO ===================="
+            )
+            existe = config.Read(
+                "SELECT ID_INTERMEDIARIO, Intermediario.NOMBRE, Intermediario.AP_PAT, Intermediario.AP_MAT, Proveedor.ID_COMPANIA, Proveedor.NOMBRE "
+                "FROM dbo.Proveedor "
+                "INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA "
+                "WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1 AND dbo.Intermediario.ID_INTERMEDIARIO = {} AND dbo.Proveedor.ID_COMPANIA = {}".format(
+                    intermediario, compania
+                )
+            )
+            print("========================================>")
+            # Verificar si el producto ya existe
+            print(
+                "<==================== VERIFICAR SI EL PRODUCTO EXISTE ===================="
+            )
+            productoexiste = config.Read(
+                "SELECT dbo.Almacen.NOMBRE FROM dbo.Almacen WHERE dbo.Almacen.NOMBRE = '{}'".format(
+                    nombre
+                )
+            )
+            print("========================================>")
+            # Condiciones
+            print("<==================== ACCIONES ====================")
+            if productoexiste:
+                # Si el producto ya existe con un nombre diferente, redireccionar con un mensaje de error
+                print(
+                    "====================! Producto existente en la BD.====================>"
+                )
+                flash(
+                    "El producto ya existe en la base de datos con un nombre diferente."
+                )
+                return redirect(url_for("products.warehouse"))
+            elif not existe:
+                # Si la compañía o el intermediario no cumplen las condiciones, redireccionar con un mensaje de error
+                print(
+                    "====================! La compañía o el intermediario no cumplen las condiciones necesarias.====================>"
+                )
+                flash(
+                    "La compañía o el intermediario no cumplen las condiciones necesarias."
+                )
+                return redirect(url_for("products.warehouse"))
+            else:
+                # Actualizar el producto en la base de datos
+                config.CUD(
+                    "UPDATE dbo.Almacen SET NOMBRE = ?, PRECIO_UNITARIO = ?, EXISTENCIAS = ?, PRECIO_EXISTENCIA = ?, ID_INTERMEDIARIO = ?, ESTATUS = 1 WHERE ID_PRODUCTO = ?",
+                    (
+                        nombre,
+                        precio,
+                        cantidad,
+                        float(precio) * int(cantidad),
+                        intermediario,
+                        product_id,
+                    ),
+                )
+                print(
+                    "====================! Producto actualizado exitosamente. !====================>"
+                )
+                flash("Producto actualizado exitosamente.")
+                return redirect(url_for("products.warehouse"))
     else:
         return redirect(url_for("auth.signin"))
 
@@ -288,7 +385,8 @@ def delete_product():
             print(f"Product_ID - {product_id}")
             print("========================================>")
             config.CUD(
-                "UPDATE dbo.Almacen SET ESTATUS = 0 WHERE ID_PRODUCTO = {}".format(product_id)
+                "UPDATE dbo.Almacen SET ESTATUS = 0 WHERE ID_PRODUCTO = ?",
+                (product_id,)
             )
             print("#################### FIN ####################>")
             return redirect(url_for("products.managewarehouse"))
@@ -382,16 +480,70 @@ def delete_company():
             print("========================================>")
             config.CUD(
                 """
-                UPDATE dbo.Intermediario SET ESTATUS = 0 WHERE ID_COMPANIA = {};
-                UPDATE dbo.Proveedor SET ESTATUS = 0 WHERE ID_COMPANIA = {};
-                """.format(
-                    company_id, company_id
-                )
+                UPDATE dbo.Intermediario SET ESTATUS = 0 WHERE ID_COMPANIA = ?;
+                UPDATE dbo.Proveedor SET ESTATUS = 0 WHERE ID_COMPANIA = ?;
+                """,
+                (company_id, company_id)
             )
             print("#################### FIN ####################>")
             return redirect(url_for("products.managecompany"))
     # Si el usuario no tiene una sesión activa, redirigirlo a la página de inicio de sesión
     return redirect(url_for("auth.signin"))
+
+
+# crear conpañia (En Planteamiento)
+@products.route("/create_company", methods=["POST"])
+def create_company():
+    if "email" in session:
+        print("<#################### CREAR EMPRESA ####################")
+        if request.method == "POST":
+            # Errores
+            lastname_error = False
+            # Obtener datos del formulario
+            nombre = request.form.get("intermediaryName")
+            apellidos = request.form.get("intermediaryLastName")
+            telefono = request.form.get("intermediaryPhone")
+            company_id = request.form.get("company_id")
+            # Obtener desde el lastname los dos apellidos
+            aux = apellidos.split()
+            # Si el len del auxiliar entonces tiene dos apellidos, por lo que entra.
+            if len(aux) == 2:
+                apellido_paterno = aux[0]  # El primer elemento es el apellido paterno
+                apellido_materno = aux[-1]  # El último elemento es el apellido materno
+            else:
+                # Error en el apellido
+                lastname_error = True
+            # Pruebas
+            print("<==================== DATOS OBTENIDOS ====================")
+            print(f"nombre - {nombre}")
+            print(f"AP_MAT - {apellido_paterno}")
+            print(f"AP_MAT - {apellido_materno}")
+            print(f"TEL - {telefono}")
+            print(f"company_id - {company_id}")
+            print("========================================>")
+            # Cualquier error
+            if lastname_error:
+                print("#################### FIN ####################>")
+                return render_template(
+                    "Manage-warehouse.html",
+                    lastname_error=lastname_error,
+                )
+            else:
+                # Insertar en la base de datos
+                config.CUD(
+                    "INSERT INTO dbo.Intermediario (NOMBRE,AP_PAT,AP_MAT,TEL,ESTATUS,ID_COMPANIA) VALUES (?,?,?,?,1,?)",
+                    (
+                        nombre,
+                        apellido_paterno,
+                        apellido_materno,
+                        telefono,
+                        company_id
+                    )
+                )
+                print("#################### FIN ####################>")
+            return redirect(url_for("products.managecompany"))
+    else:
+        return redirect(url_for("auth.signin"))
 
 
 # Bienvenida (Terminado)
