@@ -36,9 +36,13 @@ def signin():
         print(f"Password - {password}")
         print("========================================")
         existing_email = config.Read(
-            "SELECT * FROM dbo.Usuarios WHERE CORREO = '{}'".format(email)
+            """
+            SELECT * 
+            FROM dbo.Usuarios 
+            WHERE CORREO = ?
+            """,
+            (email,)
         )
-
         if not existing_email:
             # El correo electrónico no está registrado
             email_not_found = True
@@ -105,13 +109,24 @@ def signup():
             lastname_error = True
         # Consulta para verificar si existe el correo en la BD
         existing_email = config.Read(
-            "SELECT * FROM dbo.Usuarios WHERE CORREO = '{}'".format(email)
+            """
+            SELECT * 
+            FROM dbo.Usuarios 
+            WHERE CORREO = ?
+            """,
+            email,
         )
+
         # Consulta para verificar si existe el usuario en la BD
         existing_user = config.Read(
-            "SELECT * FROM dbo.Usuarios WHERE NOMBRE = '{}' AND AP_PAT = '{}' AND AP_MAT = '{}'".format(
-                name, apellido_paterno, apellido_materno
-            )
+            """
+            SELECT * 
+            FROM dbo.Usuarios 
+            WHERE NOMBRE = ? 
+            AND AP_PAT = ? 
+            AND AP_MAT = ?
+            """,
+            (name, apellido_paterno, apellido_materno)
         )
         # Existe el correo en la base de datos
         if existing_email:
@@ -131,7 +146,10 @@ def signup():
         else:
             # Registrar en base de datos
             config.CUD(
-                "INSERT INTO dbo.Usuarios (NOMBRE, AP_PAT, AP_MAT, CORREO, CONTRASENA, ESTATUS) VALUES (?, ?, ?, ?, ?, 1)",
+                """
+                INSERT INTO dbo.Usuarios (NOMBRE, AP_PAT, AP_MAT, CORREO, CONTRASENA, ESTATUS) 
+                VALUES (?, ?, ?, ?, ?, 1)
+                """,
                 (name, apellido_paterno, apellido_materno, email, password),
             )
             print("#################### Renderizar auth/signin ####################>")
@@ -198,12 +216,21 @@ def create_product():
                 "<==================== VERIFICAR RELACION COMPANIA - INTERMEDIARIO ===================="
             )
             existe = config.Read(
-                "SELECT ID_INTERMEDIARIO, Intermediario.NOMBRE, Intermediario.AP_PAT, Intermediario.AP_MAT, Proveedor.ID_COMPANIA, Proveedor.NOMBRE "
-                "FROM dbo.Proveedor "
-                "INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA "
-                "WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1 AND dbo.Intermediario.ID_INTERMEDIARIO = {} AND dbo.Proveedor.ID_COMPANIA = {}".format(
-                    intermediario, compania
-                )
+                """
+                SELECT 
+                    ID_INTERMEDIARIO, 
+                    Intermediario.NOMBRE, 
+                    Intermediario.AP_PAT, 
+                    Intermediario.AP_MAT, 
+                    Proveedor.ID_COMPANIA, 
+                    Proveedor.NOMBRE 
+                FROM dbo.Proveedor 
+                INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
+                WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1 
+                AND dbo.Intermediario.ID_INTERMEDIARIO = ? 
+                AND dbo.Proveedor.ID_COMPANIA = ?
+                """,
+                (intermediario, compania),
             )
             print("========================================>")
             # Verificar si el producto ya existe
@@ -211,9 +238,13 @@ def create_product():
                 "<==================== VERIFICAR SI EL PRODUCTO EXISTE ===================="
             )
             productoexiste = config.Read(
-                "SELECT dbo.Almacen.NOMBRE FROM dbo.Almacen WHERE dbo.Almacen.NOMBRE = '{}'".format(
-                    nombre
-                )
+                """
+                SELECT 
+                    dbo.Almacen.NOMBRE 
+                FROM dbo.Almacen 
+                WHERE dbo.Almacen.NOMBRE = ?
+                """,
+                (nombre,),
             )
             print("========================================>")
             # Condiciones
@@ -226,11 +257,19 @@ def create_product():
                 print("#################### FIN ####################>")
                 return redirect(url_for("products.warehouse"))
             elif existe:
-                # Insertar el nuevo producto en la base de datos   
+                # Insertar el nuevo producto en la base de datos
                 config.CUD(
-                    "INSERT INTO dbo.Almacen (NOMBRE, PRECIO_UNITARIO, EXISTENCIAS, PRECIO_EXISTENCIA, ID_INTERMEDIARIO, ESTATUS) "
-                    "VALUES (?, ?, ?, ?, ?, 1)",
-                    (nombre, precio, cantidad, float(precio) * int(cantidad), intermediario)
+                    """
+                    INSERT INTO dbo.Almacen (NOMBRE, PRECIO_UNITARIO, EXISTENCIAS, PRECIO_EXISTENCIA, ID_INTERMEDIARIO, ESTATUS)
+                    VALUES (?, ?, ?, ?, ?, 1)
+                    """,
+                    (
+                        nombre,
+                        precio,
+                        cantidad,
+                        float(precio) * int(cantidad),
+                        intermediario,
+                    ),
                 )
                 print(
                     "====================!Producto creado exitosamente.!====================>"
@@ -300,12 +339,22 @@ def update_product():
                 "<==================== VERIFICAR RELACION COMPANIA - INTERMEDIARIO ===================="
             )
             existe = config.Read(
-                "SELECT ID_INTERMEDIARIO, Intermediario.NOMBRE, Intermediario.AP_PAT, Intermediario.AP_MAT, Proveedor.ID_COMPANIA, Proveedor.NOMBRE "
-                "FROM dbo.Proveedor "
-                "INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA "
-                "WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1 AND dbo.Intermediario.ID_INTERMEDIARIO = {} AND dbo.Proveedor.ID_COMPANIA = {}".format(
-                    intermediario, compania
-                )
+                """
+                SELECT 
+                    ID_INTERMEDIARIO,
+                    Intermediario.NOMBRE,   
+                    Intermediario.AP_PAT, 
+                    Intermediario.AP_MAT, 
+                    Proveedor.ID_COMPANIA, 
+                    Proveedor.NOMBRE
+                FROM dbo.Proveedor
+                INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
+                WHERE dbo.Proveedor.ESTATUS = 1 
+                AND dbo.Intermediario.ESTATUS = 1 
+                AND dbo.Intermediario.ID_INTERMEDIARIO = ?
+                AND dbo.Proveedor.ID_COMPANIA = ?
+                """,
+                (intermediario, compania,),
             )
             print("========================================>")
             # Verificar si el producto ya existe
@@ -313,9 +362,13 @@ def update_product():
                 "<==================== VERIFICAR SI EL PRODUCTO EXISTE ===================="
             )
             productoexiste = config.Read(
-                "SELECT dbo.Almacen.NOMBRE FROM dbo.Almacen WHERE dbo.Almacen.NOMBRE = '{}'".format(
-                    nombre
-                )
+                """
+                SELECT 
+                    dbo.Almacen.NOMBRE 
+                FROM dbo.Almacen 
+                WHERE dbo.Almacen.NOMBRE = ?
+                """,
+                (nombre,),
             )
             print("========================================>")
             # Condiciones
@@ -341,7 +394,17 @@ def update_product():
             else:
                 # Actualizar el producto en la base de datos
                 config.CUD(
-                    "UPDATE dbo.Almacen SET NOMBRE = ?, PRECIO_UNITARIO = ?, EXISTENCIAS = ?, PRECIO_EXISTENCIA = ?, ID_INTERMEDIARIO = ?, ESTATUS = 1 WHERE ID_PRODUCTO = ?",
+                    """
+                    UPDATE dbo.Almacen 
+                    SET 
+                        NOMBRE = ?, 
+                        PRECIO_UNITARIO = ?, 
+                        EXISTENCIAS = ?, 
+                        PRECIO_EXISTENCIA = ?, 
+                        ID_INTERMEDIARIO = ?, 
+                        ESTATUS = 1 
+                    WHERE ID_PRODUCTO = ?
+                    """,
                     (
                         nombre,
                         precio,
@@ -365,7 +428,15 @@ def update_product():
 def warehouse():
     if "email" in session:
         products = config.Read(
-            "SELECT ID_PRODUCTO, NOMBRE, PRECIO_UNITARIO, EXISTENCIAS FROM dbo.Almacen WHERE dbo.Almacen.ESTATUS = 1"
+            """
+            SELECT 
+                ID_PRODUCTO, 
+                NOMBRE, 
+                PRECIO_UNITARIO, 
+                EXISTENCIAS 
+            FROM dbo.Almacen 
+            WHERE dbo.Almacen.ESTATUS = 1
+            """
         )
         return render_template("products/warehouse.html", products=products)
     else:
@@ -385,8 +456,13 @@ def delete_product():
             print(f"Product_ID - {product_id}")
             print("========================================>")
             config.CUD(
-                "UPDATE dbo.Almacen SET ESTATUS = 0 WHERE ID_PRODUCTO = ?",
-                (product_id,)
+                """
+                UPDATE dbo.Almacen 
+                SET 
+                    ESTATUS = 0 
+                WHERE ID_PRODUCTO = ?
+                """,
+                (product_id,),
             )
             print("#################### FIN ####################>")
             return redirect(url_for("products.managewarehouse"))
@@ -406,10 +482,19 @@ def search_product():
             print("<==================== DATOS OBTENIDOS ====================")
             print(f"nombre - {search_term}")
             print("========================================>")
-            query = "SELECT dbo.Almacen.ID_PRODUCTO ,dbo.Almacen.NOMBRE, dbo.Almacen.PRECIO_UNITARIO, dbo.Almacen.EXISTENCIAS FROM  dbo.Almacen WHERE NOMBRE LIKE'%{}%' and dbo.Almacen.ESTATUS = 1;".format(
-                search_term
+            products = config.Read(
+                """
+                SELECT 
+                    dbo.Almacen.ID_PRODUCTO,
+                    dbo.Almacen.NOMBRE, 
+                    dbo.Almacen.PRECIO_UNITARIO, 
+                    dbo.Almacen.EXISTENCIAS 
+                FROM  dbo.Almacen 
+                WHERE NOMBRE LIKE ?
+                AND dbo.Almacen.ESTATUS = 1;
+                """,
+                ('%' + search_term + "%",)
             )
-            products = config.Read(query)
             print("#################### FIN ####################>")
         return render_template("products/warehouse.html", products=products)
     else:
@@ -426,15 +511,43 @@ def managewarehouse():
         print("<#################### manage_warehouse ####################")
         # Consulta para mostrar los productos
         products = config.Read(
-            "SELECT ID_PRODUCTO, NOMBRE, PRECIO_UNITARIO, EXISTENCIAS FROM dbo.Almacen WHERE dbo.Almacen.ESTATUS = 1"
+            """
+            SELECT 
+                ID_PRODUCTO, 
+                NOMBRE, 
+                PRECIO_UNITARIO, 
+                EXISTENCIAS 
+            FROM dbo.Almacen 
+            WHERE dbo.Almacen.ESTATUS = 1
+            """
         )
         # Consulta para mostrar compania
         companies = config.Read(
-            "SELECT DISTINCT dbo.Proveedor.ID_COMPANIA, dbo.Proveedor.NOMBRE  FROM dbo.Proveedor  INNER JOIN dbo.Intermediario ON dbo.Intermediario.ID_COMPANIA = dbo.Proveedor.ID_COMPANIA WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1;SELECT * FROM dbo.Intermediario WHERE dbo.Intermediario.ESTATUS = 1;"
+            """
+            SELECT DISTINCT 
+                dbo.Proveedor.ID_COMPANIA, 
+                dbo.Proveedor.NOMBRE  
+            FROM dbo.Proveedor  
+            INNER JOIN dbo.Intermediario ON dbo.Intermediario.ID_COMPANIA = dbo.Proveedor.ID_COMPANIA 
+            WHERE dbo.Proveedor.ESTATUS = 1 
+            AND dbo.Intermediario.ESTATUS = 1;
+            """
         )
         # Consulta para poder relaciones entre compania - intermediario
         relations = config.Read(
-            "SELECT dbo.Proveedor.ID_COMPANIA,dbo.Proveedor.NOMBRE,dbo.Intermediario.ID_INTERMEDIARIO,dbo.Intermediario.NOMBRE, dbo.Intermediario.AP_PAT, dbo.Intermediario.AP_MAT FROM dbo.Proveedor INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1;"
+            """
+            SELECT 
+                dbo.Proveedor.ID_COMPANIA,
+                dbo.Proveedor.NOMBRE,
+                dbo.Intermediario.ID_INTERMEDIARIO,
+                dbo.Intermediario.NOMBRE, 
+                dbo.Intermediario.AP_PAT, 
+                dbo.Intermediario.AP_MAT 
+            FROM dbo.Proveedor 
+            INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
+            WHERE dbo.Proveedor.ESTATUS = 1 
+            AND dbo.Intermediario.ESTATUS = 1;
+            """
         )
         # Renderizar con los datos
         print("#################### FIN ####################>")
@@ -455,10 +568,31 @@ def managecompany():
         companies = []
         relations = []
         relations = config.Read(
-            "SELECT dbo.Proveedor.ID_COMPANIA ,dbo.Proveedor.NOMBRE, dbo.Intermediario.ID_INTERMEDIARIO, Intermediario.NOMBRE, Intermediario.AP_PAT, Intermediario.AP_MAT, dbo.Intermediario.TEL FROM dbo.Proveedor INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1"
+            """
+            SELECT 
+                dbo.Proveedor.ID_COMPANIA,
+                dbo.Proveedor.NOMBRE,
+                dbo.Intermediario.ID_INTERMEDIARIO,
+                dbo.Intermediario.NOMBRE, 
+                dbo.Intermediario.AP_PAT,
+                dbo.Intermediario.AP_MAT, 
+                dbo.Intermediario.TEL 
+            FROM dbo.Proveedor 
+            INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
+            WHERE dbo.Proveedor.ESTATUS = 1 
+            AND dbo.Intermediario.ESTATUS = 1
+            """
         )
         companies = config.Read(
-            "SELECT DISTINCT dbo.Proveedor.ID_COMPANIA, dbo.Proveedor.NOMBRE  FROM dbo.Proveedor  INNER JOIN dbo.Intermediario ON dbo.Intermediario.ID_COMPANIA = dbo.Proveedor.ID_COMPANIA WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1;SELECT * FROM dbo.Intermediario WHERE dbo.Intermediario.ESTATUS = 1;"
+            """
+            SELECT DISTINCT 
+                dbo.Proveedor.ID_COMPANIA,
+                dbo.Proveedor.NOMBRE  
+            FROM dbo.Proveedor  
+            INNER JOIN dbo.Intermediario ON dbo.Intermediario.ID_COMPANIA = dbo.Proveedor.ID_COMPANIA 
+            WHERE dbo.Proveedor.ESTATUS = 1 
+            AND dbo.Intermediario.ESTATUS = 1;
+            """
         )
         return render_template("products/manage-company.html", relations=relations, companies=companies)
     else:
@@ -521,6 +655,28 @@ def create_company():
             print(f"TEL - {telefono}")
             print(f"company_id - {company_id}")
             print("========================================>")
+            existe = config.Read(
+                """
+                SELECT 
+                    dbo.Intermediario.NOMBRE,
+                    dbo.Intermediario.AP_PAT,
+                    dbo.Intermediario.AP_MAT
+                FROM dbo.Intermediario 
+                WHERE dbo.Intermediario.NOMBRE = ?
+                AND dbo.Intermediario.AP_PAT = ?
+                AND dbo.Intermediario.AP_MAT = ?
+                """,
+                (nombre, apellido_paterno, apellido_materno,)
+            )
+            TelExiste = config.Read(
+                """
+                SELECT 
+                    dbo.Intermediario.TEL
+                FROM dbo.Intermediario 
+                WHERE dbo.Intermediario.TEL = ?
+                """,
+                (telefono,)
+            )
             # Cualquier error
             if lastname_error:
                 print("#################### FIN ####################>")
@@ -531,14 +687,11 @@ def create_company():
             else:
                 # Insertar en la base de datos
                 config.CUD(
-                    "INSERT INTO dbo.Intermediario (NOMBRE,AP_PAT,AP_MAT,TEL,ESTATUS,ID_COMPANIA) VALUES (?,?,?,?,1,?)",
-                    (
-                        nombre,
-                        apellido_paterno,
-                        apellido_materno,
-                        telefono,
-                        company_id
-                    )
+                    """
+                    INSERT INTO dbo.Intermediario (NOMBRE,AP_PAT,AP_MAT,TEL,ESTATUS,ID_COMPANIA) 
+                    VALUES (?,?,?,?,1,?)
+                    """,
+                    (nombre, apellido_paterno, apellido_materno, telefono, company_id),
                 )
                 print("#################### FIN ####################>")
             return redirect(url_for("products.managecompany"))

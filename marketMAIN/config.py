@@ -25,22 +25,32 @@ def CUD(query, params=None):
 
 
 # Funcion para poder realizar consultas Read, devuelve UNA MATRIZ
-def Read(query):
+import pyodbc
+
+
+def Read(query, params=None):
     print("<-------------------- Conectando... --------------------")
+    connection = None
     try:
         connection = pyodbc.connect(
             "DRIVER={SQL Server};SERVER=PCEMMANUEL;DATABASE=Proyecto;Trusted_Connection=yes;"
         )
         cursor = connection.cursor()
-        cursor.execute(query)
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
         rows = cursor.fetchall()
+        results = [list(row) for row in rows]  # Convert each row to a list
         print("<-------------------- Conexión exitosa --------------------")
-        for row in rows:
-            print(row)
+        for result in results:
+            print(result)
         print("---------------------------------------->")
-        return rows
+        return results
     except Exception as ex:
         print(f"<-------------------- Error: {ex} -------------------->")
+        return None
     finally:
-        connection.close()
-        print("-------------------- Conexión finalizada -------------------->")
+        if connection:
+            connection.close()
+            print("-------------------- Conexión finalizada -------------------->")
