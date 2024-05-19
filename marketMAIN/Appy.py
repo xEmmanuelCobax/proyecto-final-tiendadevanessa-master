@@ -633,6 +633,8 @@ def create_company():
         if request.method == "POST":
             # Errores
             lastname_error = False
+            existe_error = False
+            tel_existe_error = False
             # Obtener datos del formulario
             nombre = request.form.get("intermediaryName")
             apellidos = request.form.get("intermediaryLastName")
@@ -640,21 +642,23 @@ def create_company():
             company_id = request.form.get("company_id")
             # Obtener desde el lastname los dos apellidos
             aux = apellidos.split()
-            # Si el len del auxiliar entonces tiene dos apellidos, por lo que entra.
+            # Verificar apellidos
             if len(aux) == 2:
                 apellido_paterno = aux[0]  # El primer elemento es el apellido paterno
-                apellido_materno = aux[-1]  # El último elemento es el apellido materno
+                apellido_materno = aux[1]  # El segundo elemento es el apellido materno
             else:
-                # Error en el apellido
                 lastname_error = True
+                apellido_paterno = ""
+                apellido_materno = ""
             # Pruebas
             print("<==================== DATOS OBTENIDOS ====================")
-            print(f"nombre - {nombre}")
-            print(f"AP_MAT - {apellido_paterno}")
-            print(f"AP_MAT - {apellido_materno}")
-            print(f"TEL - {telefono}")
-            print(f"company_id - {company_id}")
+            print(f"Nombre: {nombre}")
+            print(f"Apellido Paterno: {apellido_paterno}")
+            print(f"Apellido Materno: {apellido_materno}")
+            print(f"Teléfono: {telefono}")
+            print(f"ID de la Compañía: {company_id}")
             print("========================================>")
+            # Verificar si el intermediario ya existe
             existe = config.Read(
                 """
                 SELECT 
@@ -666,38 +670,45 @@ def create_company():
                 AND dbo.Intermediario.AP_PAT = ?
                 AND dbo.Intermediario.AP_MAT = ?
                 """,
-                (nombre, apellido_paterno, apellido_materno,)
+                (nombre, apellido_paterno, apellido_materno),
             )
-            TelExiste = config.Read(
+            # Verificar si el teléfono ya está en uso
+            tel_existe = config.Read(
                 """
                 SELECT 
                     dbo.Intermediario.TEL
                 FROM dbo.Intermediario 
                 WHERE dbo.Intermediario.TEL = ?
                 """,
-                (telefono,)
+                (telefono,),
             )
             # Cualquier error
-            if lastname_error:
+            if lastname_error or existe or tel_existe:
+                if existe:
+                    existe_error = True
+                if tel_existe:
+                    tel_existe_error = True
                 print("#################### FIN ####################>")
                 return render_template(
                     "Manage-warehouse.html",
                     lastname_error=lastname_error,
+                    existe_error=existe_error,
+                    tel_existe_error=tel_existe_error,
                 )
-            else:
-                # Insertar en la base de datos
-                config.CUD(
-                    """
-                    INSERT INTO dbo.Intermediario (NOMBRE,AP_PAT,AP_MAT,TEL,ESTATUS,ID_COMPANIA) 
-                    VALUES (?,?,?,?,1,?)
-                    """,
-                    (nombre, apellido_paterno, apellido_materno, telefono, company_id),
-                )
-                print("#################### FIN ####################>")
+            # Insertar en la base de datos si no hay errores
+            config.CUD(
+                """
+                INSERT INTO dbo.Intermediario (NOMBRE, AP_PAT, AP_MAT, TEL, ESTATUS, ID_COMPANIA) 
+                VALUES (?, ?, ?, ?, 1, ?)
+                """,
+                (nombre, apellido_paterno, apellido_materno, telefono, company_id),
+            )
+            print("#################### FIN ####################>")
             return redirect(url_for("products.managecompany"))
     else:
         return redirect(url_for("auth.signin"))
-    
+
+
 # editar conpañia (En Planteamiento)
 @products.route("/edit_company", methods=["GET", "POST"])
 def edit_company():
