@@ -137,10 +137,15 @@ endblock %} {% block content %}
         <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="" method="post" class="needs-validation" novalidate>
+        <form action="{{ url_for('products.edit_company') }}" method="post" class="needs-validation" novalidate>
           <div class="mb-3">
             <label for="editCompanyName" class="form-label">New Company Name:</label>
-            <input type="text" class="form-control" id="editCompanyName" name="editCompanyName" required />
+            <select class="form-select" id="company-select2" name="company_id">
+              <option value="" disabled selected>Select Company</option>
+              {% for company in companies %}
+              <option value="{{ company[0] }}">{{ company[1] }}</option>
+              {% endfor %}
+            </select>
             <div class="invalid-feedback">Please enter the company name.</div>
           </div>
           <div class="mb-3">

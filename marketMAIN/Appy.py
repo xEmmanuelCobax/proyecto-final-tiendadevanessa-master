@@ -697,7 +697,62 @@ def create_company():
             return redirect(url_for("products.managecompany"))
     else:
         return redirect(url_for("auth.signin"))
-
+    
+# editar conpañia (En Planteamiento)
+@products.route("/edit_company", methods=["GET", "POST"])
+def edit_company():
+    if "email" in session:
+        print("<#################### EDITAR EMPRESA ####################")
+        # Verificar si el método es POST para procesar el formulario
+        if request.method == "POST":
+            # Errores
+            lastname_error = False
+            # Obtener datos del formulario, incluido company_id
+            nombre = request.form.get("intermediaryName")
+            apellidos = request.form.get("intermediaryLastName")
+            telefono = request.form.get("intermediaryPhone")
+            company_id = request.form.get("company_id")
+            # Obtener desde el apellido los dos apellidos
+            aux = apellidos.split()
+            # Si el len del auxiliar entonces tiene dos apellidos, por lo que entra.
+            if len(aux) == 2:
+                apellido_paterno = aux[0]  # El primer elemento es el apellido paterno
+                apellido_materno = aux[-1]  # El último elemento es el apellido materno
+            else:
+                # Error en el apellido
+                lastname_error = True
+            # Pruebas
+            print("<==================== DATOS OBTENIDOS ====================")
+            print(f"nombre - {nombre}")
+            print(f"AP_PAT - {apellido_paterno}")
+            print(f"AP_MAT - {apellido_materno}")
+            print(f"TEL - {telefono}")
+            print(f"company_id - {company_id}")
+            print("========================================>")
+            # Verificar si hubo un error en el apellido
+            if lastname_error:
+                print("#################### FIN ####################>")
+                return render_template(
+                    "Manage-warehouse.html",
+                    lastname_error=lastname_error,
+                )
+            else:
+                # Actualizar en la base de datos
+                config.CUD(
+                    """
+                    UPDATE dbo.Intermediario 
+                    SET NOMBRE=?, AP_PAT=?, AP_MAT=?, TEL=? 
+                    WHERE ID_COMPANIA=?
+                    """,
+                    (nombre, apellido_paterno, apellido_materno, telefono, company_id),
+                )
+                print("#################### FIN ####################>")
+                return redirect(url_for("products.managecompany"))
+        else:
+            # Si el método no es POST, renderiza el formulario de edición
+            return render_template("edit_company.html")
+    else:
+        return redirect(url_for("auth.signin"))
 
 # Bienvenida (Terminado)
 @p.route("/welcomeuser") 
