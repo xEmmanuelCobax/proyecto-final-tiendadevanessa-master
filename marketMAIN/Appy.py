@@ -17,6 +17,7 @@ auth = Blueprint("auth", __name__, url_prefix="/auth")
 products = Blueprint("products", __name__, url_prefix="/products")
 p = Blueprint("profile", __name__, url_prefix="/profile")
 sc = Blueprint("shortcut", __name__, url_prefix="/shortcut")
+sales = Blueprint("sales", __name__, url_prefix="/sales")
 
 app.config["SECRET_KEY"] = config.HEX_SEC_KEY
 
@@ -24,17 +25,17 @@ app.config["SECRET_KEY"] = config.HEX_SEC_KEY
 # Iniciar session (Terminado)
 @auth.route("/signin", methods=["GET", "POST"])
 def signin():
-    print("========================================\nRUTA-Signing\n")
+    print("<#################### RUTA-Signing ####################")
     if "email" in session:
-        print("========================================\nEmail In Session\n")
+        print("#################### Email In Session ####################>")
         return render_template("profile/welcome-user.html", email=session["email"])
     elif request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
-        print("========================================\nDATOS OBTENIDOS>\n")
+        print("<==================== DATOS OBTENIDOS ====================")
         print(f"Email - {email}")
         print(f"Password - {password}")
-        print("========================================")
+        print("========================================>")
         existing_email = config.Read(
             """
             SELECT * 
@@ -47,7 +48,7 @@ def signin():
             # El correo electrónico no está registrado
             email_not_found = True
             print(
-                "========================================\nCorreo electrónico no está registrado\n========================================"
+                "#################### Renderizar auth/signin.html - Correo electrónico no está registrado ####################>"
             )
             return render_template("auth/signin.html", email_not_found=email_not_found)
 
@@ -57,19 +58,19 @@ def signin():
                 # Contraseña correcta
                 session["email"] = email
                 print(
-                    "========================================\nContraseña correcta\n========================================"
+                    "#################### profile.welcomeuser - Contraseña correcta ####################>"
                 )
                 return redirect(url_for("profile.welcomeuser", user=email))
             else:
                 # Contraseña incorrecta
                 bad_password = True
                 print(
-                    "========================================\nContraseña incorrecta\n========================================"
+                    "#################### Renderizar auth/signin - Contraseña incorrecta ####################>"
                 )
                 return render_template(
                     "auth/signin.html", bad_password=bad_password, email=email
                 )
-    print("========================================\nReturn to auth/signin.html\n")
+    print("#################### Return to auth/signin.html ####################>")
     return render_template("auth/signin.html")
 
 
@@ -171,32 +172,33 @@ def create_product():
     if "email" in session:
         print("<#################### CREAR PRODUCTOS ####################")
         if request.method == "POST":
-            # Obtener datos del formulario
-            marca = request.form.get("marca")
-            producto = request.form.get("producto")
-            # Unidad de medida
-            unit_quantity = request.form.get("unitquantity")  # Cantidad
-            seslect_unit_quantity = request.form.get(
-                "SelectUnitOfMeasure"
-            )  # Unidad de medida
-            # Piezas
-            if seslect_unit_quantity == "pieces":
-                quantity = unit_quantity + "Pzs"
-            # Litros
-            elif seslect_unit_quantity == "liters":
-                quantity = unit_quantity + "l"
-            # Milimetros
-            elif seslect_unit_quantity == "milliliters":
-                quantity = unit_quantity + "ml"
-            # Kilogramos
-            elif seslect_unit_quantity == "kilogram":
-                quantity = unit_quantity + "kg"
-            # Gramos
-            elif seslect_unit_quantity == "grams":
-                quantity = unit_quantity + "gr"
-            # custom?
-            else:
-                quantity = unit_quantity + "No se"
+            try:
+                # Obtener datos del formulario
+                marca = request.form.get("marca")
+                producto = request.form.get("producto")
+                # Unidad de medida
+                unit_quantity = request.form.get("unitquantity")  # Cantidad
+                seslect_unit_quantity = request.form.get(
+                    "SelectUnitOfMeasure"
+                )  # Unidad de medida
+
+                # Construir la cantidad con la unidad de medida
+                if seslect_unit_quantity == "pieces":
+                    quantity = unit_quantity + "Pzs"
+                elif seslect_unit_quantity == "liters":
+                    quantity = unit_quantity + "l"
+                elif seslect_unit_quantity == "milliliters":
+                    quantity = unit_quantity + "ml"
+                elif seslect_unit_quantity == "kilogram":
+                    quantity = unit_quantity + "kg"
+                elif seslect_unit_quantity == "grams":
+                    quantity = unit_quantity + "gr"
+                else:
+                    quantity = unit_quantity + "No se"
+
+            except Exception as e:
+                print(f"Error al procesar la unidad de medida: {e}")
+                return redirect(url_for("products.warehouse"))
             # Datos formados
             nombre = f"{marca}_{producto}_{quantity}"
             cantidad = request.form.get("cantidad")
@@ -561,7 +563,7 @@ def managewarehouse():
         return redirect(url_for("auth.signin"))
 
 
-# Manejar la companias (En Planteamiento)
+# Manejar los intermediario (En Desarrollo)
 @products.route("/manage_company")
 def managecompany():
     if "email" in session:
@@ -599,7 +601,7 @@ def managecompany():
         return redirect(url_for("auth.signin"))
 
 
-# Borrar companias (En Planteamiento)
+# Borrar intermediarios (En Desarrollo)
 @products.route("/delete_company", methods=["POST"])
 def delete_company():
     # Verificar si el usuario tiene una sesión activa
@@ -608,16 +610,15 @@ def delete_company():
         if request.method == "POST":
             print("<#################### delete_company ####################")
             # Obtener el ID del intermediario de los datos del formulario
-            company_id = request.form.get("company_id")
+            id_intermediario = request.form.get("DeleteIntermediaryId") #Se obtiene de un dato oculto
             print("<==================== DATOS OBTENIDOS ====================")
-            print(f"company_id - {company_id}")
+            print(f"company_id - {id_intermediario}")
             print("========================================>")
             config.CUD(
                 """
-                UPDATE dbo.Intermediario SET ESTATUS = 0 WHERE ID_COMPANIA = ?;
-                UPDATE dbo.Proveedor SET ESTATUS = 0 WHERE ID_COMPANIA = ?;
+                UPDATE dbo.Intermediario SET ESTATUS = 0 WHERE ID_INTERMEDIARIO = ?;
                 """,
-                (company_id, company_id)
+                (id_intermediario,),
             )
             print("#################### FIN ####################>")
             return redirect(url_for("products.managecompany"))
@@ -625,31 +626,21 @@ def delete_company():
     return redirect(url_for("auth.signin"))
 
 
-# crear conpañia (En Planteamiento)
+# crear intermediario (En Desarrollo)
 @products.route("/create_company", methods=["POST"])
 def create_company():
     if "email" in session:
         print("<#################### CREAR EMPRESA ####################")
         if request.method == "POST":
             # Errores
-            lastname_error = False
             existe_error = False
             tel_existe_error = False
             # Obtener datos del formulario
             nombre = request.form.get("intermediaryName")
-            apellidos = request.form.get("intermediaryLastName")
+            apellido_paterno = request.form.get("AP_PAT")
+            apellido_materno = request.form.get("AP_MAT")
             telefono = request.form.get("intermediaryPhone")
             company_id = request.form.get("company_id")
-            # Obtener desde el lastname los dos apellidos
-            aux = apellidos.split()
-            # Verificar apellidos
-            if len(aux) == 2:
-                apellido_paterno = aux[0]  # El primer elemento es el apellido paterno
-                apellido_materno = aux[1]  # El segundo elemento es el apellido materno
-            else:
-                lastname_error = True
-                apellido_paterno = ""
-                apellido_materno = ""
             # Pruebas
             print("<==================== DATOS OBTENIDOS ====================")
             print(f"Nombre: {nombre}")
@@ -683,15 +674,14 @@ def create_company():
                 (telefono,),
             )
             # Cualquier error
-            if lastname_error or existe or tel_existe:
+            if existe or tel_existe:
                 if existe:
                     existe_error = True
                 if tel_existe:
                     tel_existe_error = True
-                print("#################### FIN ####################>")
+                print("#################### FIN (No se inserto) ####################>")
                 return render_template(
-                    "Manage-warehouse.html",
-                    lastname_error=lastname_error,
+                    "products/manage-company.html",
                     existe_error=existe_error,
                     tel_existe_error=tel_existe_error,
                 )
@@ -703,13 +693,13 @@ def create_company():
                 """,
                 (nombre, apellido_paterno, apellido_materno, telefono, company_id),
             )
-            print("#################### FIN ####################>")
+            print("#################### FIN (Se inserto en la BD) ####################>")
             return redirect(url_for("products.managecompany"))
     else:
         return redirect(url_for("auth.signin"))
 
 
-# editar conpañia (En Planteamiento)
+# Editar intermediario (En Desarrollo)
 @products.route("/edit_company", methods=["GET", "POST"])
 def edit_company():
     if "email" in session:
@@ -717,21 +707,17 @@ def edit_company():
         # Verificar si el método es POST para procesar el formulario
         if request.method == "POST":
             # Errores
-            lastname_error = False
+            existe_error = False
+            tel_existe_error = False
             # Obtener datos del formulario, incluido company_id
-            nombre = request.form.get("intermediaryName")
-            apellidos = request.form.get("intermediaryLastName")
-            telefono = request.form.get("intermediaryPhone")
-            company_id = request.form.get("company_id")
-            # Obtener desde el apellido los dos apellidos
-            aux = apellidos.split()
-            # Si el len del auxiliar entonces tiene dos apellidos, por lo que entra.
-            if len(aux) == 2:
-                apellido_paterno = aux[0]  # El primer elemento es el apellido paterno
-                apellido_materno = aux[-1]  # El último elemento es el apellido materno
-            else:
-                # Error en el apellido
-                lastname_error = True
+            nombre = request.form.get("editIntermediaryName")
+            apellido_paterno = request.form.get("NEW-AP_PAT")
+            apellido_materno = request.form.get("NEW-AP_MAT")
+            telefono = request.form.get("editIntermediaryPhone")
+            company_id = request.form.get("Edit-company_id")
+            id_intermediario = request.form.get(
+                "EditIntermediary_id"
+            )  # Se obtiene de un dato oculto
             # Pruebas
             print("<==================== DATOS OBTENIDOS ====================")
             print(f"nombre - {nombre}")
@@ -739,29 +725,66 @@ def edit_company():
             print(f"AP_MAT - {apellido_materno}")
             print(f"TEL - {telefono}")
             print(f"company_id - {company_id}")
+            print(f"id_intermediario - {id_intermediario}")
             print("========================================>")
-            # Verificar si hubo un error en el apellido
-            if lastname_error:
-                print("#################### FIN ####################>")
+            # Verificar si el intermediario ya existe
+            existe = config.Read(
+                """
+                SELECT 
+                    dbo.Intermediario.NOMBRE,
+                    dbo.Intermediario.AP_PAT,
+                    dbo.Intermediario.AP_MAT
+                FROM dbo.Intermediario 
+                WHERE dbo.Intermediario.NOMBRE = ?
+                AND dbo.Intermediario.AP_PAT = ?
+                AND dbo.Intermediario.AP_MAT = ?
+                """,
+                (nombre, apellido_paterno, apellido_materno),
+            )
+            # Verificar si el teléfono ya está en uso
+            tel_existe = config.Read(
+                """
+                SELECT 
+                    dbo.Intermediario.TEL
+                FROM dbo.Intermediario 
+                WHERE dbo.Intermediario.TEL = ?
+                """,
+                (telefono,),
+            )
+            # Cualquier error
+            if existe or tel_existe:
+                if existe:
+                    existe_error = True
+                if tel_existe:
+                    tel_existe_error = True
+                print("#################### FIN (No se inserto) ####################>")
                 return render_template(
-                    "Manage-warehouse.html",
-                    lastname_error=lastname_error,
+                    "products/manage-company.html",
+                    existe_error=existe_error,
+                    tel_existe_error=tel_existe_error,
                 )
             else:
                 # Actualizar en la base de datos
                 config.CUD(
                     """
                     UPDATE dbo.Intermediario 
-                    SET NOMBRE=?, AP_PAT=?, AP_MAT=?, TEL=? 
-                    WHERE ID_COMPANIA=?
+                    SET NOMBRE=?, AP_PAT=?, AP_MAT=?, TEL=?, ID_COMPANIA=?
+                    WHERE ID_INTERMEDIARIO = ?
                     """,
-                    (nombre, apellido_paterno, apellido_materno, telefono, company_id),
+                    (
+                        nombre,
+                        apellido_paterno,
+                        apellido_materno,
+                        telefono,
+                        company_id,
+                        id_intermediario,
+                    ),
                 )
                 print("#################### FIN ####################>")
                 return redirect(url_for("products.managecompany"))
         else:
             # Si el método no es POST, renderiza el formulario de edición
-            return render_template("edit_company.html")
+            return render_template("products/manage-company.html")
     else:
         return redirect(url_for("auth.signin"))
 
@@ -795,6 +818,25 @@ def settings():
     return render_template("settings/settings.html")
 
 
+# Ventas
+@sales.route("/addsalesworker")
+def addsalesworker():
+    #sales.addsalesworker
+    products = config.Read(
+            """
+            SELECT 
+                ID_PRODUCTO, 
+                NOMBRE, 
+                PRECIO_UNITARIO, 
+                EXISTENCIAS,
+                ESTATUS
+            FROM dbo.Almacen 
+            WHERE dbo.Almacen.ESTATUS = 1
+            """
+        )
+    return render_template("sales/add-sales-worker.html", products=products)
+
+
 # Cerrar session (Terminado)
 @app.route("/signout")
 def signout():
@@ -813,6 +855,7 @@ app.register_blueprint(auth)
 app.register_blueprint(products)
 app.register_blueprint(p)
 app.register_blueprint(sc)
+app.register_blueprint(sales)
 
 
 # Ruta dinámica para archivos estáticos

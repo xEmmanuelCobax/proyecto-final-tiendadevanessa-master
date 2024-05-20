@@ -83,3 +83,24 @@ body.dark-mode .btn {
   box-shadow: none !important;
 }
 
+/* Oculta las flechas de desplazamiento en el scrollbar */
+::-webkit-scrollbar {
+  width: 10px; /* Ajusta el ancho del scrollbar según tus necesidades */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Cambia el color de fondo del scrollbar track si lo deseas */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Cambia el color del thumb (la barra deslizante) */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Cambia el color del thumb cuando se pasa el mouse por encima */
+}
+
+/* Oculta las flechas de desplazamiento */
+::-webkit-scrollbar-button {
+  display: none;
+}

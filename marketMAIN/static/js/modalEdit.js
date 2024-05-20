@@ -31,8 +31,16 @@ var editProductModal = document.getElementById("editproduct");
 editProductModal.addEventListener("hidden.bs.modal", limpiarEditModal);
 
 // Bloquear números negativos en el campo de precio
-document.getElementById("newprecio").addEventListener("input", function () {
-  if (this.value < 0) {
+document.getElementById("newprecio2").addEventListener("input", function () {
+  let value = this.value;
+
+  // Permitir solo números, el punto decimal y una longitud máxima
+  if (!/^\d*\.?\d*$/.test(value)) {
+    this.value = value.slice(0, -1);
+  }
+
+  // Si el valor es menor a 0, ponerlo en vacío
+  if (this.value <= 0) {
     this.value = "";
   }
 });
@@ -41,7 +49,15 @@ document.getElementById("newprecio").addEventListener("input", function () {
 document
   .getElementById("newcantidadInput")
   .addEventListener("input", function () {
-    if (this.value < 0) {
+    let value = this.value;
+
+    // Permitir solo números, el punto decimal y una longitud máxima
+    if (!/^\d*\.?\d*$/.test(value)) {
+      this.value = value.slice(0, -1);
+    }
+
+    // Si el valor es menor a 0, ponerlo en vacío
+    if (this.value <= 0) {
       this.value = "";
     }
   });

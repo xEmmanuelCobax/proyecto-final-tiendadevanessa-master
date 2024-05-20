@@ -1,7 +1,11 @@
 {% extends 'top navbar/top-navbar.html' %} {% block title %} Manage Companies {%
 endblock %} {% block content %}
 
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/products.css') }}"
+/>
 
 <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
 <style></style>
@@ -10,81 +14,108 @@ endblock %} {% block content %}
   <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
     <h6 class="mt-1 d-none d-sm-flex">Manage Companies</h6>
 
-    <div class="col-12 col-lg-3 border border-Tertiary rounded p-0">
-      <nav class="nav flex-column">
-        <div class="list-group d-flex flex-column">
-          <a class="list-group-button-home list-group-item list-group-item-action"
-            href="{{ url_for('shortcut.shortcut') }}">Home</a>
-          <a class="list-group-buttons list-group-item list-group-item-action"
-            href="{{ url_for('products.warehouse') }}">warehouse</a>
-          <a class="list-group-buttons list-group-item list-group-item-action"
-            href="{{ url_for('products.managewarehouse') }}">Manage warehouse</a>
-          <a class="list-group-item list-group-item-action active animate__animated animate__bounceIn"
-            href="{{ url_for('products.managecompany') }}">Manage Companys</a>
-        </div>
-      </nav>
-    </div>
+    {% include 'top navbar/top-width-navbar.html' %}
 
     <div class="col-12 col-lg-9 mt-3">
       <form class="d-flex mt-3">
         <div class="flex-grow-1"></div>
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createmodal"
-          data-bs-whatever="@mdo">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#createmodal"
+          data-bs-whatever="@mdo"
+        >
           Create Company
         </button>
       </form>
 
-      <table class="table table-bordered table-striped mt-3 mb-3">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Intermediary</th>
-            <th scope="col">Tel.</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          {% for relation in relations %}
-          <tr>
-            <th scope="row">{{ relation[2] }}</th>
-            <td>{{ relation[1] }}</td>
-            <td>{{ relation[3] ~ relation[4] ~ relation[5] }}</td>
-            <td>{{ relation[6] }}</td>
-            <td class="text-center d-flex justify-content-center align-items-center">
-              <button type="button" class="square-btn btn-warning mx-2" data-bs-toggle="modal"
-                data-bs-target="#editCompany">
-                <span class="material-symbols-outlined">Edit</span>
-              </button>
-              <button type="button" class="square-btn btn-danger mx-2" data-bs-toggle="modal"
-                data-bs-target="#deleteCompany" onclick="setCompaniaId('{{ relations[2] }}')">
-                <span class="material-symbols-outlined">Delete</span>
-              </button>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped mt-3 mb-3">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Intermediary</th>
+              <th scope="col">Tel.</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            {% for relation in relations %}
+            <tr>
+              <th scope="row">{{ relation[2] }}</th>
+              <td>{{ relation[1] }}</td>
+              <td>{{ relation[3] ~ relation[4] ~ relation[5] }}</td>
+              <td>{{ relation[6] }}</td>
+              <td
+                class="text-center d-flex justify-content-center align-items-center"
+              >
+                <button
+                  type="button"
+                  class="square-btn btn-warning mx-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editCompany"
+                  data-Intermediary-id="{{ relation[2] }}"
+                  onclick="setEditProductId('{{ relation[2] }}')"
+                >
+                  <span class="material-symbols-outlined">Edit</span>
+                </button>
+                <button
+                  type="button"
+                  class="square-btn btn-danger mx-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteCompany"
+                  data-Intermediary-id="{{ relation[2] }}"
+                  onclick="setIntermediaryId('{{ relation[2] }}')"
+                >
+                  <span class="material-symbols-outlined">Delete</span>
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="createmodal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="createmodallabel"
-  aria-hidden="true">
+<div
+  class="modal fade"
+  id="createmodal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="createmodallabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="createmodallabel">Create New Company</h5>
-        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
-        <form action="{{ url_for('products.create_company') }}" method="post" class="needs-validation" novalidate>
-
+        <form
+          action="{{ url_for('products.create_company') }}"
+          method="post"
+          class="needs-validation"
+          novalidate
+        >
           <div class="mb-3">
             <label for="company-select">Select Company:</label>
-            <select class="form-select" id="company-select" name="company_id">
+            <select
+              class="form-select"
+              id="company-select"
+              name="company_id"
+              required
+            >
               <option value="" disabled selected>Select Company</option>
               {% for company in companies %}
               <option value="{{ company[0] }}">{{ company[1] }}</option>
@@ -93,31 +124,74 @@ endblock %} {% block content %}
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label">Intermediary Names:</label>
-            <input type="text" class="form-control" id="intermediaryName" name="intermediaryName" required />
+            <label for="intermediary" class="form-label"
+              >Intermediary Names:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="intermediaryName"
+              name="intermediaryName"
+              required
+            />
             <div class="invalid-feedback">
               Please enter the intermediary name.
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label">Intermediary Last name:</label>
-            <input type="text" class="form-control" id="intermediaryLastName" name="intermediaryLastName" required />
+            <label for="intermediary" class="form-label">last name:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="AP_PAT"
+              name="AP_PAT"
+              required
+            />
             <div class="invalid-feedback">
               Please enter the intermediary last name.
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label">Intermediary Phone:</label>
-            <input type="text" class="form-control" id="intermediaryPhone" name="intermediaryPhone" required />
+            <label for="intermediary" class="form-label"
+              >mother's last name:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="AP_MAT"
+              name="AP_MAT"
+              required
+            />
+            <div class="invalid-feedback">
+              Please enter the intermediary mother's last name.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="intermediary" class="form-label"
+              >Intermediary Phone:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="intermediaryPhone"
+              name="intermediaryPhone"
+              required
+              oninput="limitInput(this)"
+            />
             <div class="invalid-feedback">
               Please enter the intermediary number phone.
             </div>
           </div>
 
           <div class="text-end">
-            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-warning me-2"
+              data-bs-dismiss="modal"
+            >
               Close
             </button>
             <button type="submit" class="btn btn-success">Save</button>
@@ -128,19 +202,42 @@ endblock %} {% block content %}
   </div>
 </div>
 
-<div class="modal fade" id="editCompany" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editCompanyLabel"
-  aria-hidden="true">
+<div
+  class="modal fade"
+  id="editCompany"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="editCompanyLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editCompanyLabel">Edit Company</h5>
-        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
-        <form action="{{ url_for('products.edit_company') }}" method="post" class="needs-validation" novalidate>
+        <form
+          action="{{ url_for('products.edit_company') }}"
+          method="post"
+          class="needs-validation"
+          novalidate
+        >
           <div class="mb-3">
-            <label for="editCompanyName" class="form-label">New Company Name:</label>
-            <select class="form-select" id="company-select2" name="company_id">
+            <label for="editCompanyName" class="form-label"
+              >New Company Name:</label
+            >
+            <select
+              class="form-select"
+              id="company-select2"
+              name="company_id"
+              required
+            >
               <option value="" disabled selected>Select Company</option>
               {% for company in companies %}
               <option value="{{ company[0] }}">{{ company[1] }}</option>
@@ -149,34 +246,82 @@ endblock %} {% block content %}
             <div class="invalid-feedback">Please enter the company name.</div>
           </div>
           <div class="mb-3">
-            <label for="intermediary" class="form-label">New Intermediary Names:</label>
-            <input type="text" class="form-control" id="editIntermediaryName" name="editIntermediaryName" required />
+            <label for="intermediary" class="form-label"
+              >New Intermediary Names:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="editIntermediaryName"
+              name="editIntermediaryName"
+              required
+            />
             <div class="invalid-feedback">
               Please enter the intermediary name.
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label">New Intermediary Last Names:</label>
-            <input type="text" class="form-control" id="editIntermediaryLastName" name="editIntermediaryLastName"
-              required />
+            <label for="intermediary" class="form-label">last name:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="NEW-AP_PAT"
+              name="NEW-AP_PAT"
+              required
+            />
             <div class="invalid-feedback">
-              Please enter the intermediary last names.
+              Please enter the intermediary last name.
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label">New Intermediary Phone:</label>
-            <input type="text" class="form-control" id="editIntermediaryPhone" name="editIntermediaryPhone" required />
+            <label for="intermediary" class="form-label"
+              >mother's last name:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="NEW-AP_MAT"
+              name="NEW-AP_MAT"
+              required
+            />
+            <div class="invalid-feedback">
+              Please enter the intermediary mother's last name.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="intermediary" class="form-label"
+              >New Intermediary Phone:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="editIntermediaryPhone"
+              name="editIntermediaryPhone"
+              required
+              oninput="limitInput(this)"
+            />
             <div class="invalid-feedback">
               Please enter the intermediary number phone.
             </div>
           </div>
           <!-- Agrega aquí los demás campos del formulario según sea necesario -->
           <div class="text-end">
-            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-warning me-2"
+              data-bs-dismiss="modal"
+            >
               Close
             </button>
+            <input
+            id="EditValueIntermediary_id"
+            type="hidden"
+            name="EditIntermediary_id"
+            value=""
+          />
             <button type="submit" class="btn btn-success">Save Changes</button>
           </div>
         </form>
@@ -185,13 +330,24 @@ endblock %} {% block content %}
   </div>
 </div>
 
-<div class="modal fade" id="deleteCompany" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteCompanyLabel"
-  aria-hidden="true">
+<div
+  class="modal fade"
+  id="deleteCompany"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="deleteCompanyLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Delete Company</h5>
-        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-warning" role="alert">
@@ -202,8 +358,17 @@ endblock %} {% block content %}
         <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
           Close
         </button>
-        <form id="delete-product-form" action="{{ url_for('products.delete_company') }}" method="post">
-          <input id="company_id-input" type="hidden" name="company_id" value="" />
+        <form
+          id="delete-product-form"
+          action="{{ url_for('products.delete_company') }}"
+          method="post"
+        >
+          <input
+            id="ValueIntermediaryId"
+            type="hidden"
+            name="DeleteIntermediaryId"
+            value=""
+          />
           <button id="delete-company-btn" type="submit" class="btn btn-danger">
             Delete Company
           </button>
@@ -213,9 +378,54 @@ endblock %} {% block content %}
   </div>
 </div>
 
+<!-- no permitir campos vacios en el modal create-->
 <script>
-  function setCompaniaId(productId) {
-    document.getElementById("company_id-input").value = productId;
+  // Bootstrap validation script
+  (function () {
+    "use strict";
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll(".needs-validation");
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener(
+        "submit",
+        function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  })();
+</script>
+
+<script>
+  function setIntermediaryId(IntermediaryId) {
+      document.getElementById("ValueIntermediaryId").value = IntermediaryId;
+      console.log("IntermediaryId BORRAR>" + IntermediaryId);
+    }
+  function setEditProductId(IntermediaryId) {
+    document.getElementById("EditValueIntermediary_id").value = IntermediaryId;
+    console.log("EditIntermediary_id EDITAR>" + IntermediaryId);
   }
 </script>
+
+<script>
+  function limitInput(element) {
+    const maxDigits = 10;
+    let value = element.value;
+
+    // Ensure the input value is numeric and doesn't exceed maxDigits
+    if (value.length > maxDigits) {
+      element.value = value.slice(0, maxDigits);
+    }
+  }
+</script>
+
 {% endblock %}

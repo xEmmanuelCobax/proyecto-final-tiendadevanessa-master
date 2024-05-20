@@ -1,0 +1,370 @@
+{% extends 'top navbar/top-navbar.html' %} {% block title %} Manage Companies {%
+endblock %} {% block content %}
+
+<style>
+  :root {
+    --bd-violet-bg: #686363;
+    /* Morado */
+    --bs-white: #fff;
+    /* Blanco */
+  }
+
+  .custom-tooltip {
+    --bs-tooltip-bg: var(--bd-violet-bg);
+    --bs-tooltip-color: var(--bs-white);
+  }
+
+  /* Estilo para permitir saltos de línea en el tooltip */
+  .tooltip-inner {
+    white-space: pre-line;
+  }
+</style>
+
+<style>
+  /* Estilos para el buscador */
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 378px;
+    max-height: 200px; /* Altura máxima del menú desplegable */
+    overflow-y: auto; /* Agregar barra de desplazamiento vertical */
+    padding: 0.5rem 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+  }
+
+  .dropdown-item {
+    padding: 0.2rem 1rem;
+    cursor: pointer;
+    white-space: nowrap; /* Evitar que el texto se ajuste automáticamente */
+    overflow: hidden; /* Ocultar cualquier texto que no quepa en el contenedor */
+    text-overflow: ellipsis; /* Mostrar puntos suspensivos (...) si el texto es demasiado largo */
+    font-size: 14px; /* Tamaño de fuente ajustado */
+  }
+
+  .dropdown-item:hover {
+    background-color: #f8f9fa;
+  }
+
+  /* Estilos para el contenedor de información */
+  .product-info {
+    display: flex; /* Mostrar los elementos en una fila */
+    flex-wrap: wrap; /* Permitir que los elementos se envuelvan a la siguiente línea si no caben */
+  }
+
+  /* Estilos para los elementos de información */
+  .product-info > div {
+    display: flex; /* Utilizar flexbox para distribuir los elementos en una fila */
+    align-items: center; /* Centrar verticalmente los elementos */
+    padding: 0.5rem 1rem; /* Espaciado interno */
+  }
+
+  /* Estilo para la raya vertical */
+  .product-info > .divider {
+    border-right: 1px solid #ccc; /* Agregar una raya vertical */
+    padding-right: 1rem; /* Espaciado adicional a la derecha para separar la raya */
+    margin-right: 1rem; /* Margen adicional a la derecha para separar la raya */
+  }
+</style>
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/sales.css') }}"
+/>
+
+<div class="container-fluid mt-5">
+  <!-- Agregamos la clase mt-5 para añadir margen superior -->
+  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
+    <h6 class="mt-1 d-none d-sm-flex">Manage warehouse</h6>
+
+    {% include 'top navbar/top-width-navbar.html' %}
+
+    <div class="col-12 col-lg-9 mt-3">
+      <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
+
+      <form class="d-flex flex-wrap mt-3">
+        <div class="col-sm-5 col-6 mb-3 mb-sm-0">
+          <div class="form-group">
+            <div class="input-group">
+              <input
+                id="searchInput"
+                class="form-control"
+                type="search"
+                placeholder="Buscar producto"
+                aria-label="Buscar producto"
+              />
+              <button id="addButton" type="button" class="btn btn-primary ms-2">
+                Add product
+              </button>
+            </div>
+            <div id="searchResults" class="dropdown-menu"></div>
+          </div>
+        </div>
+
+        <div class="flex-grow-1"></div>
+        <button type="button" class="btn btn-primary">Realizar venta</button>
+      </form>
+
+      <div class="row">
+        <div class="col-md-5">
+          <div
+            class="buttons mt-3 border border-Tertiary p-3 rounded d-flex flex-wrap justify-content-center align-items-center"
+            style="max-height: 500px; overflow-y: auto"
+          >
+            {% for product in products %}
+            <div
+              class="col mb-2 d-flex justify-content-center align-items-center"
+            >
+              <a
+                class="btn btn-outline-light btn-md square-btn mx-1 product-btn"
+                style="width: 90px; height: 90px"
+                data-id="{{ product[0] }}"
+                data-name="{{ product[1] }}"
+                data-price="{{ product[2] }}"
+                data-amount="{{ product[3] }}"
+                data-status="{{ product[4] }}"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip"
+                title="ID: {{ product[0] }} &#10;Name: {{ product[1] }} &#10;Price: {{ product[2] }}$ &#10;Amount: {{ product[3] }} &#10;Status: {{ product[4] }}"
+              >
+                <div class="d-flex flex-column align-items-center">
+                  <span
+                    class="product-name"
+                    style="
+                      font-size: 14px;
+                      overflow-wrap: break-word;
+                      max-width: 100%;
+                      text-align: center;
+                    "
+                  >
+                    {{ product[1] }}
+                  </span>
+                </div>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="col-md-7">
+          <div
+            class="table-responsive mt-3"
+            style="max-height: 500px; overflow-y: auto"
+          >
+            <table class="table table-bordered table-striped mt-3 mb-3">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">id</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="table-group-divider">
+                <!-- Aquí se añadirán dinámicamente las filas de los productos -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE ADVERTENCIA -->
+<div
+  class="modal fade"
+  id="productExistsModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-top">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Producto existente</h5>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="alert alert-warning" role="alert">
+          Este producto ya ha sido agregado.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tooltipTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]'
+    );
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+      const tooltip = new bootstrap.Tooltip(tooltipTriggerEl);
+      tooltipTriggerEl.addEventListener("click", function () {
+        // Cerrar el tooltip al hacer clic en el elemento
+        tooltip.hide();
+      });
+      tooltipTriggerEl.addEventListener("mouseleave", function () {
+        // Cerrar el tooltip cuando el mouse sale del elemento
+        tooltip.hide();
+      });
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".product-btn");
+    const tableBody = document.querySelector(".table-group-divider");
+
+    buttons.forEach((button, index) => {
+      button.addEventListener("click", function () {
+        const productInfo = [
+          this.dataset.id,
+          this.dataset.name,
+          this.dataset.amount,
+          this.dataset.price,
+        ];
+
+        // Verificar si el producto ya existe en la tabla
+        const existingProduct = Array.from(
+          tableBody.querySelectorAll("tr")
+        ).find((row) => row.dataset.id === productInfo[0]);
+        if (existingProduct) {
+          // Mostrar el modal si el producto ya existe
+          const productExistsModal = new bootstrap.Modal(
+            document.getElementById("productExistsModal")
+          );
+          productExistsModal.show();
+          return; // Salir de la función si el producto ya existe
+        }
+
+        // Si el producto no existe, agregarlo a la tabla
+        const newRow = document.createElement("tr");
+        newRow.dataset.id = productInfo[0];
+        newRow.innerHTML = `
+          <th scope="row" style="text-align: center; margin: auto;">${
+            index + 1
+          }</th>
+          <td style="text-align: center; margin: auto;">${productInfo[0]}</td>
+          <td>${productInfo[1]}</td>
+          <td style="text-align: center;">
+            <input type="number" class="form-control" value="1" min="1" max="${
+              productInfo[2]
+            }" onkeydown="return false" onpaste="return false" onfocus="this.blur();" style="background: transparent; border: none; padding: 0; width: 80px; font-size: 17px; text-align: center; margin: auto;" />
+          </td>
+          <td style="text-align: center; margin: auto;">${productInfo[3]}$</td>
+          <td class="text-center d-flex justify-content-center align-items-center">
+            <button type="button" class="delete-btn btn-danger mx-2" onclick="deleteProduct(this)">
+              <span class="material-symbols-outlined"> delete </span>
+            </button>
+          </td>
+        `;
+
+        tableBody.appendChild(newRow);
+      });
+    });
+  });
+
+  function deleteProduct(button) {
+    const row = button.closest("tr");
+    row.remove();
+  }
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const products = Array.from(document.querySelectorAll(".product-btn")).map(
+      (button) => ({
+        id: button.dataset.id,
+        name: button.dataset.name,
+        price: button.dataset.price,
+        amount: button.dataset.amount,
+        status: button.dataset.status,
+      })
+    );
+
+    const searchInput = document.getElementById("searchInput");
+    const searchResults = document.getElementById("searchResults");
+    const searchClear = document.getElementById("searchClear");
+
+    // Array para almacenar los productos seleccionados
+    const selectedProducts = [];
+
+    searchInput.addEventListener("input", function () {
+      const searchTerm = this.value.toLowerCase();
+      const matchingProducts = products.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm)
+      );
+
+      searchResults.innerHTML = ""; // Limpiar resultados anteriores
+      matchingProducts.forEach((product) => {
+        const listItem = document.createElement("div");
+        listItem.classList.add("dropdown-item");
+        listItem.innerHTML = `
+        <div class="product-info border-bottom border-2 border-dark">
+          <div class="divider">ID: ${product.id}</div>
+          <div>Name: ${product.name}</div>
+          <div>Price: ${product.price}$</div>
+          <div>Amount: ${product.amount}</div>
+          <div>Status: ${product.status}</div>
+        </div>
+      `;
+        // Agregar evento click para guardar producto seleccionado
+        listItem.addEventListener("click", function () {
+          const productInfo = [
+            product.id,
+            product.name,
+            product.amount,
+            product.price,
+          ];
+          selectedProducts.push(productInfo);
+          console.log("Producto seleccionado:", productInfo);
+        });
+        searchResults.appendChild(listItem);
+      });
+
+      if (matchingProducts.length > 0) {
+        searchResults.style.display = "block";
+      } else {
+        searchResults.style.display = "none";
+      }
+    });
+
+    document.addEventListener("click", function (event) {
+      if (
+        !searchResults.contains(event.target) &&
+        event.target !== searchInput
+      ) {
+        searchResults.style.display = "none";
+        searchInput.value = ""; // Limpiar el input de búsqueda
+      }
+    });
+
+    searchClear.addEventListener("click", function () {
+      searchResults.style.display = "none";
+      searchInput.value = ""; // Limpiar el input de búsqueda
+    });
+  });
+</script>
+
+{% endblock %}

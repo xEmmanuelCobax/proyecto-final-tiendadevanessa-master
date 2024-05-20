@@ -1,3 +1,42 @@
-pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+"
-title="Solo se permiten letras y espacios"
-oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
+           {% for product in products %}
+                <div class="col mb-3">
+                    <a
+                        class="btn btn-outline-light btn-lg square-btn mx-2"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        data-bs-custom-class="custom-tooltip"
+                        title="ID: {{ product[0] }},&#10;Price: {{ product[2] }}$,&#10;Amount: {{ product[3] }},&#10;Status: {{ product[4] }}"
+                        href="#"
+                    >
+                        <div class="d-flex flex-column align-items-center">
+                            <span class="material-symbols-outlined"> barcode_scanner </span>
+                            <span class="d-none d-md-block">{{ product[1] }}</span>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+
+
+
+                const termToIcon = {
+                    'pcs': '📦',     // Representación de caja para piezas
+                    'L': '🍶',       // Botella para litros
+                    'ml': '🍶',      // Botella para mililitros
+                    'kg': '⚖️',     // Balanza para kilogramos
+                    'g': '⚖️'       // Balanza para gramos
+                  };
+
+
+                  .hidden {
+                    display: none; 
+                  }
+                
+                  .product-container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center; 
+                  }
+                
+                  .product-btn {
+                    margin: 5px; 
+                  }
