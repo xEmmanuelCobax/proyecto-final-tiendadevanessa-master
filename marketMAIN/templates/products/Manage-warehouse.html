@@ -97,12 +97,12 @@ endblock %} {% block content %}
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="marca" class="form-label">Brand:</label>
-                <input type="text" class="form-control" id="marca" name="marca" required />
+                <input type="text" class="form-control" id="marca" name="marca" required oninput="limitTextInput(this)" />
                 <div class="invalid-feedback">Por favor ingresa una marca.</div>
               </div>
               <div class="mb-3">
                 <label for="producto" class="form-label">Name Product:</label>
-                <input type="text" class="form-control" id="producto" name="producto" required />
+                <input type="text" class="form-control" id="producto" name="producto" required oninput="limitTextInput(this)" />
                 <div class="invalid-feedback">Por favor ingresa un producto.</div>
               </div>
               <div class="mb-3">
@@ -150,7 +150,7 @@ endblock %} {% block content %}
               </div>
               <div class="mb-3">
                 <label for="cantidadInput" class="form-label">Quantity:</label>
-                <input type="number" class="form-control" id="cantidad" name="cantidad" required />
+                <input type="number" class="form-control" id="cantidad" name="cantidad" required  oninput="limitQualityInput(this)" />
                 <div class="invalid-feedback">Por favor ingresa una cantidad válida.</div>
               </div>
               <div class="col-md-6">
@@ -214,6 +214,7 @@ endblock %} {% block content %}
                   id="newmarca"
                   name="newmarca"
                   required
+                  oninput="limitTextInput(this)"
                 />
                 <div class="invalid-feedback">Por favor ingresa una marca.</div>
               </div>
@@ -228,6 +229,7 @@ endblock %} {% block content %}
                   id="newproducto"
                   name="newproducto"
                   required
+                  oninput="limitTextInput(this)"
                 />
                 <div class="invalid-feedback">
                   Por favor ingresa un producto.
@@ -326,6 +328,7 @@ endblock %} {% block content %}
                   id="newcantidadInput"
                   name="newcantidad"
                   required
+                  oninput="limitQualityInput(this)"
                 />
                 <div class="invalid-feedback">
                   Please enter a valid quantity.
@@ -805,4 +808,31 @@ endblock %} {% block content %}
     console.log("productId EDITAR>" + productId);
   }
 </script>
+
+<script>
+  function limitTextInput(element) {
+    const maxDigits = 13;
+    element.value = element.value.replace(/[^a-zA-Z]/g, '');
+    let value = element.value;
+
+    if (value.length > maxDigits) {
+      element.value = value.slice(0, maxDigits);
+    }
+  }
+</script> 
+
+<script>
+  function limitQualityInput(element) {
+    const maxDigits = 5;
+    element.value = element.value.replace(/[^0-9]/g, '');
+    let value = element.value;
+
+    // Ensure the input value is numeric and doesn't exceed maxDigits
+    if (value.length > maxDigits) {
+      element.value = value.slice(0, maxDigits);
+    }
+
+  }
+</script>
+
 {% endblock %}

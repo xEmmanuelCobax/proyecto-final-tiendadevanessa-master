@@ -27,6 +27,7 @@ endblock %} {% block content %}
             placeholder="Search"
             aria-label="Search"
             name="search_term"
+            oninput="limitTextInput(this)"
           />
         </div>
         <div class="flex-grow-1"></div>
@@ -62,4 +63,15 @@ endblock %} {% block content %}
   </div>
 </div>
 
+<script>
+  function limitTextInput(element) {
+    const maxDigits = 20;
+    element.value = element.value.replace(/[^a-zA-Z-0-9]/g, '');
+    let value = element.value;
+
+    if (value.length > maxDigits) {
+      element.value = value.slice(0, maxDigits);
+    }
+  }
+</script>
 {% endblock %}

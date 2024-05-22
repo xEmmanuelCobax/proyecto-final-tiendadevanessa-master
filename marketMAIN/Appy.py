@@ -812,7 +812,7 @@ def shortcut():
     return render_template("shortcut.html")
 
 
-# Ni idea
+# Ajustes de cuentas
 @sc.route("/settings")
 def settings():
     return render_template("settings/settings.html")
@@ -821,21 +821,41 @@ def settings():
 # Ventas
 @sales.route("/addsalesworker")
 def addsalesworker():
-    #sales.addsalesworker
-    products = config.Read(
-            """
-            SELECT 
-                ID_PRODUCTO, 
-                NOMBRE, 
-                PRECIO_UNITARIO, 
-                EXISTENCIAS,
-                ESTATUS
-            FROM dbo.Almacen 
-            WHERE dbo.Almacen.ESTATUS = 1
-            """
-        )
-    return render_template("sales/add-sales-worker.html", products=products)
+    # sales.addsalesworker
+    if "email" in session:
+        print("<#################### addsalesworker ####################")
+        products = config.Read(
+                """
+                SELECT 
+                    ID_PRODUCTO, 
+                    NOMBRE, 
+                    PRECIO_UNITARIO, 
+                    EXISTENCIAS,
+                    ESTATUS
+                FROM dbo.Almacen 
+                WHERE dbo.Almacen.ESTATUS = 1
+                """
+            )
+        print("#################### FIN ####################>")
+        return render_template("sales/add-sales-worker.html", products=products)
+    else:
+        print("NO HAY SESSION")
+    return redirect(url_for("auth.signin"))
 
+
+# Realizar ventas
+@sales.route("/MakeSales", methods=['POST'])
+def MakeSales():
+    # sales.addsalesworker
+    if "email" in session:
+        print("<#################### addsalesworker ####################")
+        print("#################### FIN ####################>")
+
+        
+        return render_template("sales/add-sales-worker.html", products=products)
+    else:
+        print("NO HAY SESSION")
+    return redirect(url_for("auth.signin"))
 
 # Cerrar session (Terminado)
 @app.route("/signout")

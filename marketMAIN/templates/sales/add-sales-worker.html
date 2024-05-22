@@ -67,6 +67,8 @@ endblock %} {% block content %}
     padding-right: 1rem; /* Espaciado adicional a la derecha para separar la raya */
     margin-right: 1rem; /* Margen adicional a la derecha para separar la raya */
   }
+
+
 </style>
 
 <link
@@ -105,7 +107,9 @@ endblock %} {% block content %}
         </div>
 
         <div class="flex-grow-1"></div>
-        <button type="button" class="btn btn-primary">Realizar venta</button>
+        <button id="addSale" type="button" class="btn btn-primary">
+          Realizar venta
+        </button>
       </form>
 
       <div class="row">
@@ -120,7 +124,7 @@ endblock %} {% block content %}
             >
               <a
                 class="btn btn-outline-light btn-md square-btn mx-1 product-btn"
-                style="width: 90px; height: 90px"
+                style="width: 90px; height: 90px; overflow: hidden;" 
                 data-id="{{ product[0] }}"
                 data-name="{{ product[1] }}"
                 data-price="{{ product[2] }}"
@@ -139,6 +143,7 @@ endblock %} {% block content %}
                       overflow-wrap: break-word;
                       max-width: 100%;
                       text-align: center;
+                    
                     "
                   >
                     {{ product[1] }}
@@ -155,7 +160,10 @@ endblock %} {% block content %}
             class="table-responsive mt-3"
             style="max-height: 500px; overflow-y: auto"
           >
-            <table class="table table-bordered table-striped mt-3 mb-3">
+            <table
+              id="saleTable"
+              class="table table-bordered table-striped mt-3 mb-3"
+            >
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -169,6 +177,8 @@ endblock %} {% block content %}
               <tbody class="table-group-divider">
                 <!-- Aquí se añadirán dinámicamente las filas de los productos -->
               </tbody>
+
+
             </table>
           </div>
         </div>
@@ -212,6 +222,7 @@ endblock %} {% block content %}
   </div>
 </div>
 
+<!-- SCRIPT PARA CARGAR TOOLTIPS -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const tooltipTriggerList = document.querySelectorAll(
@@ -231,6 +242,7 @@ endblock %} {% block content %}
   });
 </script>
 
+<!-- SCRUPT PARA AGREGAR PRODUCTOS A LA TABLA MEDIANTE LOS BOTONES -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const buttons = document.querySelectorAll(".product-btn");
@@ -275,7 +287,7 @@ endblock %} {% block content %}
           <td style="text-align: center; margin: auto;">${productInfo[3]}$</td>
           <td class="text-center d-flex justify-content-center align-items-center">
             <button type="button" class="delete-btn btn-danger mx-2" onclick="deleteProduct(this)">
-              <span class="material-symbols-outlined"> delete </span>
+              <span class="material-symbols-outlined"> delete_forever </span>
             </button>
           </td>
         `;
@@ -291,6 +303,7 @@ endblock %} {% block content %}
   }
 </script>
 
+<!-- SCRIPT PARA FILTRAR EN EL BUSCADOR Y AGREGAR PRODUCTOS -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const products = Array.from(document.querySelectorAll(".product-btn")).map(
@@ -305,10 +318,10 @@ endblock %} {% block content %}
 
     const searchInput = document.getElementById("searchInput");
     const searchResults = document.getElementById("searchResults");
-    const searchClear = document.getElementById("searchClear");
+    const addButton = document.getElementById("addButton");
+    const tableBody = document.querySelector(".table-group-divider");
 
-    // Array para almacenar los productos seleccionados
-    const selectedProducts = [];
+    let selectedProduct = null;
 
     searchInput.addEventListener("input", function () {
       const searchTerm = this.value.toLowerCase();
@@ -317,37 +330,28 @@ endblock %} {% block content %}
       );
 
       searchResults.innerHTML = ""; // Limpiar resultados anteriores
+
       matchingProducts.forEach((product) => {
         const listItem = document.createElement("div");
         listItem.classList.add("dropdown-item");
         listItem.innerHTML = `
-        <div class="product-info border-bottom border-2 border-dark">
-          <div class="divider">ID: ${product.id}</div>
-          <div>Name: ${product.name}</div>
-          <div>Price: ${product.price}$</div>
-          <div>Amount: ${product.amount}</div>
-          <div>Status: ${product.status}</div>
-        </div>
-      `;
-        // Agregar evento click para guardar producto seleccionado
+          <div class="product-info border-bottom border-2 border-dark">
+            <div class="divider">ID: ${product.id}</div>
+            <div>Name: ${product.name}</div>
+            <div>Price: ${product.price}$</div>
+            <div>Amount: ${product.amount}</div>
+            <div>Status: ${product.status}</div>
+          </div>
+        `;
         listItem.addEventListener("click", function () {
-          const productInfo = [
-            product.id,
-            product.name,
-            product.amount,
-            product.price,
-          ];
-          selectedProducts.push(productInfo);
-          console.log("Producto seleccionado:", productInfo);
+          selectedProduct = product;
+          console.log("Producto seleccionado:", selectedProduct);
         });
         searchResults.appendChild(listItem);
       });
 
-      if (matchingProducts.length > 0) {
-        searchResults.style.display = "block";
-      } else {
-        searchResults.style.display = "none";
-      }
+      searchResults.style.display =
+        matchingProducts.length > 0 ? "block" : "none";
     });
 
     document.addEventListener("click", function (event) {
@@ -357,14 +361,122 @@ endblock %} {% block content %}
       ) {
         searchResults.style.display = "none";
         searchInput.value = ""; // Limpiar el input de búsqueda
+        selectedProduct = null; // Limpiar el producto seleccionado
       }
+
+      searchClear.addEventListener("click", function () {
+        searchResults.style.display = "none";
+        searchInput.value = ""; // Limpiar el input de búsqueda
+        selectedProduct = null; // Limpiar el producto seleccionado
+      });
     });
 
-    searchClear.addEventListener("click", function () {
-      searchResults.style.display = "none";
-      searchInput.value = ""; // Limpiar el input de búsqueda
+    addButton.addEventListener("click", function () {
+      if (!selectedProduct) {
+        alert("No hay ningún producto seleccionado.");
+        return;
+      }
+
+      const existingProduct = Array.from(tableBody.querySelectorAll("tr")).find(
+        (row) => row.dataset.id === selectedProduct.id
+      );
+
+      if (existingProduct) {
+        const productExistsModal = new bootstrap.Modal(
+          document.getElementById("productExistsModal")
+        );
+        productExistsModal.show();
+        return;
+      }
+
+      const newRow = document.createElement("tr");
+      newRow.dataset.id = selectedProduct.id;
+      newRow.innerHTML = `
+        <th scope="row" style="text-align: center; margin: auto;">${
+          tableBody.querySelectorAll("tr").length + 1
+        }</th>
+        <td style="text-align: center; margin: auto;">${selectedProduct.id}</td>
+        <td>${selectedProduct.name}</td>
+        <td style="text-align: center;">
+          <input type="number" class="form-control" value="1" min="1" max="${
+            selectedProduct.amount
+          }" onkeydown="return false" onpaste="return false" onfocus="this.blur();" style="background: transparent; border: none; padding: 0; width: 80px; font-size: 17px; text-align: center; margin: auto;" />
+        </td>
+        <td style="text-align: center; margin: auto;">${
+          selectedProduct.price
+        }$</td>
+        <td class="text-center d-flex justify-content-center align-items-center">
+          <button type="button" class="delete-btn btn-danger mx-2" onclick="deleteProduct(this)">
+            <span class="material-symbols-outlined"> delete_forever </span>
+          </button>
+        </td>
+      `;
+
+      tableBody.appendChild(newRow);
     });
   });
 </script>
 
+<!-- SCRIPT PARA ENVIAR LOS DATOS AL SERVIDOR -->
+<script>
+  document.getElementById("addSale").addEventListener("click", function () {
+    const xhr = new XMLHttpRequest();
+    const url = "/sales/MakeSales";
+    const method = "POST";
+    const headers = { "Content-Type": "application/json" };
+    const salesData = obtenerDatosTabla(); // Función para obtener los datos de la tabla
+
+    xhr.open(method, url);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        console.log("Success:", xhr.responseText);
+      } else {
+        console.error("Error:", xhr.statusText);
+      }
+    };
+    xhr.onerror = function () {
+      console.error("Error:", xhr.statusText);
+    };
+    xhr.send(JSON.stringify(salesData));
+  });
+
+  function obtenerDatosTabla() {
+    const rows = document.querySelectorAll("#saleTable tr");
+    const salesData = [];
+
+    rows.forEach((row) => {
+      const dataId = row.getAttribute("data-id");
+      const cells = row.querySelectorAll("td");
+      const rowData = { id: dataId };
+
+      cells.forEach((cell, index) => {
+        let cellValue;
+        if (cell.querySelector("input")) {
+          cellValue = cell.querySelector("input").value;
+        } else {
+          cellValue = cell.textContent.trim();
+        }
+
+        console.log(index);
+
+        switch (index) {
+          case 0:
+            rowData.quantity = cellValue;
+            break;
+          case 1:
+            rowData.productName = cellValue;
+            break;
+          case 2:
+            rowData.price = cellValue;
+            break;
+        }
+      });
+
+      salesData.push(rowData);
+    });
+    console.log(salesData);
+    return salesData;
+  }
+</script>
 {% endblock %}

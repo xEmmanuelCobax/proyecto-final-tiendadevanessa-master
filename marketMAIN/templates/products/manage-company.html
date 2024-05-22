@@ -60,7 +60,7 @@ endblock %} {% block content %}
                   data-Intermediary-id="{{ relation[2] }}"
                   onclick="setEditProductId('{{ relation[2] }}')"
                 >
-                  <span class="material-symbols-outlined">Edit</span>
+                  <span class="material-symbols-outlined">edit_square</span>
                 </button>
                 <button
                   type="button"
@@ -70,7 +70,7 @@ endblock %} {% block content %}
                   data-Intermediary-id="{{ relation[2] }}"
                   onclick="setIntermediaryId('{{ relation[2] }}')"
                 >
-                  <span class="material-symbols-outlined">Delete</span>
+                  <span class="material-symbols-outlined">delete_forever</span>
                 </button>
               </td>
             </tr>
@@ -133,6 +133,7 @@ endblock %} {% block content %}
               id="intermediaryName"
               name="intermediaryName"
               required
+              oninput="limitTextInput(this)"
             />
             <div class="invalid-feedback">
               Please enter the intermediary name.
@@ -147,6 +148,7 @@ endblock %} {% block content %}
               id="AP_PAT"
               name="AP_PAT"
               required
+              oninput="limitTextInput(this)"
             />
             <div class="invalid-feedback">
               Please enter the intermediary last name.
@@ -163,6 +165,7 @@ endblock %} {% block content %}
               id="AP_MAT"
               name="AP_MAT"
               required
+              oninput="limitTextInput(this)"
             />
             <div class="invalid-feedback">
               Please enter the intermediary mother's last name.
@@ -255,6 +258,7 @@ endblock %} {% block content %}
               id="editIntermediaryName"
               name="editIntermediaryName"
               required
+              oninput="limitTextInput(this)"
             />
             <div class="invalid-feedback">
               Please enter the intermediary name.
@@ -269,6 +273,7 @@ endblock %} {% block content %}
               id="NEW-AP_PAT"
               name="NEW-AP_PAT"
               required
+              oninput="limitTextInput(this)"
             />
             <div class="invalid-feedback">
               Please enter the intermediary last name.
@@ -285,6 +290,7 @@ endblock %} {% block content %}
               id="NEW-AP_MAT"
               name="NEW-AP_MAT"
               required
+              oninput="limitTextInput(this)"
             />
             <div class="invalid-feedback">
               Please enter the intermediary mother's last name.
@@ -419,13 +425,30 @@ endblock %} {% block content %}
 <script>
   function limitInput(element) {
     const maxDigits = 10;
+    element.value = element.value.replace(/[^0-9]/g, '');
     let value = element.value;
-
+    
     // Ensure the input value is numeric and doesn't exceed maxDigits
     if (value.length > maxDigits) {
       element.value = value.slice(0, maxDigits);
     }
+
   }
+  
 </script>
+
+<script>
+function limitTextInput(element){
+  const maxDigits = 20;
+  element.value = element.value.replace(/[^a-zA-Z]/g, '');
+  let value = element.value;
+
+    if (value.length > maxDigits) {
+      element.value = value.slice(0, maxDigits);
+    }
+  }
+
+</script>  
+
 
 {% endblock %}
