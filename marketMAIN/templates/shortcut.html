@@ -14,7 +14,7 @@
                         <div class="col-sm-6 me-2">
                             <input class="form-control" type="search" placeholder="Search" aria-label="Search">
                         </div>
-                        <button type="button" class="btn btn-primary">Search</button>
+                        <button type="button" class="btn btn-outline-primary">Search</button>
                     </form>
                 </div>
             </div>
@@ -22,20 +22,20 @@
                 <div class="col-xl-10">
                     <div class="row justify-content-center">
                         <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div
-                                class="buttons border border-Tertiary p-3 rounded d-flex justify-content-center align-items-center">
-                                <a class="btn btn-outline-light btn-lg square-btn mx-2" data-bs-toggle="tooltip"
+                            <div class="buttons border border-Tertiary border-Secondary p-3 rounded d-flex justify-content-center align-items-center">
+
+                                <a class="btn btn-outline-Secondary btn-Secondary square-btn mx-4" data-bs-toggle="tooltip"
                                     data-bs-placement="top" data-bs-custom-class="custom-tooltip"
                                     data-bs-title="This top tooltip is themed via CSS variables." href="{{url_for('sales.addsalesworker')}}">
                                     <div class="d-flex flex-column align-items-center">
                                         <span class="material-symbols-outlined">
-                                            barcode_scanner
+                                            point_of_sale
                                         </span>
                                         <span class="d-none d-md-block">Sales</span>
                                     </div>
                                 </a>
 
-                                <a class="btn btn-outline-light btn-lg square-btn mx-2" data-bs-toggle="tooltip"
+                                <a class="btn btn-outline-Secondary btn-Secondary square-btn mx-4" data-bs-toggle="tooltip"
                                     data-bs-placement="top" data-bs-custom-class="custom-tooltip"
                                     data-bs-title="This top tooltip is themed via CSS variables."
                                     href="{{url_for('products.warehouse')}}">
@@ -47,37 +47,14 @@
                                     </div>
                                 </a>
 
-                                <a class="btn btn-outline-light btn-lg square-btn mx-2" data-bs-toggle="tooltip"
+                                <a class="btn btn-outline-Secondary btn-Secondary square-btn mx-4" data-bs-toggle="tooltip"
                                     data-bs-placement="top" data-bs-custom-class="custom-tooltip"
                                     data-bs-title="This top tooltip is themed via CSS variables." href="#">
-                                    <span class="d-none d-md-block">link</span>
-                                </a>
-
-                                <a class="btn btn-outline-light btn-lg square-btn mx-2" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                    data-bs-title="This top tooltip is themed via CSS variables." href="#">
-                                    <span class="d-none d-md-block">link</span>
-                                </a>
-                                <a class="btn btn-outline-light btn-lg square-btn mx-2" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                    data-bs-title="This top tooltip is themed via CSS variables."
-                                    href="{{url_for('profile.profile')}}">
                                     <div class="d-flex flex-column align-items-center">
                                         <span class="material-symbols-outlined">
-                                            account_box
+                                            manage_accounts
                                         </span>
-                                        <span class="d-none d-md-block">Profile</span>
-                                    </div>
-                                </a>
-                                <a class="btn btn-outline-light btn-lg square-btn mx-2" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                    data-bs-title="This top tooltip is themed via CSS variables."
-                                    href="{{url_for('shortcut.settings')}}">
-                                    <div class="d-flex flex-column align-items-center">
-                                        <span class="material-symbols-outlined">
-                                            settings_applications
-                                        </span>
-                                        <span class="d-none d-md-block">Settings</span>
+                                        <span class="d-none d-md-block">accounts</span>
                                     </div>
                                 </a>
                             </div>
@@ -92,7 +69,17 @@
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-        new bootstrap.Tooltip(tooltipTriggerEl);
+        const tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
+            trigger: 'manual'
+        });
+
+        tooltipTriggerEl.addEventListener('mouseenter', function () {
+            tooltip.show();
+        });
+
+        tooltipTriggerEl.addEventListener('mouseleave', function () {
+            tooltip.hide();
+        });
     });
 </script>
 

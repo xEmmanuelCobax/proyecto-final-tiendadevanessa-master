@@ -1,6 +1,12 @@
 {% extends 'top navbar/top-navbar.html' %} {% block title %} Manage Companies {%
 endblock %} {% block content %}
 
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/sales.css') }}"
+/>
+
 <style>
   :root {
     --bd-violet-bg: #686363;
@@ -26,7 +32,9 @@ endblock %} {% block content %}
     display: none;
     position: absolute;
     z-index: 1000;
-    width: 378px;
+    width: 100%; /* Ancho del menú desplegable */
+    margin: 8px 0 0; /* Agregar margen vertical y horizontal */
+    max-width: 376px; /* Ancho máximo del menú desplegable */
     max-height: 200px; /* Altura máxima del menú desplegable */
     overflow-y: auto; /* Agregar barra de desplazamiento vertical */
     padding: 0.5rem 0;
@@ -38,15 +46,29 @@ endblock %} {% block content %}
   .dropdown-item {
     padding: 0.2rem 1rem;
     cursor: pointer;
-    white-space: nowrap; /* Evitar que el texto se ajuste automáticamente */
+    white-space: normal; /* Evitar que el texto se ajuste automáticamente */
     overflow: hidden; /* Ocultar cualquier texto que no quepa en el contenedor */
     text-overflow: ellipsis; /* Mostrar puntos suspensivos (...) si el texto es demasiado largo */
     font-size: 14px; /* Tamaño de fuente ajustado */
+    transition: background-color 0.3s; /* Agregar transición suave para el cambio de color de fondo */
   }
 
   .dropdown-item:hover {
-    background-color: #f8f9fa;
+    outline: none; /* Eliminar el contorno por defecto */
+    background-color: #2c3e50; /* Azul oscuro */
+    color: #fff; /* Texto blanco para contraste */
   }
+
+  .dropdown-item:focus {
+  background-color: #2c3e50; /* Color de fondo cuando el elemento está seleccionado */
+  color: #fff; /* Color de texto cuando el elemento está seleccionado */
+  outline: none; /* Eliminar el contorno predeterminado */
+}
+
+.dropdown-item.selected {
+  background-color: #2c3e50; /* Color de fondo cuando el elemento está seleccionado */
+  color: #fff; /* Color de texto cuando el elemento está seleccionado */
+}
 
   /* Estilos para el contenedor de información */
   .product-info {
@@ -68,49 +90,78 @@ endblock %} {% block content %}
     margin-right: 1rem; /* Margen adicional a la derecha para separar la raya */
   }
 
-
+  /* Media query para hacer el menú desplegable responsivo */
+  @media (max-width: 465px) {
+    .dropdown-menu {
+      width: calc(100% - 20px); /* Ajustar el ancho del menú desplegable */
+      max-width: calc(
+        100% - 20px
+      ); /* Cambiar el ancho máximo a 100% en pantallas pequeñas */
+      left: 50%; /* Centrar el menú horizontalmente */
+      transform: translateX(-50%); /* Centrar el menú horizontalmente */
+      margin: 8px 10px 0; /* Agregar margen vertical y horizontal */
+      position: relative; /* Asegurar posición relativa */
+      overflow-x: auto; /* Agregar barra de desplazamiento horizontal */
+    }
+  }
 </style>
 
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{{ url_for('static', filename='css/sales.css') }}"
-/>
+<style>
+  .table-rounded {
+    border-radius: 10px; /* Redondear las esquinas de la tabla */
+    border: 2px solid #ccc; /* Agregar un borde de 2px sólido con color gris */
+    overflow: hidden; /* Permitir que el contenido desborde los bordes redondeados */
+    background-color: rgba(128, 128, 128, 0.252);
+  }
+</style>
 
+<style>
+  .no-margin {
+    margin: 0;
+  }
+</style>
+
+<!-- CUERPO -->
 <div class="container-fluid mt-5">
   <!-- Agregamos la clase mt-5 para añadir margen superior -->
   <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
-    <h6 class="mt-1 d-none d-sm-flex">Manage warehouse</h6>
+    <h6 class="mt-1 d-none d-sm-flex">Manage Sales</h6>
 
     {% include 'top navbar/top-width-navbar.html' %}
 
     <div class="col-12 col-lg-9 mt-3">
-      <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
-
-      <form class="d-flex flex-wrap mt-3">
-        <div class="col-sm-5 col-6 mb-3 mb-sm-0">
-          <div class="form-group">
+      <div class="container">
+        <div class="row">
+          <div class="col-md col-lg-6 my-2">
+            <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
             <div class="input-group">
               <input
                 id="searchInput"
                 class="form-control"
                 type="search"
-                placeholder="Buscar producto"
-                aria-label="Buscar producto"
+                placeholder="Search Product"
+                aria-label="Search Product"
               />
-              <button id="addButton" type="button" class="btn btn-primary ms-2">
-                Add product
+              <button
+                id="addButton"
+                type="button"
+                class="btn btn-outline-primary btn-sm ms-2"
+              >
+                Add Product
               </button>
             </div>
             <div id="searchResults" class="dropdown-menu"></div>
           </div>
+          <div class="col-md col-lg-6 my-2">
+            <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
+            <button id="addSale" type="button" class="btn btn-success w-100">
+              Realizar venta
+            </button>
+          </div>
         </div>
+      </div>
 
-        <div class="flex-grow-1"></div>
-        <button id="addSale" type="button" class="btn btn-primary">
-          Realizar venta
-        </button>
-      </form>
+      <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
 
       <div class="row">
         <div class="col-md-5">
@@ -124,7 +175,7 @@ endblock %} {% block content %}
             >
               <a
                 class="btn btn-outline-light btn-md square-btn mx-1 product-btn"
-                style="width: 90px; height: 90px; overflow: hidden;" 
+                style="width: 90px; height: 90px; overflow: hidden"
                 data-id="{{ product[0] }}"
                 data-name="{{ product[1] }}"
                 data-price="{{ product[2] }}"
@@ -143,7 +194,6 @@ endblock %} {% block content %}
                       overflow-wrap: break-word;
                       max-width: 100%;
                       text-align: center;
-                    
                     "
                   >
                     {{ product[1] }}
@@ -155,14 +205,16 @@ endblock %} {% block content %}
           </div>
         </div>
 
-        <div class="col-md-7">
+        <div
+          class="col-md-7 mt-3 border border-Tertiary p-3 rounded flex-wrap justify-content-center align-items-start"
+        >
           <div
-            class="table-responsive mt-3"
+            class="table-responsive"
             style="max-height: 500px; overflow-y: auto"
           >
             <table
               id="saleTable"
-              class="table table-bordered table-striped mt-3 mb-3"
+              class="table table-bordered table-striped table-rounded mb-3"
             >
               <thead>
                 <tr>
@@ -177,8 +229,6 @@ endblock %} {% block content %}
               <tbody class="table-group-divider">
                 <!-- Aquí se añadirán dinámicamente las filas de los productos -->
               </tbody>
-
-
             </table>
           </div>
         </div>
@@ -242,7 +292,7 @@ endblock %} {% block content %}
   });
 </script>
 
-<!-- SCRUPT PARA AGREGAR PRODUCTOS A LA TABLA MEDIANTE LOS BOTONES -->
+<!-- SCRIPT PARA AGREGAR PRODUCTOS A LA TABLA MEDIANTE LOS BOTONES -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const buttons = document.querySelectorAll(".product-btn");
@@ -286,7 +336,7 @@ endblock %} {% block content %}
           </td>
           <td style="text-align: center; margin: auto;">${productInfo[3]}$</td>
           <td class="text-center d-flex justify-content-center align-items-center">
-            <button type="button" class="delete-btn btn-danger mx-2" onclick="deleteProduct(this)">
+            <button type="button" class="btn btn-danger btn-sm mx-2" onclick="deleteProduct(this)">
               <span class="material-symbols-outlined"> delete_forever </span>
             </button>
           </td>
@@ -306,115 +356,122 @@ endblock %} {% block content %}
 <!-- SCRIPT PARA FILTRAR EN EL BUSCADOR Y AGREGAR PRODUCTOS -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const products = Array.from(document.querySelectorAll(".product-btn")).map(
-      (button) => ({
-        id: button.dataset.id,
-        name: button.dataset.name,
-        price: button.dataset.price,
-        amount: button.dataset.amount,
-        status: button.dataset.status,
-      })
+  const products = Array.from(document.querySelectorAll(".product-btn")).map(
+    (button) => ({
+      id: button.dataset.id,
+      name: button.dataset.name,
+      price: button.dataset.price,
+      amount: button.dataset.amount,
+      status: button.dataset.status,
+    })
+  );
+
+  const searchInput = document.getElementById("searchInput");
+  const searchResults = document.getElementById("searchResults");
+  const addButton = document.getElementById("addButton");
+  const tableBody = document.querySelector(".table-group-divider");
+
+  let selectedProduct = null;
+
+  searchInput.addEventListener("input", function () {
+    const searchTerm = this.value.toLowerCase();
+    const matchingProducts = products.filter((product) =>
+      product.name.toLowerCase().includes(searchTerm)
     );
 
-    const searchInput = document.getElementById("searchInput");
-    const searchResults = document.getElementById("searchResults");
-    const addButton = document.getElementById("addButton");
-    const tableBody = document.querySelector(".table-group-divider");
+    searchResults.innerHTML = ""; // Limpiar resultados anteriores
 
-    let selectedProduct = null;
-
-    searchInput.addEventListener("input", function () {
-      const searchTerm = this.value.toLowerCase();
-      const matchingProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(searchTerm)
-      );
-
-      searchResults.innerHTML = ""; // Limpiar resultados anteriores
-
-      matchingProducts.forEach((product) => {
-        const listItem = document.createElement("div");
-        listItem.classList.add("dropdown-item");
-        listItem.innerHTML = `
-          <div class="product-info border-bottom border-2 border-dark">
-            <div class="divider">ID: ${product.id}</div>
-            <div>Name: ${product.name}</div>
-            <div>Price: ${product.price}$</div>
-            <div>Amount: ${product.amount}</div>
-            <div>Status: ${product.status}</div>
-          </div>
-        `;
-        listItem.addEventListener("click", function () {
-          selectedProduct = product;
-          console.log("Producto seleccionado:", selectedProduct);
-        });
-        searchResults.appendChild(listItem);
-      });
-
-      searchResults.style.display =
-        matchingProducts.length > 0 ? "block" : "none";
-    });
-
-    document.addEventListener("click", function (event) {
-      if (
-        !searchResults.contains(event.target) &&
-        event.target !== searchInput
-      ) {
-        searchResults.style.display = "none";
-        searchInput.value = ""; // Limpiar el input de búsqueda
-        selectedProduct = null; // Limpiar el producto seleccionado
-      }
-
-      searchClear.addEventListener("click", function () {
-        searchResults.style.display = "none";
-        searchInput.value = ""; // Limpiar el input de búsqueda
-        selectedProduct = null; // Limpiar el producto seleccionado
-      });
-    });
-
-    addButton.addEventListener("click", function () {
-      if (!selectedProduct) {
-        alert("No hay ningún producto seleccionado.");
-        return;
-      }
-
-      const existingProduct = Array.from(tableBody.querySelectorAll("tr")).find(
-        (row) => row.dataset.id === selectedProduct.id
-      );
-
-      if (existingProduct) {
-        const productExistsModal = new bootstrap.Modal(
-          document.getElementById("productExistsModal")
-        );
-        productExistsModal.show();
-        return;
-      }
-
-      const newRow = document.createElement("tr");
-      newRow.dataset.id = selectedProduct.id;
-      newRow.innerHTML = `
-        <th scope="row" style="text-align: center; margin: auto;">${
-          tableBody.querySelectorAll("tr").length + 1
-        }</th>
-        <td style="text-align: center; margin: auto;">${selectedProduct.id}</td>
-        <td>${selectedProduct.name}</td>
-        <td style="text-align: center;">
-          <input type="number" class="form-control" value="1" min="1" max="${
-            selectedProduct.amount
-          }" onkeydown="return false" onpaste="return false" onfocus="this.blur();" style="background: transparent; border: none; padding: 0; width: 80px; font-size: 17px; text-align: center; margin: auto;" />
-        </td>
-        <td style="text-align: center; margin: auto;">${
-          selectedProduct.price
-        }$</td>
-        <td class="text-center d-flex justify-content-center align-items-center">
-          <button type="button" class="delete-btn btn-danger mx-2" onclick="deleteProduct(this)">
-            <span class="material-symbols-outlined"> delete_forever </span>
-          </button>
-        </td>
+    matchingProducts.forEach((product) => {
+      const listItem = document.createElement("div");
+      listItem.classList.add("dropdown-item");
+      listItem.innerHTML = `
+        <div class="product-info border-bottom border-2 border-dark">
+          <div class="divider">ID: ${product.id}</div>
+          <div>Name: ${product.name}</div>
+          <div>Price: ${product.price}$</div>
+          <div>Amount: ${product.amount}</div>
+          <div>Status: ${product.status}</div>
+        </div>
       `;
+      listItem.addEventListener("click", function () {
+        // Eliminar la clase 'selected' de todos los elementos
+        searchResults.querySelectorAll(".dropdown-item").forEach(item => {
+          item.classList.remove("selected");
+        });
+        // Agregar la clase 'selected' al elemento actual
+        listItem.classList.add("selected");
+        selectedProduct = product;
+        console.log("Producto seleccionado:", selectedProduct);
+      });
+      searchResults.appendChild(listItem);
+    });
 
-      tableBody.appendChild(newRow);
+    searchResults.style.display =
+      matchingProducts.length > 0 ? "block" : "none";
+  });
+
+  document.addEventListener("click", function (event) {
+    if (
+      !searchResults.contains(event.target) &&
+      event.target !== searchInput
+    ) {
+      searchResults.style.display = "none";
+      searchInput.value = ""; // Limpiar el input de búsqueda
+      selectedProduct = null; // Limpiar el producto seleccionado
+    }
+
+    searchClear.addEventListener("click", function () {
+      searchResults.style.display = "none";
+      searchInput.value = ""; // Limpiar el input de búsqueda
+      selectedProduct = null; // Limpiar el producto seleccionado
     });
   });
+
+  addButton.addEventListener("click", function () {
+    if (!selectedProduct) {
+      alert("No hay ningún producto seleccionado.");
+      return;
+    }
+
+    const existingProduct = Array.from(tableBody.querySelectorAll("tr")).find(
+      (row) => row.dataset.id === selectedProduct.id
+    );
+
+    if (existingProduct) {
+      const productExistsModal = new bootstrap.Modal(
+        document.getElementById("productExistsModal")
+      );
+      productExistsModal.show();
+      return;
+    }
+
+    const newRow = document.createElement("tr");
+    newRow.dataset.id = selectedProduct.id;
+    newRow.innerHTML = `
+      <th scope="row" style="text-align: center; margin: auto;">${
+        tableBody.querySelectorAll("tr").length + 1
+      }</th>
+      <td style="text-align: center; margin: auto;">${selectedProduct.id}</td>
+      <td>${selectedProduct.name}</td>
+      <td style="text-align: center;">
+        <input type="number" class="form-control" value="1" min="1" max="${
+          selectedProduct.amount
+        }" onkeydown="return false" onpaste="return false" onfocus="this.blur();" style="background: transparent; border: none; padding: 0; width: 80px; font-size: 17px; text-align: center; margin: auto;" />
+      </td>
+      <td style="text-align: center; margin: auto;">${
+        selectedProduct.price
+      }$</td>
+      <td class="text-center d-flex justify-content-center align-items-center">
+        <button type="button" class="btn btn-danger mx-2" onclick="deleteProduct(this)">
+          <span class="material-symbols-outlined"> delete_forever </span>
+        </button>
+      </td>
+    `;
+
+    tableBody.appendChild(newRow);
+  });
+});
+
 </script>
 
 <!-- SCRIPT PARA ENVIAR LOS DATOS AL SERVIDOR -->
@@ -479,4 +536,5 @@ endblock %} {% block content %}
     return salesData;
   }
 </script>
+
 {% endblock %}

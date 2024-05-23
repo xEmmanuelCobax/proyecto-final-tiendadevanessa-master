@@ -8,7 +8,7 @@ def CUD(query, params=None):
     try:
         # Conectar a la BD
         connection = pyodbc.connect(
-            "DRIVER={SQL Server};SERVER=DESKTOP-ACD3GSV;DATABASE=Proyecto;Trusted_Connection=yes;"
+            "DRIVER={SQL Server};SERVER=PCEMMANUEL;DATABASE=Proyecto;Trusted_Connection=yes;"
         )
         cursor = connection.cursor()
         if params:
@@ -33,7 +33,7 @@ def Read(query, params=None):
     connection = None
     try:
         connection = pyodbc.connect(
-            "DRIVER={SQL Server};SERVER=DESKTOP-ACD3GSV;DATABASE=Proyecto;Trusted_Connection=yes;"
+            "DRIVER={SQL Server};SERVER=PCEMMANUEL;DATABASE=Proyecto;Trusted_Connection=yes;"
         )
         cursor = connection.cursor()
         if params:

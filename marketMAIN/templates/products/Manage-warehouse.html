@@ -7,7 +7,15 @@ endblock %} {% block content %}
 />
 
 <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
-<style></style>
+
+<style>
+  .table-rounded {
+    border-radius: 10px; /* Redondear las esquinas de la tabla */
+    border: 2px solid #ccc; /* Agregar un borde de 2px sólido con color gris */
+    overflow: hidden; /* Permitir que el contenido desborde los bordes redondeados */
+    background-color: rgba(128, 128, 128, 0.252);
+  }
+</style>
 
 <div class="container-fluid mt-5">
   <!-- Agregamos la clase mt-5 para añadir margen superior -->
@@ -32,83 +40,135 @@ endblock %} {% block content %}
         </button>
       </form>
 
-      <div class="table-responsive">
-      <table class="table table-bordered table-striped mt-3 mb-3">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          {% for product in products %}
-          <tr>
-            <td>{{ product[0] }}</td>
-            <td>{{ product[1] }}</td>
-            <td>{{ product[3] }}</td>
-            <td>{{ product[2] }}</td>
-            <td
-              class="text-center d-flex justify-content-center align-items-center"
-            >
-              <button
-                type="button"
-                class="square-btn btn-warning mx-2"
-                data-bs-toggle="modal"
-                data-bs-target="#editproduct"
-                data-product-id="{{ product[0] }}"
-                onclick="setEditProductId('{{ product[0] }}')"
-              >
-                <span class="material-symbols-outlined">edit_square</span>
-              </button>
-              <button
-                type="button"
-                class="square-btn btn-danger mx-2 delete-product-btn"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteproduct"
-                data-product-id="{{ product[0] }}"
-                onclick="setProductId('{{ product[0] }}')"
-              >
-                <span class="material-symbols-outlined">delete_forever</span>
-              </button>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+      <div
+        class="col-md-12 mt-3 border border-Tertiary p-3 rounded flex-wrap justify-content-center align-items-start"
+      >
+        <div
+          class="table-responsive"
+          style="max-height: 500px; overflow-y: auto"
+        >
+          <table class="table table-bordered table-striped table-rounded mb-3">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              {% for product in products %}
+              <tr>
+                <td>{{ product[0] }}</td>
+                <td>{{ product[1] }}</td>
+                <td>{{ product[3] }}</td>
+                <td>{{ product[2] }}</td>
+                <td
+                  class="text-center d-flex justify-content-center align-items-center"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-warning mx-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editproduct"
+                    data-product-id="{{ product[0] }}"
+                    onclick="setEditProductId('{{ product[0] }}')"
+                  >
+                    <span class="material-symbols-outlined">edit_square</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger mx-2 delete-product-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteproduct"
+                    data-product-id="{{ product[0] }}"
+                    onclick="setProductId('{{ product[0] }}')"
+                  >
+                    <span class="material-symbols-outlined"
+                      >delete_forever</span
+                    >
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!--CREAR PRODUCTOS-->
-<div class="modal fade" id="createmodal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="createmodallabel" aria-hidden="true">
+<!--CREAR PRODUCTOS MODAL-->
+<div
+  class="modal fade"
+  id="createmodal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="createmodallabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Create New Product</h5>
-        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
-        <form id="createproductmodal" action="{{ url_for('products.create_product') }}" method="post" class="needs-validation" novalidate>
+        <form
+          id="createproductmodal"
+          action="{{ url_for('products.create_product') }}"
+          method="post"
+          class="needs-validation"
+          novalidate
+        >
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="marca" class="form-label">Brand:</label>
-                <input type="text" class="form-control" id="marca" name="marca" required oninput="limitTextInput(this)" />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="marca"
+                  name="marca"
+                  required
+                  oninput="limitTextInput(this)"
+                />
                 <div class="invalid-feedback">Por favor ingresa una marca.</div>
               </div>
               <div class="mb-3">
                 <label for="producto" class="form-label">Name Product:</label>
-                <input type="text" class="form-control" id="producto" name="producto" required oninput="limitTextInput(this)" />
-                <div class="invalid-feedback">Por favor ingresa un producto.</div>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="producto"
+                  name="producto"
+                  required
+                  oninput="limitTextInput(this)"
+                />
+                <div class="invalid-feedback">
+                  Por favor ingresa un producto.
+                </div>
               </div>
               <div class="mb-3">
-                <label for="SelectUnitOfMeasure" class="form-label">Select Unit of Measure:</label>
-                <select class="form-select" id="SelectUnitOfMeasure" name="SelectUnitOfMeasure" required>
-                  <option value="" disabled selected>Select Unit Of Measure</option>
+                <label for="SelectUnitOfMeasure" class="form-label"
+                  >Select Unit of Measure:</label
+                >
+                <select
+                  class="form-select"
+                  id="SelectUnitOfMeasure"
+                  name="SelectUnitOfMeasure"
+                  required
+                >
+                  <option value="" disabled selected>
+                    Select Unit Of Measure
+                  </option>
                   <option value="pieces">Pieces</option>
                   <option value="liters">Liters</option>
                   <option value="milliliters">Milliliters</option>
@@ -116,21 +176,40 @@ endblock %} {% block content %}
                   <option value="grams">Grams</option>
                   <option value="customize">Customized</option>
                 </select>
-                <div class="invalid-feedback">Please select a unit of measure.</div>
+                <div class="invalid-feedback">
+                  Please select a unit of measure.
+                </div>
               </div>
               <div class="mb-3">
-                <label for="unitquantity" class="form-label">Unit Quantity:</label>
+                <label for="unitquantity" class="form-label"
+                  >Unit Quantity:</label
+                >
                 <div class="input-group">
-                  <input type="number" class="form-control" id="unitquantity" name="unitquantity" maxlength="4" min="0" required />
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="unitquantity"
+                    name="unitquantity"
+                    maxlength="4"
+                    min="0"
+                    required
+                  />
                   <span class="input-group-text" id="unitLabel"></span>
                 </div>
-                <div class="invalid-feedback">Please enter a non-negative quantity.</div>
+                <div class="invalid-feedback">
+                  Please enter a non-negative quantity.
+                </div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="company-select">Select Company:</label>
-                <select class="form-select" id="company-select" name="company_id" required>
+                <select
+                  class="form-select"
+                  id="company-select"
+                  name="company_id"
+                  required
+                >
                   <option value="" disabled selected>Select Company</option>
                   {% for company in companies %}
                   <option value="{{ company[0] }}">{{ company[1] }}</option>
@@ -140,33 +219,70 @@ endblock %} {% block content %}
               </div>
               <div class="mb-3">
                 <label for="intermedary-select">Select Intermediary:</label>
-                <select class="form-select" id="intermedary-select" name="intermedary_id" required>
-                  <option value="" disabled selected>Select Intermediary</option>
+                <select
+                  class="form-select"
+                  id="intermedary-select"
+                  name="intermedary_id"
+                  required
+                >
+                  <option value="" disabled selected>
+                    Select Intermediary
+                  </option>
                   {% for relation in relations %}
-                  <option value="{{ relation[2] }}">{{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{ relation[5] }}</option>
+                  <option value="{{ relation[2] }}">
+                    {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
+                    relation[5] }}
+                  </option>
                   {% endfor %}
                 </select>
-                <div class="invalid-feedback">Please select an intermediary.</div>
+                <div class="invalid-feedback">
+                  Please select an intermediary.
+                </div>
               </div>
               <div class="mb-3">
                 <label for="cantidadInput" class="form-label">Quantity:</label>
-                <input type="number" class="form-control" id="cantidad" name="cantidad" required  oninput="limitQualityInput(this)" />
-                <div class="invalid-feedback">Por favor ingresa una cantidad válida.</div>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="cantidad"
+                  name="cantidad"
+                  required
+                  oninput="limitQualityInput(this)"
+                />
+                <div class="invalid-feedback">
+                  Por favor ingresa una cantidad válida.
+                </div>
               </div>
               <div class="col-md-6">
                 <div class="mb-3">
                   <label for="newprecio" class="form-label">Unit Price:</label>
                   <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input type="number" class="form-control" id="precio" name="precio" step="0.001" required />
-                    <div class="invalid-feedback">Please enter a valid price.</div>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="precio"
+                      name="precio"
+                      step="0.001"
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Please enter a valid price.
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div class="text-end">
-            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal" onclick="limpiarModal()">Close</button>
+            <button
+              type="button"
+              class="btn btn-warning me-2"
+              data-bs-dismiss="modal"
+              onclick="limpiarModal()"
+            >
+              Close
+            </button>
             <button type="submit" class="btn btn-success">Save Products</button>
           </div>
         </form>
@@ -175,7 +291,7 @@ endblock %} {% block content %}
   </div>
 </div>
 
-<!--EDITAR-PRODUCTOS-->
+<!--EDITAR-PRODUCTOS MODAL-->
 <div
   class="modal fade"
   id="editproduct"
@@ -382,7 +498,7 @@ endblock %} {% block content %}
   </div>
 </div>
 
-<!--ELIMINAR PRODUCTO-->
+<!--ELIMINAR PRODUCTO MODAL-->
 <div
   class="modal fade"
   id="deleteproduct"
@@ -437,21 +553,25 @@ endblock %} {% block content %}
 <script>
   // Bootstrap validation script
   (function () {
-    'use strict';
+    "use strict";
 
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.querySelectorAll('.needs-validation');
+    var forms = document.querySelectorAll(".needs-validation");
 
     // Loop over them and prevent submission
     Array.prototype.slice.call(forms).forEach(function (form) {
-      form.addEventListener('submit', function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
+      form.addEventListener(
+        "submit",
+        function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
 
-        form.classList.add('was-validated');
-      }, false);
+          form.classList.add("was-validated");
+        },
+        false
+      );
     });
   })();
 </script>
@@ -799,6 +919,7 @@ endblock %} {% block content %}
 </script>
 
 <script>
+  //NO QUITAR, AQUI OBTENGO ID
   function setProductId(productId) {
     document.getElementById("product-id-input").value = productId;
     console.log("productId BORRAR>" + productId);
@@ -812,26 +933,25 @@ endblock %} {% block content %}
 <script>
   function limitTextInput(element) {
     const maxDigits = 13;
-    element.value = element.value.replace(/[^a-zA-Z]/g, '');
+    element.value = element.value.replace(/[^a-zA-Z]/g, "");
     let value = element.value;
 
     if (value.length > maxDigits) {
       element.value = value.slice(0, maxDigits);
     }
   }
-</script> 
+</script>
 
 <script>
   function limitQualityInput(element) {
     const maxDigits = 5;
-    element.value = element.value.replace(/[^0-9]/g, '');
+    element.value = element.value.replace(/[^0-9]/g, "");
     let value = element.value;
 
     // Ensure the input value is numeric and doesn't exceed maxDigits
     if (value.length > maxDigits) {
       element.value = value.slice(0, maxDigits);
     }
-
   }
 </script>
 

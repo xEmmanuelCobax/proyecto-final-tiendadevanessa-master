@@ -6,6 +6,15 @@ endblock %} {% block content %}
   href="{{ url_for('static', filename='css/products.css') }}"
 />
 
+<style>
+  .table-rounded {
+    border-radius: 10px; /* Redondear las esquinas de la tabla */
+    border: 2px solid #ccc; /* Agregar un borde de 2px sólido con color gris */
+    overflow: hidden; /* Permitir que el contenido desborde los bordes redondeados */
+    background-color: rgba(128, 128, 128, 0.252);
+  }
+</style>
+
 <div class="container-fluid mt-5">
   <!-- Agregamos la clase mt-5 para añadir margen superior -->
   <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
@@ -35,29 +44,36 @@ endblock %} {% block content %}
         <button class="btn btn-primary" type="submit">Search</button>
       </form>
 
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped mt-3 mb-3">
-          <!-- Mantenemos las clases existentes y agregamos espaciado -->
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Amount</th>
-              <th scope="col">Price</th>
-            </tr>
-          </thead>
-          <tbody class="table-group-divider">
-            <!-- Enviar mediante un array llamada task los valores (el nombre lo vamos a cambiar a futuro) -->
-            {% for product in products %}
-            <tr>
-              <td>{{ product[0] }}</td>
-              <td>{{ product[1] }}</td>
-              <td>{{ product[3] }}</td>
-              <td>{{ product[2] }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <div
+        class="col-md-12 mt-3 border border-Tertiary p-3 rounded flex-wrap justify-content-center align-items-start"
+      >
+        <div
+          class="table-responsive"
+          style="max-height: 500px; overflow-y: auto"
+        >
+          <table class="table table-bordered table-striped table-rounded mb-3">
+            <!-- Mantenemos las clases existentes y agregamos espaciado -->
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Price</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <!-- Enviar mediante un array llamada task los valores (el nombre lo vamos a cambiar a futuro) -->
+              {% for product in products %}
+              <tr>
+                <td>{{ product[0] }}</td>
+                <td>{{ product[1] }}</td>
+                <td>{{ product[3] }}</td>
+                <td>{{ product[2] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -66,7 +82,7 @@ endblock %} {% block content %}
 <script>
   function limitTextInput(element) {
     const maxDigits = 20;
-    element.value = element.value.replace(/[^a-zA-Z-0-9]/g, '');
+    element.value = element.value.replace(/[^a-zA-Z-0-9]/g, "");
     let value = element.value;
 
     if (value.length > maxDigits) {

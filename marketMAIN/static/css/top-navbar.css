@@ -1,9 +1,15 @@
 .main-content {
-  max-width: 100%;
   overflow-x: hidden;
-  transition: margin-top 0.5s ease;
+  background-color: #FAF9F6; /* Blanco crema */
   /* Agregar transición para cambios de margen */
 }
+
+body, html {
+  width: 100%;
+  height: 100%;
+  background-color: #FAF9F6; /* Blanco crema */
+}
+
 
 .main-content.collapsed {
   margin-top: 0;
@@ -17,16 +23,6 @@
   /* agrega una transición suave con un pequeño retraso */
 }
 
-
-body.dark-mode {
-  background-color: #1b1a1a;
-  color: #fff;
-}
-
-body:not(.dark-mode) {
-  background-color: #F5F5F5;
-}
-
 /* Estilos adicionales para la barra de navegación lateral izquierda */
 .sidebar {
   position: fixed;
@@ -36,18 +32,6 @@ body:not(.dark-mode) {
   /* Ancho de la barra de navegación */
   padding-top: 3.5rem;
   /* Espacio para evitar la superposición con la barra de navegación superior */
-}
-
-/* Ajustes para los iconos en modo claro */
-.sidebar .nav-link .bi {
-  color: #000;
-  /* Color de los iconos en modo claro */
-}
-
-/* Ajustes para los iconos en modo oscuro */
-.dark-mode .sidebar .nav-link .bi {
-  color: #fff;
-  /* Color de los iconos en modo oscuro */
 }
 
 .nav-link .ms-2 {
@@ -60,24 +44,6 @@ body:not(.dark-mode) {
   /* Muestra el texto cuando el cursor está sobre el icono */
 }
 
-/* Estilos para modo claro */
-body:not(.dark-mode) .btn {
-  background-color: #4631311b;
-  border-color: #4631311b;
-  /* Color del borde en modo claro */
-  color: #000;
-}
-
-/* Estilos para el modo obscuro */
-body.dark-mode .btn {
-  background-color: #ffffffd6;
-  border-color: #ffffff;
-  /* Color del borde en modo oscuro */
-  color: #000000;
-}
-
-
-
 .focus-outline-none:focus {
   outline: none !important;
   box-shadow: none !important;
@@ -88,19 +54,25 @@ body.dark-mode .btn {
   width: 10px; /* Ajusta el ancho del scrollbar según tus necesidades */
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Cambia el color de fondo del scrollbar track si lo deseas */
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888; /* Cambia el color del thumb (la barra deslizante) */
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Cambia el color del thumb cuando se pasa el mouse por encima */
-}
-
 /* Oculta las flechas de desplazamiento */
 ::-webkit-scrollbar-button {
   display: none;
+}
+
+/* Cambiar el color de la barra de desplazamiento */
+::-webkit-scrollbar {
+  width: 12px; /* Ancho de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Color de fondo de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color del "pulgarcito" de la barra de desplazamiento */
+  border-radius: 6px; /* Redondear las esquinas del "pulgarcito" */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Color del "pulgarcito" cuando se pasa el mouse sobre él */
 }
