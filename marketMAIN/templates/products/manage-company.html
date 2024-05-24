@@ -8,7 +8,14 @@ endblock %} {% block content %}
 />
 
 <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
-<style></style>
+<style>
+  .table-rounded {
+    border-radius: 10px; /* Redondear las esquinas de la tabla */
+    border: 2px solid #ccc; /* Agregar un borde de 2px sólido con color gris */
+    overflow: hidden; /* Permitir que el contenido desborde los bordes redondeados */
+    background-color: rgba(128, 128, 128, 0.252);
+  }
+</style>
 
 <div class="container-fluid mt-5">
   <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">

@@ -547,7 +547,7 @@ endblock %} {% block content %}
 </div>
 
 <!-- Elemento oculto para almacenar los datos de 'members' -->
-<div id="members-data" data-members="{{members}}" style="display: none"></div>
+<div id="members-data" data-members="{{ members }}" style="display: none"></div>
 
 <!-- no permitir campos vacios en el modal create-->
 <script>
@@ -576,13 +576,9 @@ endblock %} {% block content %}
   })();
 </script>
 
-<script src="{{ url_for('static', filename='js/modalCreate.js') }}"></script>
-
-<script src="{{ url_for('static', filename='js/modalEdit.js') }}"></script>
-
 <!-- <script src="{{ url_for('static', filename='js/qrScan.js') }}"></script>-->
 
-<!-- create modal script list-->
+<!--CREATE MODAL SCRIPT PARA MANEJO DE COMPAÑIAS E INTERMEDIARIOS DINAMICOS-->
 <script>
   // Función para filtrar intermediarios basados en la compañía seleccionada
   function filterIntermediaries() {
@@ -628,7 +624,7 @@ endblock %} {% block content %}
   filterIntermediaries();
 </script>
 
-<!-- edit modal script list-->
+<!--EDIT MODAL SCRIPT PARA MANEJO DE COMPAÑIAS E INTERMEDIARIOS DINAMICOS-->
 <script>
   // Función para filtrar intermediarios basados en la compañía seleccionada
   function filterIntermediaries() {
@@ -674,250 +670,7 @@ endblock %} {% block content %}
   filterIntermediaries();
 </script>
 
-<script>
-  function updateQuantityIncrement() {
-    var unitOfMeasure = document.getElementById("SelectUnitOfMeasure").value;
-    var quantityInput = document.getElementById("unitquantity"); // Conseguir el id del apartado
-    var unitLabel = document.getElementById("unitLabel"); //
-
-    // Verificar si la unidad de medida ha cambiado manualmente
-    var selectElement = document.getElementById("SelectUnitOfMeasure");
-    selectElement.addEventListener("change", function () {
-      quantityInput.value = ""; // Vaciar el campo de entrada al cambiar la unidad de medida
-      updateQuantityIncrement(); // Llamar a la función para actualizar el incremento de cantidad
-    });
-
-    if (!unitOfMeasure) {
-      quantityInput.disabled = true;
-      quantityInput.value = "";
-      unitLabel.textContent = "";
-      return;
-    }
-
-    // Habilita el input ya que se ha seleccionado una unidad de medida
-    quantityInput.disabled = false;
-
-    // Actualiza el paso del input según la unidad de medida seleccionada
-    if (unitOfMeasure === "liters") {
-      quantityInput.step = "0.25";
-    } else if (unitOfMeasure === "milliliters") {
-      quantityInput.step = "250";
-    } else if (unitOfMeasure === "grams") {
-      quantityInput.step = "100";
-    } else if (unitOfMeasure === "kilogram") {
-      quantityInput.step = "0.10";
-    } else if (unitOfMeasure === "pieces") {
-      quantityInput.step = "1";
-    }
-
-    // Actualiza el texto del span con la unidad de medida seleccionada
-    switch (unitOfMeasure) {
-      case "pieces":
-        unitLabel.textContent = "Pcs";
-        break;
-      case "liters":
-        unitLabel.textContent = "L";
-        break;
-      case "milliliters":
-        unitLabel.textContent = "ml";
-        break;
-      case "kilogram":
-        unitLabel.textContent = "kg";
-        break;
-      case "grams":
-        unitLabel.textContent = "g";
-        break;
-      default:
-        unitLabel.textContent = "";
-        break;
-    }
-  }
-
-  function convertUnitIfNecessary() {
-    var unitOfMeasure = document.getElementById("SelectUnitOfMeasure").value;
-    var quantityInput = document.getElementById("unitquantity");
-
-    if (unitOfMeasure === "milliliters" && quantityInput.value >= 1000) {
-      // Convert to liters
-      quantityInput.value = (quantityInput.value / 1000).toFixed(2); // Cambiado a toFixed(3)
-      document.getElementById("SelectUnitOfMeasure").value = "liters";
-      updateQuantityIncrement();
-    } else if (unitOfMeasure === "grams" && quantityInput.value >= 1000) {
-      // Convert to kilograms
-      quantityInput.value = (quantityInput.value / 1000).toFixed(2); // Cambiado a toFixed(3)
-      document.getElementById("SelectUnitOfMeasure").value = "kilogram";
-      updateQuantityIncrement();
-    }
-
-    // Ajusta el valor para incrementar en pasos de 0.25 si es necesario
-    if (unitOfMeasure === "liters") {
-      quantityInput.value = Math.ceil(quantityInput.value / 0.25) * 0.25;
-    }
-  }
-
-  // Limitar la entrada del usuario a un máximo de cuatro dígitos
-  document
-    .getElementById("unitquantity")
-    .addEventListener("input", function () {
-      var inputValue = this.value;
-      var maxLength = 6;
-
-      if (inputValue.length > maxLength) {
-        this.value = inputValue.slice(0, maxLength); // Truncar el valor según el límite establecido
-      }
-    });
-
-  // Actualiza el incremento de la cantidad cuando se carga la página
-  window.onload = function () {
-    updateQuantityIncrement();
-  };
-
-  // Escucha cambios en el valor del input para convertir unidades si es necesario
-  document
-    .getElementById("unitquantity")
-    .addEventListener("input", convertUnitIfNecessary);
-  document
-    .getElementById("SelectUnitOfMeasure")
-    .addEventListener("change", updateQuantityIncrement);
-</script>
-
-<script>
-  function updateQuantityIncrement() {
-    var unitOfMeasure = document.getElementById(
-      "EditSelectUnitOfMeasure"
-    ).value;
-    var quantityInput = document.getElementById("editunitquantity"); // Conseguir el id del apartado
-    var unitLabel = document.getElementById("editunitLabel"); //
-
-    // Verificar si la unidad de medida ha cambiado manualmente
-    var selectElement = document.getElementById("EditSelectUnitOfMeasure");
-    selectElement.addEventListener("change", function () {
-      quantityInput.value = ""; // Vaciar el campo de entrada al cambiar la unidad de medida
-      updateQuantityIncrement(); // Llamar a la función para actualizar el incremento de cantidad
-    });
-
-    if (!unitOfMeasure) {
-      quantityInput.disabled = true;
-      quantityInput.value = "";
-      unitLabel.textContent = "";
-      return;
-    }
-
-    // Habilita el input ya que se ha seleccionado una unidad de medida
-    quantityInput.disabled = false;
-
-    // Actualiza el paso del input según la unidad de medida seleccionada
-    if (unitOfMeasure === "liters") {
-      quantityInput.step = "0.25";
-    } else if (unitOfMeasure === "milliliters") {
-      quantityInput.step = "250";
-    } else if (unitOfMeasure === "grams") {
-      quantityInput.step = "100";
-    } else if (unitOfMeasure === "kilogram") {
-      quantityInput.step = "0.10";
-    } else if (unitOfMeasure === "pieces") {
-      quantityInput.step = "1";
-    }
-
-    // Actualiza el texto del span con la unidad de medida seleccionada
-    switch (unitOfMeasure) {
-      case "pieces":
-        unitLabel.textContent = "Pcs";
-        break;
-      case "liters":
-        unitLabel.textContent = "L";
-        break;
-      case "milliliters":
-        unitLabel.textContent = "ml";
-        break;
-      case "kilogram":
-        unitLabel.textContent = "kg";
-        break;
-      case "grams":
-        unitLabel.textContent = "g";
-        break;
-      default:
-        unitLabel.textContent = "";
-        break;
-    }
-  }
-
-  function convertUnitIfNecessary() {
-    var unitOfMeasure = document.getElementById(
-      "EditSelectUnitOfMeasure"
-    ).value;
-    var quantityInput = document.getElementById("editunitquantity");
-
-    if (unitOfMeasure === "milliliters" && quantityInput.value >= 1000) {
-      // Convert to liters
-      quantityInput.value = (quantityInput.value / 1000).toFixed(2); // Cambiado a toFixed(3)
-      document.getElementById("EditSelectUnitOfMeasure").value = "liters";
-      updateQuantityIncrement();
-    } else if (unitOfMeasure === "grams" && quantityInput.value >= 1000) {
-      // Convert to kilograms
-      quantityInput.value = (quantityInput.value / 1000).toFixed(2); // Cambiado a toFixed(3)
-      document.getElementById("EditSelectUnitOfMeasure").value = "kilogram";
-      updateQuantityIncrement();
-    }
-
-    // Ajusta el valor para incrementar en pasos de 0.25 si es necesario
-    if (unitOfMeasure === "liters") {
-      quantityInput.value = Math.ceil(quantityInput.value / 0.25) * 0.25;
-    }
-  }
-
-  // Limitar la entrada del usuario a un máximo de cuatro dígitos
-  document
-    .getElementById("editunitquantity")
-    .addEventListener("input", function () {
-      var inputValue = this.value;
-      var maxLength = 6;
-
-      if (inputValue.length > maxLength) {
-        this.value = inputValue.slice(0, maxLength); // Truncar el valor según el límite establecido
-      }
-    });
-
-  // Actualiza el incremento de la cantidad cuando se carga la página
-  window.onload = function () {
-    updateQuantityIncrement();
-  };
-
-  // Escucha cambios en el valor del input para convertir unidades si es necesario
-  document
-    .getElementById("editunitquantity")
-    .addEventListener("input", convertUnitIfNecessary);
-  document
-    .getElementById("EditSelectUnitOfMeasure")
-    .addEventListener("change", updateQuantityIncrement);
-</script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const table = document.querySelector(".table");
-    const tbody = table.querySelector("tbody");
-    const rows = tbody.querySelectorAll("tr");
-
-    const maxHeight = 400; // Altura máxima en píxeles
-    const scrollable = rows.length > 10; // Por ejemplo, si hay más de 10 filas
-
-    if (scrollable) {
-      // Calcular el ancho de la scrollbar
-      const scrollBarWidth =
-        window.innerWidth - document.documentElement.clientWidth;
-      const tableWidth = table.offsetWidth;
-      const newWidth = tableWidth - scrollBarWidth;
-      table.style.width = newWidth + "px";
-
-      // Calcular la altura de la tabla
-      const rowHeight = rows[0].offsetHeight; // Altura estimada de una fila
-      const newHeight = maxHeight + "px";
-      tbody.style.height = newHeight;
-      tbody.style.overflowY = "auto";
-    }
-  });
-</script>
-
+<!-- OBTIENE EL ID DEL PRODUCTO (NO BORRAR)-->
 <script>
   //NO QUITAR, AQUI OBTENGO ID
   function setProductId(productId) {
@@ -927,31 +680,6 @@ endblock %} {% block content %}
   function setEditProductId(productId) {
     document.getElementById("editproduct_id").value = productId;
     console.log("productId EDITAR>" + productId);
-  }
-</script>
-
-<script>
-  function limitTextInput(element) {
-    const maxDigits = 13;
-    element.value = element.value.replace(/[^a-zA-Z]/g, "");
-    let value = element.value;
-
-    if (value.length > maxDigits) {
-      element.value = value.slice(0, maxDigits);
-    }
-  }
-</script>
-
-<script>
-  function limitQualityInput(element) {
-    const maxDigits = 5;
-    element.value = element.value.replace(/[^0-9]/g, "");
-    let value = element.value;
-
-    // Ensure the input value is numeric and doesn't exceed maxDigits
-    if (value.length > maxDigits) {
-      element.value = value.slice(0, maxDigits);
-    }
   }
 </script>
 

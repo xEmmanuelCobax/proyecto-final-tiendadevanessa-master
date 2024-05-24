@@ -95,7 +95,7 @@
                 >
               </div>
               <!-- Enlace "Forgot password?" -->
-              <a href="#!" class="forget">Forgot password?</a>
+              <a href="#!" class="forget">Already haven't an account?</a>
             </div>
             <!-- Submit button -->
             <button
@@ -145,6 +145,7 @@
 
 {% if registration_successful %}
 
+<!-- SCRIPT PARA MOSTRAR REGISTRO EXITOSO MEDIANTE UNA BOOLEANO EN LA PAGINA SING UP-->
 <script>
   // Show the successful registration modal if the 'successful' variable is true
   $(document).ready(function () {
@@ -154,19 +155,18 @@
 </script>
 {% endif %} 
 
+<!-- SCRIPT PARA MOSTRAR TOOLTIPS RE ERROR-->
 <script>
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-bademail"]'));
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl);
   });
-</script>
 
-<script>
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-badpassword"]'));
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl);
   });
-</script>
 
+</script>
 
 {% endblock %}

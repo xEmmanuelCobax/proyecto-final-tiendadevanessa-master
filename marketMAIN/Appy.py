@@ -159,7 +159,7 @@ def signup():
                 (name, apellido_paterno, apellido_materno, email, password),
             )
             print("#################### Renderizar auth/signin ####################>")
-            return redirect(url_for("auth.signin", registration_successful=True))
+            return redirect(url_for("auth.signin", registration_successful=True,user = f"{name} {apellido_paterno} {apellido_materno} "))
     else:
         print("#################### Renderizar auth/signup.html ####################>")
         return render_template("auth/signup.html")
@@ -305,16 +305,17 @@ def delete_product():
     return redirect(url_for("auth.signin"))
 
 
-# Crear producto (En Prueba)
+# Crear producto (Terminado)
 @products.route("/create_product", methods=["POST"])
 def create_product():
     if "email" in session:
         print("<#################### CREAR PRODUCTOS ####################")
         if request.method == "POST":
             try:
+                #
                 # Obtener datos del formulario
-                marca = request.form.get("marca")
-                producto = request.form.get("producto")
+                marca = (request.form.get("marca")).replace()
+                producto = (request.form.get("producto")).replace()
                 # Unidad de medida
                 unit_quantity = request.form.get("unitquantity")  # Cantidad
                 seslect_unit_quantity = request.form.get(
@@ -369,16 +370,28 @@ def create_product():
                     (intermediario, compania),
                 )
                 print("========================================>")
-                # Verificar si el producto ya existe
-                print(
-                    "<==================== VERIFICAR SI EL PRODUCTO EXISTE ===================="
+                print("<==================== productoinactivo ====================")
+                productoinactivo = config.Read(
+                    """
+                    SELECT 
+                        dbo.Almacen.ID_PRODUCTO,
+                        dbo.Almacen.NOMBRE 
+                    FROM dbo.Almacen 
+                    WHERE dbo.Almacen.NOMBRE = ?
+                    AND dbo.Almacen.ESTATUS = 0
+                    """,
+                    (nombre,),
                 )
+                print("========================================>")
+                # Verificar si el producto ya existe
+                print("<==================== productoexiste ====================")
                 productoexiste = config.Read(
                     """
                     SELECT 
                         dbo.Almacen.NOMBRE 
                     FROM dbo.Almacen 
                     WHERE dbo.Almacen.NOMBRE = ?
+                    AND dbo.Almacen.ESTATUS = 1
                     """,
                     (nombre,),
                 )
@@ -388,11 +401,36 @@ def create_product():
                 if productoexiste:
                     # Si el producto ya existe, redireccionar con un mensaje de error
                     print(
-                        "====================! Producto existente en la BD.====================>"
+                        "====================! Existing product in the DB.====================>"
                     )
                     raise MyException(
-                        "ProductError",
-                        "Producto existente en la BD.",
+                        "OtherError",
+                        "The company or the intermediary does not meet the necessary conditions.",
+                    )
+                elif productoinactivo:
+                    print(
+                        "====================! Producto existente (Oculto) en la BD.====================>"
+                    )
+                    product_id = productoinactivo[0][0]
+
+                    config.CUD(
+                        """
+                        UPDATE dbo.Almacen 
+                        SET 
+                            PRECIO_UNITARIO = ?, 
+                            EXISTENCIAS = ?, 
+                            PRECIO_EXISTENCIA = ?, 
+                            ID_INTERMEDIARIO = ?, 
+                            ESTATUS = 1 
+                        WHERE ID_PRODUCTO = ?
+                        """,
+                        (
+                            precio,
+                            cantidad,
+                            float(precio) * int(cantidad),
+                            intermediario,
+                            product_id,
+                        ),
                     )
                 elif existe:
                     # Insertar el nuevo producto en la base de datos
@@ -520,8 +558,9 @@ def update_product():
                     FROM dbo.Almacen 
                     WHERE dbo.Almacen.NOMBRE = ?
                     AND dbo.Almacen.ID_PRODUCTO != ?
+                    AND dbo.Almacen.ESTATUS = 1
                     """,
-                    (nombre,product_id),
+                    (nombre, product_id),
                 )
                 print("========================================>")
                 # Condiciones
@@ -571,7 +610,6 @@ def update_product():
                         "====================! Producto actualizado exitosamente. !====================>"
                     )
                     flash("Producto actualizado exitosamente.")
-
             except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
@@ -582,7 +620,7 @@ def update_product():
                 flash(f"Type: {e}")
                 print("#################### FIN ####################>")
             return redirect(url_for("products.managewarehouse"))
-    else:
+    else:    
         return redirect(url_for("auth.signin"))
 
 
@@ -650,6 +688,10 @@ def create_company():
                 apellido_materno = request.form.get("AP_MAT")
                 telefono = request.form.get("intermediaryPhone")
                 company_id = request.form.get("company_id")
+                
+
+                
+                
                 # Pruebas
                 print("<==================== DATOS OBTENIDOS ====================")
                 print(f"Nombre: {nombre}")
@@ -658,6 +700,21 @@ def create_company():
                 print(f"Teléfono: {telefono}")
                 print(f"ID de la Compañía: {company_id}")
                 print("========================================>")
+                # Existe pero esta inactivo
+                active = config.Read(
+                    """
+                    SELECT 
+                        dbo.Intermediario.ID_INTERMEDIARIO,
+                        dbo.Intermediario.NOMBRE,
+                        dbo.Intermediario.AP_PAT,
+                        dbo.Intermediario.AP_MAT
+                    FROM dbo.Intermediario 
+                    WHERE dbo.Intermediario.NOMBRE = ?
+                    AND dbo.Intermediario.AP_PAT = ?
+                    AND dbo.Intermediario.AP_MAT = ?
+                    """,
+                    (nombre, apellido_paterno, apellido_materno),
+                )
                 # Verificar si el intermediario ya existe
                 existe = config.Read(
                     """
