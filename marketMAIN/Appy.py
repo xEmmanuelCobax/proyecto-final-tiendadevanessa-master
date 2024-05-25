@@ -1238,7 +1238,7 @@ def MakeSales():
                                     int(tabla[z][0]),
                                 ),
                             )
-                            
+                        return redirect(url_for("sales.addsalesworker"))
                 else:
                     print("No existe producto")
             except Exception as e:
