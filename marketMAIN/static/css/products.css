@@ -1,0 +1,24 @@
+.custom-tooltip .tooltip-inner {
+    background-color: #ffcc00; /* Color de advertencia estilo Apple */
+    color: #000; /* Texto en color negro */
+    font-size: 0.9rem;
+    border-radius: 8px; /* Bordes más redondeados */
+    padding: 8px 12px; /* Aumentar un poco el padding */
+    max-width: 220px; /* Ajuste de ancho */
+    text-align: center;
+    border: 1px solid #e6b800; /* Borde ligeramente más oscuro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.custom-tooltip .arrow::before {
+    border-top-color: #ffcc00; /* Color de advertencia estilo Apple */
+    border-width: 8px; /* Ajuste del tamaño de la flecha */
+}
+
+
+.table-rounded {
+    border-radius: 10px; /* Redondear las esquinas de la tabla */
+    border: 2px solid #ccc; /* Agregar un borde de 2px sólido con color gris */
+    overflow: hidden; /* Permitir que el contenido desborde los bordes redondeados */
+    background-color: rgba(128, 128, 128, 0.252);
+  }

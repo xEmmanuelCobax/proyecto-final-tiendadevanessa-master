@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}SaleTrackStar{% endblock %}</title>
 
+
     <link rel="icon" href="ruta/al/archivo/icono.ico" type="image/x-icon" />
 
     <link
@@ -46,6 +47,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
+
+    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+
+    
   </head>
 
   <body class="dark-mode-toggle">
@@ -87,6 +92,20 @@
               <a class="nav-link active" aria-current="page" href="holamundo:D"
                 >{{ email }}</a
               >
+            </li>
+            <li class="nav-item me-4">
+              <div id="flags" class="flags">
+                <div class="flags__item" data-language="en">
+                  <button type="button" class="flag-button">
+                    <span class="flag-icon">🇺🇸</span> 
+                  </button>
+                </div>
+                <div class="flags__item" data-language="es">
+                  <button type="button" class="flag-button">
+                    <span class="flag-icon">🇲🇽</span> 
+                  </button>
+                </div>
+              </div>
             </li>
             <li class="nav-item me-4">
               <a
@@ -160,7 +179,25 @@
           navbarToggler.disabled = false;
         }, 500); // Tiempo de espera ajustable según la duración de la animación
       });
+
+
+
+
     </script>
-    
+    <script>  
+      const flagsElement = document.getElementById("flags");
+
+      const changeLanguage = async (language)=>{
+        const requestJson =await fetch('./language/${language}.json')
+        const texts = await requestJson.json();
+        console.long(texts)
+      };
+
+      flagsElement.addEventListener("click", (e) => {
+        changeLanguage(e.target.parentElement.dataset.language);
+      
+    });
+    </script>
+  
   </body>
 </html>

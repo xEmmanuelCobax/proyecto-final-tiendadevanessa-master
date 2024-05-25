@@ -7,15 +7,6 @@ endblock %} {% block content %}
   href="{{ url_for('static', filename='css/products.css') }}"
 />
 
-<script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
-<style>
-  .table-rounded {
-    border-radius: 10px; /* Redondear las esquinas de la tabla */
-    border: 2px solid #ccc; /* Agregar un borde de 2px sólido con color gris */
-    overflow: hidden; /* Permitir que el contenido desborde los bordes redondeados */
-    background-color: rgba(128, 128, 128, 0.252);
-  }
-</style>
 
 <div class="container-fluid mt-5">
   <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
@@ -25,8 +16,7 @@ endblock %} {% block content %}
 
     <div class="col-12 col-lg-9 mt-3">
       <form class="d-flex mt-3">
-        <div class="flex-grow-1"></div>
-
+        <!-- <div class="flex-grow-1"></div> -->
         <button
           type="button"
           class="btn btn-primary"
@@ -98,6 +88,7 @@ endblock %} {% block content %}
   </div>
 </div>
 
+<!--CREAR INTERMEDIARIOS MODAL-->
 <div
   class="modal fade"
   id="createmodal"
@@ -106,7 +97,7 @@ endblock %} {% block content %}
   aria-labelledby="createmodallabel"
   aria-hidden="true"
 >
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="createmodallabel">Create New Company</h5>
@@ -119,6 +110,7 @@ endblock %} {% block content %}
       </div>
       <div class="modal-body">
         <form
+          id="createCompanyForm"
           action="{{ url_for('products.create_company') }}"
           method="post"
           class="needs-validation"
@@ -149,31 +141,23 @@ endblock %} {% block content %}
               id="intermediaryName"
               name="intermediaryName"
               required
-              oninput="limitTextInput(this)"
             />
-            <div class="invalid-feedback">
-              Please enter the intermediary name.
-            </div>
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label">last name:</label>
+            <label for="intermediary" class="form-label">Last name:</label>
             <input
               type="text"
               class="form-control"
               id="AP_PAT"
               name="AP_PAT"
               required
-              oninput="limitTextInput(this)"
             />
-            <div class="invalid-feedback">
-              Please enter the intermediary last name.
-            </div>
           </div>
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >mother's last name:</label
+              >Mother's last name:</label
             >
             <input
               type="text"
@@ -181,11 +165,7 @@ endblock %} {% block content %}
               id="AP_MAT"
               name="AP_MAT"
               required
-              oninput="limitTextInput(this)"
             />
-            <div class="invalid-feedback">
-              Please enter the intermediary mother's last name.
-            </div>
           </div>
 
           <div class="mb-3">
@@ -198,11 +178,7 @@ endblock %} {% block content %}
               id="intermediaryPhone"
               name="intermediaryPhone"
               required
-              oninput="limitInput(this)"
             />
-            <div class="invalid-feedback">
-              Please enter the intermediary number phone.
-            </div>
           </div>
 
           <div class="text-end">
@@ -213,7 +189,13 @@ endblock %} {% block content %}
             >
               Close
             </button>
-            <button type="submit" class="btn btn-success">Save</button>
+            <button
+              id="submitProductSave"
+              type="submit"
+              class="btn btn-success"
+            >
+              Save
+            </button>
           </div>
         </form>
       </div>
@@ -221,6 +203,7 @@ endblock %} {% block content %}
   </div>
 </div>
 
+<!--EDITAR INTERMEDIARIOS MODAL-->
 <div
   class="modal fade"
   id="editCompany"
@@ -229,7 +212,7 @@ endblock %} {% block content %}
   aria-labelledby="editCompanyLabel"
   aria-hidden="true"
 >
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editCompanyLabel">Edit Company</h5>
@@ -242,15 +225,14 @@ endblock %} {% block content %}
       </div>
       <div class="modal-body">
         <form
+          id="editCompanyForm"
           action="{{ url_for('products.edit_company') }}"
           method="post"
           class="needs-validation"
           novalidate
         >
           <div class="mb-3">
-            <label for="editCompanyName" class="form-label"
-              >New Company Name:</label
-            >
+            <label for="editCompanyName" class="form-label">New Company Name:</label>
             <select
               class="form-select"
               id="company-select2"
@@ -262,74 +244,52 @@ endblock %} {% block content %}
               <option value="{{ company[0] }}">{{ company[1] }}</option>
               {% endfor %}
             </select>
-            <div class="invalid-feedback">Please enter the company name.</div>
           </div>
+
           <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >New Intermediary Names:</label
-            >
+            <label for="intermediary" class="form-label">New Intermediary Names:</label>
             <input
               type="text"
               class="form-control"
               id="editIntermediaryName"
               name="editIntermediaryName"
               required
-              oninput="limitTextInput(this)"
             />
-            <div class="invalid-feedback">
-              Please enter the intermediary name.
-            </div>
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label">last name:</label>
+            <label for="intermediary" class="form-label">Last name:</label>
             <input
               type="text"
               class="form-control"
               id="NEW-AP_PAT"
               name="NEW-AP_PAT"
               required
-              oninput="limitTextInput(this)"
             />
-            <div class="invalid-feedback">
-              Please enter the intermediary last name.
-            </div>
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >mother's last name:</label
-            >
+            <label for="intermediary" class="form-label">Mother's last name:</label>
             <input
               type="text"
               class="form-control"
               id="NEW-AP_MAT"
               name="NEW-AP_MAT"
               required
-              oninput="limitTextInput(this)"
             />
-            <div class="invalid-feedback">
-              Please enter the intermediary mother's last name.
-            </div>
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >New Intermediary Phone:</label
-            >
+            <label for="intermediary" class="form-label">New Intermediary Phone:</label>
             <input
-              type="text"
+              type="number"
               class="form-control"
               id="editIntermediaryPhone"
               name="editIntermediaryPhone"
               required
-              oninput="limitInput(this)"
             />
-            <div class="invalid-feedback">
-              Please enter the intermediary number phone.
-            </div>
           </div>
-          <!-- Agrega aquí los demás campos del formulario según sea necesario -->
+
           <div class="text-end">
             <button
               type="button"
@@ -344,7 +304,9 @@ endblock %} {% block content %}
               name="EditIntermediary_id"
               value=""
             />
-            <button type="submit" class="btn btn-success">Save Changes</button>
+            <button id="submitEditProductSave" type="submit" class="btn btn-success">
+              Save Changes
+            </button>
           </div>
         </form>
       </div>
@@ -352,6 +314,7 @@ endblock %} {% block content %}
   </div>
 </div>
 
+<!--ELIMINAR INTERMEDIARIOS MODAL-->
 <div
   class="modal fade"
   id="deleteCompany"
@@ -400,33 +363,9 @@ endblock %} {% block content %}
   </div>
 </div>
 
-<!-- no permitir campos vacios en el modal create-->
-<script>
-  // Bootstrap validation script
-  (function () {
-    "use strict";
+<!--               FUNCIONALIDADES COMPARTIDAS POR MODAL                   -->
 
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.querySelectorAll(".needs-validation");
-
-    // Loop over them and prevent submission
-    Array.prototype.slice.call(forms).forEach(function (form) {
-      form.addEventListener(
-        "submit",
-        function (event) {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-
-          form.classList.add("was-validated");
-        },
-        false
-      );
-    });
-  })();
-</script>
-
+<!-- OBTENCION LOS ID (NO BORRAR)-->
 <script>
   //NO QUITAR, AQUI OBTENGO ID
   function setIntermediaryId(IntermediaryId) {
@@ -439,29 +378,258 @@ endblock %} {% block content %}
   }
 </script>
 
+<!-- EVITA EL USO DE COMILLAS EN TODOS LOS CAMPOS-->
 <script>
-  function limitInput(element) {
-    const maxDigits = 10;
-    element.value = element.value.replace(/[^0-9]/g, "");
-    let value = element.value;
-
-    // Ensure the input value is numeric and doesn't exceed maxDigits
-    if (value.length > maxDigits) {
-      element.value = value.slice(0, maxDigits);
-    }
-  }
+  // Función para eliminar comillas simples y dobles de todos los campos de entrada
+  document.querySelectorAll("input").forEach(function (input) {
+    input.addEventListener("input", function (event) {
+      // Obtener el valor actual del campo de entrada
+      var inputValue = event.target.value;
+      // Eliminar comillas simples y comillas dobles del valor actual
+      var cleanedValue = inputValue.replace(/['"]+/g, "");
+      // Actualizar el valor del campo de entrada sin comillas simples y comillas dobles
+      event.target.value = cleanedValue;
+    });
+  });
 </script>
 
+<!-- SOLO PERMITE AGREGAR UN UNICO ESPACIO EN TODOS LOS INPUTS-->
 <script>
-  function limitTextInput(element) {
-    const maxDigits = 20;
-    element.value = element.value.replace(/[^a-zA-Z]/g, "");
-    let value = element.value;
-
-    if (value.length > maxDigits) {
-      element.value = value.slice(0, maxDigits);
-    }
+  // Función para mantener solo un espacio entre palabras en los campos de entrada de texto
+  function limitarEspacios(event) {
+    // Obtener el valor actual del campo
+    var valorCampo = event.target.value;
+    // Reemplazar múltiples espacios por uno solo
+    var valorSinEspaciosRepetidos = valorCampo.replace(/\s+/g, " ");
+    // Actualizar el valor del campo con un solo espacio entre palabras
+    event.target.value = valorSinEspaciosRepetidos;
   }
+
+  // Seleccionar todos los campos de entrada de texto y textarea
+  var inputspace = document.querySelectorAll(
+    'input[type="text"], input[type="password"], input[type="email"], input[type="number"], textarea'
+  );
+
+  // Agregar evento de escucha para cada campo de entrada
+  inputspace.forEach(function (input) {
+    input.addEventListener("input", limitarEspacios);
+  });
 </script>
 
+<!-- LIMITA EL NÚMERO DE CARACTERES DE LAS ENTRADAS-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var maxCharactersText = 25; // Máximo de caracteres para campos de texto
+    var maxCharactersNumber = 10; // Máximo de caracteres para campos de número
+
+    // Función para manejar el evento de entrada y limitar la longitud de los campos de entrada
+    function handleInput(event) {
+      if (
+        event.target.type === "text" &&
+        event.target.value.length > maxCharactersText
+      ) {
+        event.target.value = event.target.value.substring(0, maxCharactersText); // Limita a maxCharactersText para campos de texto
+      } else if (
+        event.target.type === "number" &&
+        event.target.value.length > maxCharactersNumber
+      ) {
+        event.target.value = event.target.value.substring(
+          0,
+          maxCharactersNumber
+        ); // Limita a maxCharactersNumber para campos de número
+      }
+    }
+
+    // Agregar evento de entrada a todos los campos de entrada
+    var inputFields = document.querySelectorAll("input");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", handleInput);
+    });
+  });
+</script>
+
+<!-- VALIDA LOS ESPACIOS INICIALES Y FINALES QUE EL USUARIO PUEDA LLEGAR A PONER, Y QUE NO PUEDA COPIAR Y PEGARSE ESPACIOS-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var trimDelay = 500; // Cambia este valor según el tiempo que desees en milisegundos
+    var timeout = null;
+
+    // Función para eliminar espacios en blanco de los valores de los campos de entrada
+    function trimInputFields() {
+      var inputFields = document.querySelectorAll("input:not([type='number'])");
+      inputFields.forEach(function (input) {
+        input.value = input.value.trim();
+      });
+    }
+
+    // Función para reiniciar el temporizador
+    function resetTrimTimer() {
+      clearTimeout(timeout);
+      timeout = setTimeout(trimInputFields, trimDelay);
+    }
+
+    // Función para manejar el evento de pegar y eliminar espacios en blanco
+    function handlePaste(event) {
+      var paste = (event.clipboardData || window.clipboardData).getData("text");
+      event.preventDefault();
+      var trimmedPaste = paste.trim();
+      document.execCommand("insertText", false, trimmedPaste);
+      resetTrimTimer();
+    }
+
+    // Agregar eventos a todos los campos de entrada que no son de tipo "number"
+    var inputFields = document.querySelectorAll("input:not([type='number'])");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", resetTrimTimer);
+      input.addEventListener("change", resetTrimTimer);
+      input.addEventListener("blur", resetTrimTimer);
+      input.addEventListener("paste", handlePaste);
+    });
+  });
+</script>
+
+<!-- VALIDA EL NULO INGRESO DE OPERADORES EN LOS INPUTS DE TIPO NUMERO-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Función para prevenir caracteres no numéricos, el operador "." y el dígito "0" en inputs de tipo number
+    function preventInvalidChars(event) {
+      if (
+        event.key === "e" ||
+        event.key === "E" ||
+        event.key === "-" ||
+        event.key === "+" ||
+        event.key === "."
+      ) {
+        event.preventDefault();
+      }
+    }
+
+    // Agregar evento a todos los campos de entrada de tipo número
+    var numberFields = document.querySelectorAll("input[type='number']");
+    numberFields.forEach(function (input) {
+      input.addEventListener("keydown", preventInvalidChars);
+    });
+  });
+</script>
+
+
+<!--                FIN DE FUNCIONALIDADES COMPARTIDAS                     -->
+<!---->
+<!---->
+<!---->
+<!---->
+<!--                                  CREATE MODAL VALIDACIONES                                   -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("createCompanyForm");
+    var saveButton = document.getElementById("submitProductSave");
+    var tooltip = new bootstrap.Tooltip(saveButton, {
+      placement: "top",
+      title: "Please fill in all fields.",
+      trigger: "manual", // Configurar la tooltip para que se muestre manualmente
+      customClass: "custom-tooltip", // Aquí se aplica la clase personalizada
+    }); // Crear la tooltip permanente
+
+    function validateForm() {
+      var requiredFields = form.querySelectorAll("[required]");
+      var isEmpty = false;
+      requiredFields.forEach(function (field) {
+        if (!field.value.trim()) {
+          isEmpty = true;
+        }
+      });
+      saveButton.disabled = isEmpty;
+      if (isEmpty) {
+        saveButton.classList.remove("btn-success");
+        saveButton.classList.add("btn-danger");
+        tooltip.show(); // Mostrar la tooltip permanente
+      } else {
+        saveButton.classList.remove("btn-danger");
+        saveButton.classList.add("btn-success");
+        tooltip.hide(); // Ocultar la tooltip permanente
+      }
+    }
+
+    form.addEventListener("submit", function (event) {
+      validateForm();
+      if (saveButton.disabled) {
+        event.preventDefault(); // Evitar que el formulario se envíe si hay campos vacíos
+      }
+    });
+
+    form.addEventListener("input", function () {
+      validateForm();
+    });
+
+    $("#createmodal").on("hidden.bs.modal", function () {
+      form.reset();
+      saveButton.classList.remove("btn-danger");
+      saveButton.classList.add("btn-success");
+      saveButton.disabled = false;
+      tooltip.hide(); // Ocultar la tooltip al cerrar el modal
+    });
+  });
+</script>
+
+<!--                             FIN DEL CREATE MODAL VALIDACIONES                                -->
+<!---->
+<!---->
+<!---->
+<!---->
+<!--                                  EDIT MODAL VALIDACIONES                                     -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("editCompanyForm");
+    var saveButton = document.getElementById("submitEditProductSave");
+    var tooltip = new bootstrap.Tooltip(saveButton, {
+      placement: "top",
+      title: "Please fill in all fields.",
+      trigger: "manual",
+      customClass: "custom-tooltip", // Aquí se aplica la clase personalizada
+    });
+
+    function validateForm() {
+      var requiredFields = form.querySelectorAll("[required]");
+      var isEmpty = false;
+      requiredFields.forEach(function (field) {
+        if (!field.value.trim()) {
+          isEmpty = true;
+        }
+      });
+      saveButton.disabled = isEmpty;
+      if (isEmpty) {
+        saveButton.classList.remove("btn-success");
+        saveButton.classList.add("btn-danger");
+        tooltip.show();
+      } else {
+        saveButton.classList.remove("btn-danger");
+        saveButton.classList.add("btn-success");
+        tooltip.hide();
+      }
+    }
+
+    form.addEventListener("submit", function (event) {
+      validateForm();
+      if (saveButton.disabled) {
+        event.preventDefault();
+      }
+    });
+
+    form.addEventListener("input", function () {
+      validateForm();
+    });
+
+    $('#editCompany').on('hidden.bs.modal', function () {
+      form.reset();
+      saveButton.classList.remove("btn-danger");
+      saveButton.classList.add("btn-success");
+      saveButton.disabled = false;
+      tooltip.hide();
+    });
+  });
+</script>
+
+<!--                                 FIN EDIT MODAL VALIDACIONES                                  -->
 {% endblock %}

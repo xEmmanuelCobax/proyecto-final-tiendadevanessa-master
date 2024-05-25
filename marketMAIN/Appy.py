@@ -8,8 +8,12 @@ from flask import (
     flash,
     send_from_directory,
     session,
+    jsonify,
 )
-import config  # Importar config.py en donde se hacen las consultas de la base de datos
+
+import config, locale # Importar config.py en donde se hacen las consultas de la base de datos
+from datetime import datetime
+locale.setlocale(locale.LC_TIME, "es_ES")
 class MyException(Exception):
     def __init__(self, Tipo, mensaje):
         self.Tipo = Tipo
@@ -26,10 +30,33 @@ sales = Blueprint("sales", __name__, url_prefix="/sales")
 
 app.config["SECRET_KEY"] = config.HEX_SEC_KEY
 
+# Bienvenida (Terminado)
+@p.route("/welcomeuser") 
+def welcomeuser():
+    # Errores
+    if "email" in session:
+        print("<#################### welcomeuser ####################")
+        print("Session > ",session)
+        print("Nombre > ",session['name'])
+        print("Es admin? > ", session["ES_ADMIN"])
+        print("#################### FIN ####################>")
+        return render_template(
+            "profile/welcome-user.html",
+            user=session["name"],
+            IsAdmin=session["ES_ADMIN"],
+        )
+    else:
+        print("#################### NO HAY SESSION ####################>")
+        return redirect(
+            url_for("auth.signin")
+        )
 
 # Iniciar session (Terminado)
 @auth.route("/signin", methods=["GET", "POST"])
 def signin():
+    # Errores
+    email_not_found = True  # El correo electrónico no está registrado
+    bad_password = True  # Contraseña incorrecta
     print("<#################### RUTA-Signing ####################")
     if "email" in session:
         print("#################### Email In Session ####################>")
@@ -46,8 +73,9 @@ def signin():
             SELECT * 
             FROM dbo.Usuarios 
             WHERE CORREO = ?
+            AND dbo.Usuarios.ESTATUS = 1
             """,
-            (email,)
+            (email,),
         )
         if not existing_email:
             # El correo electrónico no está registrado
@@ -55,26 +83,34 @@ def signin():
             print(
                 "#################### Renderizar auth/signin.html - Correo electrónico no está registrado ####################>"
             )
-            return render_template("auth/signin.html", email_not_found=email_not_found)
-
+            return redirect(url_for("auth.signin"))
         else:
             # El correo electrónico está registrado
             if existing_email[0][6] == password:
                 # Contraseña correcta
-                session["email"] = email
+                session["email"] = existing_email[0][5]
+                session["ES_ADMIN"] = bool(existing_email [0][8])
+                session["name"] = f"{existing_email[0][1]} {existing_email[0][2]} {existing_email[0][3]} "
                 print(
                     "#################### profile.welcomeuser - Contraseña correcta ####################>"
                 )
-                return redirect(url_for("profile.welcomeuser", user=email))
+                print("Correo > ",session["email"])
+                print("Es Admin? >", session["ES_ADMIN"])
+                print("user >", session["name"])
+                return redirect(
+                    url_for("profile.welcomeuser")
+                )
             else:
                 # Contraseña incorrecta
                 bad_password = True
                 print(
                     "#################### Renderizar auth/signin - Contraseña incorrecta ####################>"
                 )
-                return render_template(
-                    "auth/signin.html", bad_password=bad_password, email=email
-                )
+        return render_template(
+            "auth/signin.html",
+            bad_password=bad_password,
+            email_not_found=email_not_found,
+        )
     print("#################### Return to auth/signin.html ####################>")
     return render_template("auth/signin.html")
 
@@ -82,37 +118,31 @@ def signin():
 # Registrarse (Terminado)
 @auth.route("/signup", methods=["GET", "POST"])
 def signup():
+    # Errores
+    email_found = False # El email ya esta registrado
+    user_found = False  #   El usuario ya ha sido encontrado
+    # Otros booleanos
+    registration_successful = False
     print("<#################### RUTA-Signup ####################")
     # Verificar si hay una dirección de correo dentro de la sesión
     if "email" in session:
         print("#################### Session iniciada renderizar index.html ####################>")
         return render_template("index.html", email=session["email"])
     elif request.method == "POST":
-        # Manejo de errores
-        email_found = False
-        user_found = False
-        lastname_error = False
         # Obtener datos del formulario
         name = request.form.get("name")
-        lastname = request.form.get("lastname")
+        apellido_paterno = request.form.get("paternal_lastname")
+        apellido_materno = request.form.get("maternal_lastname")
         email = request.form.get("email")
         password = request.form.get("password")
         # Prubas
         print("<==================== DATOS OBTENIDOS ====================")
         print(f"Name - {name}")
-        print(f"Lastname - {lastname}")
+        print(f"apellido_paterno - {apellido_paterno}")
+        print(f"apellido_materno - {apellido_materno}")
         print(f"Email - {email}")
         print(f"Password - {password}")
         print("========================================>")
-        # Obtener desde el lastname los dos apellidos
-        aux = lastname.split()
-        # Si el len del auxiliar entonces tiene dos apellidos, por lo que entra.
-        if len(aux) == 2:
-            apellido_paterno = aux[0]  # El primer elemento es el apellido paterno
-            apellido_materno = aux[-1]  # El último elemento es el apellido materno
-        else:
-            # Error en el apellido
-            lastname_error = True
         # Consulta para verificar si existe el correo en la BD
         existing_email = config.Read(
             """
@@ -122,7 +152,6 @@ def signup():
             """,
             email,
         )
-
         # Consulta para verificar si existe el usuario en la BD
         existing_user = config.Read(
             """
@@ -141,12 +170,11 @@ def signup():
         if existing_user:
             user_found = True
         # Cualquier error
-        if existing_email or existing_user or lastname_error:
+        if existing_email or existing_user:
             return render_template(
                 "auth/signup.html",
                 user_found=user_found,
                 email_found=email_found,
-                lastname_error=lastname_error,
             )
         # No hay ningún error
         else:
@@ -158,8 +186,15 @@ def signup():
                 """,
                 (name, apellido_paterno, apellido_materno, email, password),
             )
+            # Salio todo bien entonces
+            registration_successful = True
+            user = f"{name} {apellido_paterno} {apellido_materno} "
             print("#################### Renderizar auth/signin ####################>")
-            return redirect(url_for("auth.signin", registration_successful=True,user = f"{name} {apellido_paterno} {apellido_materno} "))
+            return render_template(
+                "auth/signup.html",
+                registration_successful=registration_successful,
+                user=user,
+            )
     else:
         print("#################### Renderizar auth/signup.html ####################>")
         return render_template("auth/signup.html")
@@ -224,9 +259,9 @@ def ConsultaCompanias():
 # Mostrar los productos (Terminado)
 @products.route("/warehouse")
 def warehouse():
-    if "email" in session:
+    if "email" in session and session["ES_ADMIN"]:
         # Renderizar con los datos
-        return render_template("products/warehouse.html", products=ConsultaProductos())
+        return render_template("products/warehouse.html", products=ConsultaProductos(), IsAdmin = session["ES_ADMIN"])
     else:
         return redirect(url_for("auth.signin"))
 
@@ -234,8 +269,17 @@ def warehouse():
 # Manejar el inventario (Terminado)
 @products.route("/manage_warehouse", methods=["GET", "POST"])
 def managewarehouse():
-    if "email" in session:
+    if "email" in session and session["ES_ADMIN"]:
+        # Errores
+        OtrosErroresBorrarProducto = request.args.get('OtrosErroresBorrarProducto')
+        OtrosErroresCrearProducto = request.args.get('OtrosErroresCrearProducto')
+        OtrosErroresActualizarProducto = request.args.get(
+            'OtrosErroresActualizarProducto'
+        )
         # Renderizar con los datos
+        print("OtrosErroresBorrarProducto > ",OtrosErroresBorrarProducto)
+        print("OtrosErroresCrearProducto > ",OtrosErroresCrearProducto)
+        print("OtrosErroresActualizarProducto > ", OtrosErroresActualizarProducto)
         return render_template(
             "products/manage-warehouse.html",
             products=ConsultaProductos(),
@@ -250,10 +294,10 @@ def managewarehouse():
 @products.route("/search_product", methods=["GET", "POST"])
 def search_product():
     products = []
-    if "email" in session:
+    if "email" in session and session["ES_ADMIN"]:
         if request.method == "POST":
             print("<#################### BUSCAR PRODUCTOS ####################")
-            search_term = request.form.get("search_term")
+            search_term = (str(request.form.get("search_term"))).strip()
             # Pruebas
             print("<==================== DATOS OBTENIDOS ====================")
             print(f"nombre - {search_term}")
@@ -274,72 +318,110 @@ def search_product():
             print("#################### FIN ####################>")
         return render_template("products/warehouse.html", products=products)
     else:
-        print("#################### FIN ####################>")
+        print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("auth.signin"))
 
 
 # Borrar producto (Terminado)
 @products.route("/delete_product", methods=["POST"])
 def delete_product():
+    # Errores
+    OtrosErroresBorrarProducto=False
     # Verificar si el usuario tiene una sesión activa
-    if "email" in session:
+    if "email" in session and session["ES_ADMIN"]:
         # Verificar si el método de solicitud es POST
         if request.method == "POST":
-            # Obtener el ID del producto de los datos del formulario
-            product_id = request.form.get("product_id")
-            print("<==================== DATOS OBTENIDOS ====================")
-            print(f"Product_ID - {product_id}")
-            print("========================================>")
-            config.CUD(
-                """
-                UPDATE dbo.Almacen 
-                SET 
-                    ESTATUS = 0 
-                WHERE ID_PRODUCTO = ?
-                """,
-                (product_id,),
+            try:
+                # Obtener el ID del producto de los datos del formulario
+                product_id = int(request.form.get("product_id"))
+                print("<==================== DATOS OBTENIDOS ====================")
+                print(f"Product_ID - {product_id}")
+                print("========================================>")
+                config.CUD(
+                    """
+                    UPDATE dbo.Almacen 
+                    SET 
+                        ESTATUS = 0 
+                    WHERE ID_PRODUCTO = ?
+                    """,
+                    (product_id,),
+                )
+                print("#################### FIN ####################>")
+            except Exception as e:
+                OtrosErroresBorrarProducto = True
+            return redirect(
+                url_for(
+                    "products.managewarehouse",
+                    OtrosErroresBorrarProducto=OtrosErroresBorrarProducto,
+                )
             )
-            print("#################### FIN ####################>")
-            return redirect(url_for("products.managewarehouse"))
-    # Si el usuario no tiene una sesión activa, redirigirlo a la página de inicio de sesión
-    return redirect(url_for("auth.signin"))
+    else:
+        # Si el usuario no tiene una sesión activa, redirigirlo a la página de inicio de sesión
+        print("#################### NO HAY SESSION ####################>")
+        return redirect(url_for("auth.signin"))
 
 
 # Crear producto (Terminado)
 @products.route("/create_product", methods=["POST"])
 def create_product():
-    if "email" in session:
+    # Errores
+    ErrorCantidad = False
+    ErrorPrecio = False
+    ErrorProductoExiste = False
+    ErrorRelacion = False
+    OtrosErroresCrearProducto = False
+    if "email" in session and session["ES_ADMIN"]:
         print("<#################### CREAR PRODUCTOS ####################")
         if request.method == "POST":
             try:
-                #
                 # Obtener datos del formulario
-                marca = (request.form.get("marca")).replace()
-                producto = (request.form.get("producto")).replace()
+                marca = (request.form.get("marca"))
+                producto = (request.form.get("producto"))
                 # Unidad de medida
-                unit_quantity = request.form.get("unitquantity")  # Cantidad
+                unit_quantity = int(request.form.get("unitquantity")  )# Cantidad
                 seslect_unit_quantity = request.form.get(
                     "SelectUnitOfMeasure"
                 )  # Unidad de medida
                 # Construir la cantidad con la unidad de medida
                 if seslect_unit_quantity == "pieces":
-                    quantity = unit_quantity + "Pzs"
+                    quantity = str(unit_quantity) + "Pzs"
                 elif seslect_unit_quantity == "liters":
-                    quantity = unit_quantity + "l"
+                    quantity = str(unit_quantity) + "l"
                 elif seslect_unit_quantity == "milliliters":
-                    quantity = unit_quantity + "ml"
+                    quantity = str(unit_quantity) + "ml"
                 elif seslect_unit_quantity == "kilogram":
-                    quantity = unit_quantity + "kg"
+                    quantity = str(unit_quantity) + "kg"
                 elif seslect_unit_quantity == "grams":
-                    quantity = unit_quantity + "gr"
+                    quantity = str(unit_quantity) + "gr"
                 else:
-                    quantity = unit_quantity + "No se"
+                    quantity = str(unit_quantity) + "custom"
                 # Datos formados
                 nombre = f"{marca}_{producto}_{quantity}"
-                cantidad = request.form.get("cantidad")
-                precio = request.form.get("precio")
-                compania = request.form.get("company_id")
-                intermediario = request.form.get("intermedary_id")
+                cantidad = int(request.form.get("cantidad"))
+                precio = float(request.form.get("precio"))
+                compania = int(request.form.get("company_id"))
+                intermediario = int(request.form.get("intermedary_id"))
+                # Errores
+                if cantidad <= 0 or precio <= 0:
+                    if cantidad <= 0 or precio <= 0:
+                        ErrorCantidad = True
+                        ErrorPrecio = True
+                        raise MyException(
+                            "NonPositive",
+                            f"Los valores proporcionados {cantidad,precio} no son positivos. Debem ser mayor que cero.",
+                        )
+                    elif cantidad <= 0:
+                        ErrorCantidad = True
+                        raise MyException(
+                            "NonPositive",
+                            f"El valor proporcionado {cantidad} no es positivo. Debe ser mayor que cero.",
+                        )
+                    elif precio <= 0:
+                        ErrorPrecio = True
+                        raise MyException(
+                            "NonPositive",
+                            f"El valor proporcionado {precio} no es positivo. Debe ser mayor que cero.",
+                        )
                 # Pruebas
                 print("<==================== DATOS OBTENIDOS ====================")
                 print(f"nombre - {nombre}")
@@ -367,7 +449,7 @@ def create_product():
                     AND dbo.Intermediario.ID_INTERMEDIARIO = ? 
                     AND dbo.Proveedor.ID_COMPANIA = ?
                     """,
-                    (intermediario, compania),
+                    (int(intermediario), int(compania)),
                 )
                 print("========================================>")
                 print("<==================== productoinactivo ====================")
@@ -403,9 +485,10 @@ def create_product():
                     print(
                         "====================! Existing product in the DB.====================>"
                     )
+                    ErrorProductoExiste = True
                     raise MyException(
-                        "OtherError",
-                        "The company or the intermediary does not meet the necessary conditions.",
+                        "ProductExists",
+                        "El producto existe",
                     )
                 elif productoinactivo:
                     print(
@@ -425,11 +508,11 @@ def create_product():
                         WHERE ID_PRODUCTO = ?
                         """,
                         (
-                            precio,
-                            cantidad,
-                            float(precio) * int(cantidad),
-                            intermediario,
-                            product_id,
+                            float(precio),
+                            int(cantidad),
+                            float((precio) * (cantidad)),
+                            int(intermediario),
+                            int(product_id),
                         ),
                     )
                 elif existe:
@@ -441,10 +524,10 @@ def create_product():
                         """,
                         (
                             nombre,
-                            precio,
-                            cantidad,
-                            float(precio) * int(cantidad),
-                            intermediario,
+                            float(precio),
+                            int(cantidad),
+                            float((precio) * (cantidad)),
+                            int(intermediario),
                         ),
                     )
                     print(
@@ -457,64 +540,92 @@ def create_product():
                     print(
                         "====================!La compañía o el intermediario no cumplen las condiciones necesarias.====================>"
                     )
+                    ErrorRelacion = True
                     raise MyException(
-                        "OtherError",
-                        "The company or the intermediary does not meet the necessary conditions.",
-                    )
+                        "CIConditions",
+                        "La compañia o el intermediario no cumplen con las condiciones necesarias.",
+                    )   
+            except ValueError as e:
+                print(f"ValueError: {e}")
             except MyException as ex:
                 Tipo, Mensaje = ex.args
-                print(f"Type {Tipo} : {Mensaje}")
-                flash(f"Type {Tipo} : {Mensaje}")
+                print(f"Type: {Tipo} , {Mensaje}")
                 print("#################### FIN ####################>")
-            except Exception as e:
-                print(f"Type: {e}")
-                flash(f"Type: {e}")
+            except Exception as err:
+                print(f"Inesperado {err=}, {type(err)=}")
                 print("#################### FIN ####################>")
-            return redirect(url_for("products.managewarehouse"))
+            return redirect(
+                url_for(
+                    "products.managewarehouse",
+                    OtrosErroresCrearProducto=OtrosErroresCrearProducto,ErrorCantidad = ErrorCantidad,ErrorPrecio = ErrorPrecio,
+                )
+            )
     else:
+        print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("auth.signin"))
 
 
 # Actualizar producto (En desarrollo*)
 @products.route("/update_product", methods=["POST"])
-def update_product():
-    if "email" in session:
+def update_product() :
+    # Errores
+    ErrorCantidad = False
+    ErrorPrecio = False
+    OtrosErroresActualizarProducto = False
+    if "email" in session and session["ES_ADMIN"]:
         print("<#################### Actualizar PRODUCTOS ####################")
         if request.method == "POST":
             try:
                 # Obtener datos del formulario
-                product_id = request.form.get("editproduct_id")
+                product_id = int(request.form.get("editproduct_id"))
                 marca = request.form.get("newmarca")
                 producto = request.form.get("newproducto")
                 # Unidad de medida
-                unit_quantity = request.form.get("editunitquantity")  # Cantidad
+                unit_quantity = int(request.form.get("editunitquantity"))  # Cantidad
                 seslect_unit_quantity = request.form.get(
                     "EditSelectUnitOfMeasure"
                 )  # Unidad de medida
                 # Piezas
                 if seslect_unit_quantity == "pieces":
-                    quantity = unit_quantity + "Pzs"
+                    quantity = str(unit_quantity) + "Pzs"
                 # Litros
                 elif seslect_unit_quantity == "liters":
-                    quantity = unit_quantity + "l"
+                    quantity = str(unit_quantity) + "l"
                 # Milimetros
                 elif seslect_unit_quantity == "milliliters":
-                    quantity = unit_quantity + "ml"
+                    quantity = str(unit_quantity) + "ml"
                 # Kilogramos
                 elif seslect_unit_quantity == "kilogram":
-                    quantity = unit_quantity + "kg"
+                    quantity = str(unit_quantity) + "kg"
                 # Gramos
                 elif seslect_unit_quantity == "grams":
-                    quantity = unit_quantity + "gr"
+                    quantity = str(unit_quantity) + "gr"
                 # custom?
                 else:
-                    quantity = unit_quantity + "No se"
+                    quantity = str(unit_quantity)+ "custom"
                 # Datos formados
                 nombre = f"{marca}_{producto}_{quantity}"
-                cantidad = request.form.get("newcantidad")
-                precio = request.form.get("newprecio")
-                compania = request.form.get("company-new-select")
-                intermediario = request.form.get("intermedary-new-select")
+                cantidad = int(request.form.get("newcantidad"))
+                precio = float(request.form.get("newprecio"))
+                compania = int(request.form.get("company-new-select"))
+                intermediario = int(request.form.get("intermedary-new-select"))
+                # Errores
+                if cantidad <= 0 or precio <= 0:
+                    if cantidad <= 0 or precio <= 0:
+                        raise MyException(
+                            "NonPositive",
+                            f"Los valores proporcionados {cantidad,precio} no son positivos. Debem ser mayor que cero.",
+                        )
+                    elif cantidad <= 0:
+                        raise MyException(
+                            "NonPositive",
+                            f"El valor proporcionado {cantidad} no es positivo. Debe ser mayor que cero.",
+                        )
+                    elif precio <= 0:
+                        raise MyException(
+                            "NonPositive",
+                            f"El valor proporcionado {precio} no es positivo. Debe ser mayor que cero.",
+                        )
                 # Pruebas
                 print("<==================== DATOS OBTENIDOS ====================")
                 print(f"product_id - {product_id}")
@@ -544,7 +655,7 @@ def update_product():
                     AND dbo.Intermediario.ID_INTERMEDIARIO = ?
                     AND dbo.Proveedor.ID_COMPANIA = ?
                     """,
-                    (intermediario, compania,),
+                    (int(intermediario), int(compania),),
                 )
                 print("========================================>")
                 # Verificar si el producto ya existe
@@ -560,7 +671,7 @@ def update_product():
                     AND dbo.Almacen.ID_PRODUCTO != ?
                     AND dbo.Almacen.ESTATUS = 1
                     """,
-                    (nombre, product_id),
+                    (nombre, int(product_id)),
                 )
                 print("========================================>")
                 # Condiciones
@@ -599,17 +710,20 @@ def update_product():
                         """,
                         (
                             nombre,
-                            precio,
-                            cantidad,
+                            float(precio),
+                            int(cantidad),
                             float(precio) * int(cantidad),
-                            intermediario,
-                            product_id,
+                            int(intermediario),
+                            int(product_id),
                         ),
                     )
                     print(
                         "====================! Producto actualizado exitosamente. !====================>"
                     )
                     flash("Producto actualizado exitosamente.")
+            except ValueError as e:
+                print(f"ValueError: {e}")
+                flash(f"Error: {e}")
             except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
@@ -621,13 +735,17 @@ def update_product():
                 print("#################### FIN ####################>")
             return redirect(url_for("products.managewarehouse"))
     else:    
-        return redirect(url_for("auth.signin"))
+        print("#################### NO HAY SESSION ####################>")
+        return redirect(
+            url_for("auth.signin"),
+            OtrosErroresActualizarProducto=OtrosErroresActualizarProducto,
+        )
 
 
 # Manejar los intermediario (En Desarrollo)
 @products.route("/manage_company")
 def managecompany():
-    if "email" in session:
+    if "email" in session and session["ES_ADMIN"]:
         relations = []
         relations = config.Read(
             """
@@ -647,6 +765,7 @@ def managecompany():
         )
         return render_template("products/manage-company.html", relations=relations, companies=ConsultaCompanias())
     else:
+        print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("auth.signin"))
 
 
@@ -654,12 +773,12 @@ def managecompany():
 @products.route("/delete_company", methods=["POST"])
 def delete_company():
     # Verificar si el usuario tiene una sesión activa
-    if "email" in session:
+    if "email" in session and session["ES_ADMIN"]:
         # Verificar si el método de solicitud es POST
         if request.method == "POST":
             print("<#################### delete_company ####################")
             # Obtener el ID del intermediario de los datos del formulario
-            id_intermediario = request.form.get("DeleteIntermediaryId") #Se obtiene de un dato oculto
+            id_intermediario = int(request.form.get("DeleteIntermediaryId")) #Se obtiene de un dato oculto
             print("<==================== DATOS OBTENIDOS ====================")
             print(f"company_id - {id_intermediario}")
             print("========================================>")
@@ -667,18 +786,20 @@ def delete_company():
                 """
                 UPDATE dbo.Intermediario SET ESTATUS = 0 WHERE ID_INTERMEDIARIO = ?;
                 """,
-                (id_intermediario,),
+                (int(id_intermediario),),
             )
             print("#################### FIN ####################>")
             return redirect(url_for("products.managecompany"))
     # Si el usuario no tiene una sesión activa, redirigirlo a la página de inicio de sesión
-    return redirect(url_for("auth.signin"))
+    else:
+        print("#################### NO HAY SESSION ####################>")
+        return redirect(url_for("auth.signin"))
 
 
 # crear intermediario (En Desarrollo)
 @products.route("/create_company", methods=["POST"])
 def create_company():
-    if "email" in session:
+    if "email" in session and session["ES_ADMIN"]:
         print("<#################### CREAR EMPRESA ####################")
         if request.method == "POST":
             try:
@@ -686,12 +807,8 @@ def create_company():
                 nombre = request.form.get("intermediaryName")
                 apellido_paterno = request.form.get("AP_PAT")
                 apellido_materno = request.form.get("AP_MAT")
-                telefono = request.form.get("intermediaryPhone")
-                company_id = request.form.get("company_id")
-                
-
-                
-                
+                telefono = int(request.form.get("intermediaryPhone"))
+                company_id = int(request.form.get("company_id"))
                 # Pruebas
                 print("<==================== DATOS OBTENIDOS ====================")
                 print(f"Nombre: {nombre}")
@@ -701,7 +818,7 @@ def create_company():
                 print(f"ID de la Compañía: {company_id}")
                 print("========================================>")
                 # Existe pero esta inactivo
-                active = config.Read(
+                VerificarInactivo = config.Read(
                     """
                     SELECT 
                         dbo.Intermediario.ID_INTERMEDIARIO,
@@ -712,6 +829,7 @@ def create_company():
                     WHERE dbo.Intermediario.NOMBRE = ?
                     AND dbo.Intermediario.AP_PAT = ?
                     AND dbo.Intermediario.AP_MAT = ?
+                    AND dbo.Intermediario.ESTATUS = 0
                     """,
                     (nombre, apellido_paterno, apellido_materno),
                 )
@@ -726,6 +844,7 @@ def create_company():
                     WHERE dbo.Intermediario.NOMBRE = ?
                     AND dbo.Intermediario.AP_PAT = ?
                     AND dbo.Intermediario.AP_MAT = ?
+                    AND dbo.Intermediario.ESTATUS = 1
                     """,
                     (nombre, apellido_paterno, apellido_materno),
                 )
@@ -737,7 +856,7 @@ def create_company():
                     FROM dbo.Intermediario 
                     WHERE dbo.Intermediario.TEL = ?
                     """,
-                    (telefono,),
+                    (int(telefono),),
                 )
                 # Cualquier error
                 if existe or tel_existe:
@@ -750,15 +869,29 @@ def create_company():
                         raise MyException(
                             "ErrorTel", "The phone number is already registered"
                         )
-                # Insertar en la base de datos si no hay errores
-                config.CUD(
-                    """
-                    INSERT INTO dbo.Intermediario (NOMBRE, AP_PAT, AP_MAT, TEL, ESTATUS, ID_COMPANIA) 
-                    VALUES (?, ?, ?, ?, 1, ?)
-                    """,
-                    (nombre, apellido_paterno, apellido_materno, telefono, company_id),
-                )
-                print("#################### FIN (Se inserto en la BD) ####################>")
+                if VerificarInactivo:
+                    config.CUD(
+                        """
+                        UPDATE dbo.Intermediario 
+                        SET TEL=?, ID_COMPANIA=?, ESTATUS=1
+                        WHERE ID_INTERMEDIARIO = ?
+                        """,
+                        (
+                            int(telefono),
+                            int(company_id),
+                            VerificarInactivo[0][0],
+                        ),
+                    )
+                else:
+                    # Insertar en la base de datos si no hay errores
+                    config.CUD(
+                        """
+                        INSERT INTO dbo.Intermediario (NOMBRE, AP_PAT, AP_MAT, TEL, ESTATUS, ID_COMPANIA) 
+                        VALUES (?, ?, ?, ?, 1, ?)
+                        """,
+                        (nombre, apellido_paterno, apellido_materno, int(telefono), int(company_id)),
+                    )
+                    print("#################### FIN (Se inserto en la BD) ####################>")
             except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
@@ -770,13 +903,14 @@ def create_company():
                 print("#################### FIN (No se inserto) ####################>")
             return redirect(url_for("products.managecompany"))
     else:
+        print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("auth.signin"))
 
 
 # Editar intermediario (En Desarrollo)
 @products.route("/edit_company", methods=["GET", "POST"])
 def edit_company():
-    if "email" in session:
+    if "email" in session and session["ES_ADMIN"]:
         print("<#################### EDITAR EMPRESA ####################")
         # Verificar si el método es POST para procesar el formulario
         if request.method == "POST":
@@ -785,11 +919,11 @@ def edit_company():
                 nombre = request.form.get("editIntermediaryName")
                 apellido_paterno = request.form.get("NEW-AP_PAT")
                 apellido_materno = request.form.get("NEW-AP_MAT")
-                telefono = request.form.get("editIntermediaryPhone")
-                company_id = request.form.get("Edit-company_id")
-                id_intermediario = request.form.get(
+                telefono = int(request.form.get("editIntermediaryPhone"))
+                company_id = int(request.form.get("Edit-company_id"))
+                id_intermediario = int(request.form.get(
                     "EditIntermediary_id"
-                )  # Se obtiene de un dato oculto
+                ) ) # Se obtiene de un dato oculto
                 # Pruebas
                 print("<==================== DATOS OBTENIDOS ====================")
                 print(f"nombre - {nombre}")
@@ -812,7 +946,7 @@ def edit_company():
                     AND dbo.Intermediario.AP_MAT = ?
                     AND dbo.Intermediario.ID_INTERMEDIARIO != ?
                     """,
-                    (nombre, apellido_paterno, apellido_materno, id_intermediario),
+                    (nombre, apellido_paterno, apellido_materno, int(id_intermediario)),
                 )
                 # Verificar si el teléfono ya está en uso
                 tel_existe = config.Read(
@@ -848,9 +982,9 @@ def edit_company():
                             nombre,
                             apellido_paterno,
                             apellido_materno,
-                            telefono,
-                            company_id,
-                            id_intermediario,
+                            int(telefono),
+                            int(company_id),
+                            int(id_intermediario),
                         ),
                     )
                     print("#################### FIN ####################>")
@@ -866,19 +1000,8 @@ def edit_company():
                 print("#################### FIN (No se inserto) ####################>")
             return redirect(url_for("products.managecompany"))
     else:
+        print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("auth.signin"))
-
-# Bienvenida (Terminado)
-@p.route("/welcomeuser") 
-def welcomeuser():
-    if "email" in session:
-        print("<#################### welcomeuser ####################")
-        print(session)
-        print("#################### FIN ####################>")
-        return render_template("profile/welcome-user.html")
-    else:
-        return redirect(url_for("auth.signin"))
-
 
 # Ajuste de perfil (En Desarrollo)
 @p.route("/profile")
@@ -901,21 +1024,230 @@ def settings():
 # Ventas
 @sales.route("/addsalesworker")
 def addsalesworker():
-    #sales.addsalesworker
-    products = config.Read(
-            """
-            SELECT 
-                ID_PRODUCTO, 
-                NOMBRE, 
-                PRECIO_UNITARIO, 
-                EXISTENCIAS,
-                ESTATUS
-            FROM dbo.Almacen 
-            WHERE dbo.Almacen.ESTATUS = 1
-            """
-        )
-    return render_template("sales/add-sales-worker.html", products=products)
+    # sales.addsalesworker
+    if "email" in session:
+        print("<#################### addsalesworker ####################")
+        products = config.Read(
+                """
+                SELECT 
+                    ID_PRODUCTO, 
+                    NOMBRE, 
+                    PRECIO_UNITARIO, 
+                    EXISTENCIAS,
+                    ESTATUS
+                FROM dbo.Almacen 
+                WHERE dbo.Almacen.ESTATUS = 1
+                """
+            )
+        print("#################### FIN ####################>")
+        return render_template("sales/add-sales-worker.html", products=products)
+    else:
+        print("#################### NO HAY SESSION ####################>")
+    return redirect(url_for("auth.signin"))
 
+
+@sales.route("/MakeSales", methods=["POST"])
+def MakeSales():
+    if "email" in session:
+        if request.method == "POST":
+            try:
+                print("<#################### MakeSales ####################")
+                sales_data = request.get_json()
+                Entrada = []
+                print("Sales Data Received:", sales_data)
+                for i in range(1,len(sales_data)):
+                    if i>=1: # La primera no se agarra
+                        id = sales_data[i].get("id")
+                        cantidad= sales_data[i].get("price")
+                        print("ID>",id) # El id
+                        print("cantidad>",cantidad)
+                        Entrada.append([int(id), int(cantidad)])
+                #
+                print("<==================== DATOS OBTENIDOS ====================")
+                for producto in Entrada:
+                    print(producto)
+                print("========================================>")
+                # Inicializar new como una lista de listas vacías
+                tabla = [[] for _ in range(len(Entrada))]
+                # Verificar que existe en la base de datos>
+                ValidarExistencia = False
+                for i in range(len(Entrada)):
+                    ExisteProducto = config.Read(
+                        """
+                        SELECT 
+                            dbo.Almacen.ID_PRODUCTO,
+                            dbo.Almacen.PRECIO_UNITARIO,
+                            dbo.Almacen.EXISTENCIAS
+                        FROM dbo.Almacen 
+                        WHERE dbo.Almacen.ESTATUS = 1 
+                        AND dbo.Almacen.ID_PRODUCTO = ?
+                        """,
+                        (Entrada[i][0],),
+                    )
+                    tabla[i].append(ExisteProducto[0][0])
+                    tabla[i].append(ExisteProducto[0][1])
+                    tabla[i].append(ExisteProducto[0][2])
+                    # Si un producto no existe, entonces terminamos el ciclo y el booleano ValidarExistencia es falso
+                    if not ExisteProducto:
+                        ValidarExistencia = False
+                        break
+                    # Si no hay errores entonces el booleano ValidarExistencia es verdadero
+                    ValidarExistencia = True
+                for producto in tabla:
+                    print(producto)
+                # Si los productos existen(Estan activos) y estan en la BD entonces>
+                if ValidarExistencia == True:
+                    # Obtenemos la fecha actual
+                    Auxiliar = datetime.now()
+                    # Datos utiles para fecha
+                    DiaA = Auxiliar.strftime("%d")  # Dia
+                    MesA = Auxiliar.strftime("%B")  # Mes
+                    AnioA = Auxiliar.strftime("%Y")  # Anio
+                    # Imprimir
+                    print(DiaA, MesA, AnioA)
+
+                    # Encontrar ID_DIA en BD DIA
+                    Dia = int(
+                        config.Read(
+                            """
+                        SELECT dbo.Dia.ID_DIA 
+                        FROM dbo.Dia 
+                        WHERE dbo.Dia.DIA = ?
+                        """,
+                            (DiaA),
+                        )[0][0]
+                    )
+                    # Encontrar ID_MES en BD MES
+                    Mes = int(
+                        config.Read(
+                            """SELECT dbo.Mes.ID_MES 
+                        FROM dbo.Mes 
+                        WHERE dbo.Mes.MES = ?
+                        """,
+                            (MesA),
+                        )[0][0]
+                    )
+                    # Encontrar ID_ANIO en BD ANIO
+                    Anio = int(
+                        config.Read(
+                            """
+                        SELECT dbo.Anio.ID_ANIO 
+                        FROM dbo.Anio 
+                        WHERE dbo.Anio.ANIO = ?
+                        """,
+                            (AnioA),
+                        )[0][0]
+                    )
+                    # Valores en 0
+                    SumaCosto = 0  # Sumatoria del costo
+                    SumaIva = 0  # Sumatoria del iva
+                    TotalProductos = 0  # Sumatoria de la cantidad de productos
+                    # Recorrer productos con un for
+                    # Inicializar new como una lista de listas vacías
+                    TablaDetalles = [[] for _ in range(len(Entrada))]
+                    ErrorVenta = False
+                    for i in range(len(Entrada)):
+                        # Datos
+                        """
+                        tabla[i][0] = ID_Producto
+                        tabla[i][1] = Costo Unitario
+                        tabla[i][2] = Stock
+                        Entrada[i][0] = ID_Producto
+                        Entrada[i][1] = Cantidad de compra
+                        """
+                        if tabla[i][2] - Entrada[i][1] < 0:
+                            print("Error en la venta")
+                            ErrorVenta = True
+                            break
+                        else:
+                            # Operaciones
+                            Cost = (tabla[i][1]) * (Entrada[i][1])  # Costo por producto
+                            IvaValue = Cost * 0.16  # Asumiendo que el IVA es del 16%
+                            SumaCosto += Cost  # Sumar los costos por producto
+                            SumaIva += IvaValue  # Sumar los iva por producto
+                            TotalProductos += Entrada[i][
+                                1
+                            ]  # Sumar la cantidad de productos
+                            # Apartado en donde se agregar datos a array
+                            TablaDetalles[i].append(Entrada[i][1])  # CANTIDAD
+                            TablaDetalles[i].append(Cost)  # IMPORTE
+                            TablaDetalles[i].append(IvaValue)  # IVA
+                            TablaDetalles[i].append(tabla[i][0])  # ID_PRODUCTO
+                    if not ErrorVenta:
+                        # Datos
+                        Total = SumaCosto + SumaIva  # Costo de la venta
+                        print("Total venta:", SumaCosto)
+                        print("Total iva:", SumaIva)
+                        # BD
+                        print("Total de productos vendidos:", TotalProductos)
+                        print("Total con iva:", Total)
+                        #
+                        config.CUD(
+                            """
+                            INSERT INTO dbo.Ventas (CANTIDAD_VENTA, TOTAL, ESTATUS, ID_DIA, ID_MES, ID_ANIO) 
+                            VALUES (?,?,1,?,?,?)
+                            """,
+                            (
+                                int(TotalProductos),
+                                float(Total),
+                                int(Dia),
+                                int(Mes),
+                                int(Anio),
+                            ),
+                        )
+                        id = int(
+                            config.Read("SELECT IDENT_CURRENT('dbo.Ventas') AS NewID")[
+                                0
+                            ][0]
+                        )
+                        #
+                        print("ID-VENTA>", id)
+                        for y in range(len(TablaDetalles)):
+                            config.CUD(
+                                """
+                                INSERT INTO dbo.Detalles(CANTIDAD,IMPORTE,IVA,ESTATUS,ID_PRODUCTO,ID_VENTA) 
+                                VALUES (?,?,?,1,?,?);
+                                """,
+                                (
+                                    int(TablaDetalles[y][0]),
+                                    float(TablaDetalles[y][1]),
+                                    float(TablaDetalles[y][2]),
+                                    int(TablaDetalles[y][3]),
+                                    int(id),
+                                ),
+                            )
+                        for z in range(len(TablaDetalles)):
+                            RestarProductos = int(tabla[z][2] - Entrada[z][1])
+                            if RestarProductos == 0:
+                                ESTATUS = 0
+                            else:
+                                ESTATUS = 1
+                            config.CUD(
+                                """
+                                UPDATE dbo.Almacen 
+                                SET 
+                                    EXISTENCIAS = ?, 
+                                    PRECIO_EXISTENCIA = ?,
+                                    ESTATUS = ?
+                                WHERE ID_PRODUCTO = ?
+                                """,
+                                (
+                                    int(tabla[z][2] - Entrada[z][1]),
+                                    int(tabla[i][1]*(tabla[z][2] - Entrada[z][1])),
+                                    ESTATUS,
+                                    int(tabla[z][0]),
+                                ),
+                            )
+                            
+                else:
+                    print("No existe producto")
+            except Exception as e:
+                print(e)
+        print("#################### FIN  ####################>")
+        return redirect(url_for("sales.addsalesworker"))
+    else:
+        print("NO HAY SESSION")
+    return redirect(url_for("auth.signin"))
 
 # Cerrar session (Terminado)
 @app.route("/signout")

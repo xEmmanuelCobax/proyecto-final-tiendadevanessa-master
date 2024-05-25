@@ -26,11 +26,11 @@
         <!-- Columnas para el formulario -->
         <div class="col-xl-5 offset-xl-1">
           <!-- Aquí comienza la sección del formulario -->
-          <form method="post" action="">
+          <form method="post" action="" id="signupForm">
             <h1 class="fw-bold mb-4 signin__titulo text-center">Sign Up</h1>
-            <!-- Nombre input -->
+            <!-- NOMBRE || id=name-->
             <div class="form-outline mb-4">
-              <label for="username">Name</label>
+              <label for="username">Names</label>
               <div class="col-sm-10">
                 <input
                   type="text"
@@ -44,69 +44,81 @@
                   data-bs-toggle="tooltip-user-found"
                   data-bs-placement="left"
                   data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if user_found %}User already registered.{% endif %}"
+                  data-bs-title="{% if user_found %}Names already registered.{% else %}Enter your names.{% endif %}"
                 />
               </div>
               {% if name_error %}
               <div class="invalid-feedback">Error name.</div>
               {% endif %}
             </div>
+
             <!-- Apellidos input -->
             <div class="form-outline mb-4">
-              <label for="apellidoPaterno">Paternal Last Name</label>
-              <div class="col-sm-10">
-                <input
-                  type="text"
-                  class="form-control mt-2 {% if paternal_lastname_error %}is-invalid{% endif %} {% if paternal_lastname_valid %}is-valid{% endif %}"
-                  id="apellidoPaterno"
-                  name="paternal_lastname"
-                  required
-                  oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="left"
-                  data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if paternal_lastname_error %}Paternal last name error.{% else %}Enter your paternal last name{% endif %}"
-                />
-                {% if paternal_lastname_valid %}
-                <div class="valid-feedback">
-                  <i class="bi bi-check-circle"></i> Paternal last name provided
+              <div class="row">
+                <!-- apellido paterno || id=apellidoPaterno-->
+                <div class="col-md-5 mb-3 mb-md-0">
+                  <label for="apellidoPaterno">Paternal Last Name</label>
+                  <div>
+                    <input
+                      type="text"
+                      class="form-control mt-2 {% if paternal_lastname_error %}is-invalid{% endif %} {% if paternal_lastname_valid %}is-valid{% endif %}"
+                      id="apellidoPaterno"
+                      name="paternal_lastname"
+                      required
+                      oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="left"
+                      data-bs-custom-class="custom-tooltip"
+                      data-bs-title="{% if paternal_lastname_error %}Paternal last name error.{% else %}Enter your paternal last name{% endif %}"
+                    />
+                    {% if paternal_lastname_valid %}
+                    <div class="valid-feedback">
+                      <i class="bi bi-check-circle"></i> Paternal last name
+                      provided
+                    </div>
+                    {% endif %}
+                  </div>
+                  {% if paternal_lastname_error %}
+                  <div class="invalid-feedback">
+                    Error in paternal last name.
+                  </div>
+                  {% endif %}
                 </div>
-                {% endif %}
-              </div>
-              {% if paternal_lastname_error %}
-              <div class="invalid-feedback">Error in paternal last name.</div>
-              {% endif %}
-            </div>
-            
-            <div class="form-outline mb-4">
-              <label for="apellidoMaterno">Maternal Last Name</label>
-              <div class="col-sm-10">
-                <input
-                  type="text"
-                  class="form-control mt-2 {% if maternal_lastname_error %}is-invalid{% endif %} {% if maternal_lastname_valid %}is-valid{% endif %}"
-                  id="apellidoMaterno"
-                  name="maternal_lastname"
-                  required
-                  oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="left"
-                  data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if maternal_lastname_error %}Maternal last name error.{% else %}Enter your maternal last name{% endif %}"
-                />
-                {% if maternal_lastname_valid %}
-                <div class="valid-feedback">
-                  <i class="bi bi-check-circle"></i> Maternal last name provided
+
+                <!-- apellido materno || id=apellidoMaterno-->
+                <div class="col-md-5">
+                  <label for="apellidoMaterno">Maternal Last Name</label>
+                  <div>
+                    <input
+                      type="text"
+                      class="form-control mt-2 {% if maternal_lastname_error %}is-invalid{% endif %} {% if maternal_lastname_valid %}is-valid{% endif %}"
+                      id="apellidoMaterno"
+                      name="maternal_lastname"
+                      oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="left"
+                      data-bs-custom-class="custom-tooltip"
+                      data-bs-title="{% if maternal_lastname_error %}Maternal last name error.{% else %}Enter your maternal last name{% endif %}"
+                    />
+                    {% if maternal_lastname_valid %}
+                    <div class="valid-feedback">
+                      <i class="bi bi-check-circle"></i> Maternal last name
+                      provided
+                    </div>
+                    {% endif %}
+                  </div>
+                  {% if maternal_lastname_error %}
+                  <div class="invalid-feedback">
+                    Error in maternal last name.
+                  </div>
+                  {% endif %}
                 </div>
-                {% endif %}
               </div>
-              {% if maternal_lastname_error %}
-              <div class="invalid-feedback">Error in maternal last name.</div>
-              {% endif %}
             </div>
-            
+
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <label for="email">Email address</label>
+              <label for="email">Email Address</label>
               <div class="col-sm-10">
                 <input
                   type="email"
@@ -126,6 +138,7 @@
               </div>
               {% endif %}
             </div>
+
             <!-- Password input -->
             <div class="form-outline mb-4">
               <label for="password">Password</label>
@@ -137,6 +150,10 @@
                     id="password"
                     name="password"
                     required
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="left"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Password must be at least 8 characters long"
                   />
                   <div class="mt-2">
                     <button
@@ -150,19 +167,22 @@
                 </div>
               </div>
             </div>
+
             <div
               class="d-flex flex-column align-items-left mb-4 sigin__remember"
             >
               <!-- <p class="informacion__mensaje">*Create your Specify account with your work email to sync 
                           all your design data across your design system</p>  -->
-              <a class="informacion__mensaje" href="{{url_for('auth.signin')}}"
-                >Already have an account?</a
-              >
+              <div class="">
+                <a>Already have an account?</a>
+                <a href="{{url_for('auth.signin')}}" class="forget">Sign in</a>
+              </div>
             </div>
             <!-- Submit button -->
             <button
               type="submit"
               class="btn__form btn btn-primary btn-lg btn-block"
+              id="submitButton"
             >
               Sign Up
             </button>
@@ -176,7 +196,53 @@
   </div>
 </div>
 
-<!-- TOOLTIP PARA MOSTRAR RECOMENDACION DEL EMAIL -->
+<!-- BLOQUEA EL BOTON DE CREAR CUENTA SI EL PASSWORD Y EL EMAIL SON INCORRECTOS -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Obtener referencia al botón de envío del formulario
+    var submitButton = document.getElementById("submitButton");
+
+    // Función para verificar si el formulario puede enviarse
+    function validarEnvioFormulario() {
+      // Verificar si tanto el campo de contraseña como el campo de correo electrónico cumplen con los requisitos
+      var passwordIsValid =
+        document.getElementById("password").value.length >= 8;
+      var emailIsValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+        document.getElementById("email").value
+      );
+
+      // Habilitar o deshabilitar el botón de envío del formulario según los resultados de las validaciones
+      if (passwordIsValid && emailIsValid) {
+
+        var submitButton = document.getElementById("submitButton");
+        submitButton.classList.remove("btn-danger");
+        submitButton.classList.add("btn-primary");
+
+        submitButton.disabled = false;
+
+      } else {
+
+        var submitButton = document.getElementById("submitButton");
+
+        // Cambiar la clase del botón de primary a danger
+        submitButton.classList.remove("btn-primary");
+        submitButton.classList.add("btn-danger");
+
+        submitButton.disabled = true;
+      }
+    }
+
+    // Agregar eventos de entrada a los campos de contraseña y correo electrónico para realizar la validación
+    document
+      .getElementById("password")
+      .addEventListener("input", validarEnvioFormulario);
+    document
+      .getElementById("email")
+      .addEventListener("input", validarEnvioFormulario);
+  });
+</script>
+
+<!-- TOOLTIP PARA MOSTRAR RECOMENDACION DEL EMAIL Y EVITA PONER MENOS DE 8 CARACTERES POR CONTRASEÑA -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     var tooltipTriggerList = [].slice.call(
@@ -210,10 +276,53 @@
         }
       }
     });
+
+    var passwordInput = document.getElementById("password");
+    var passwordTooltip = bootstrap.Tooltip.getInstance(passwordInput);
+
+    // Validar la contraseña antes de enviar el formulario
+    document
+      .getElementById("signupForm")
+      .addEventListener("submit", function (event) {
+        if (passwordInput.value.length < 8) {
+          passwordInput.classList.add("is-invalid");
+          if (!passwordTooltip) {
+            passwordTooltip = new bootstrap.Tooltip(passwordInput);
+          }
+          passwordTooltip.show();
+          event.preventDefault(); // Prevenir el envío del formulario
+        } else {
+          passwordInput.classList.remove("is-invalid");
+          passwordInput.classList.add("is-valid");
+          if (passwordTooltip) {
+            passwordTooltip.hide();
+            passwordTooltip.dispose(); // Destruir la instancia del tooltip
+          }
+        }
+      });
+
+    // Verificar la longitud de la contraseña en tiempo real
+    passwordInput.addEventListener("input", function () {
+      if (passwordInput.value.length < 8) {
+        passwordInput.classList.add("is-invalid");
+        passwordInput.classList.remove("is-valid");
+        if (!passwordTooltip) {
+          passwordTooltip = new bootstrap.Tooltip(passwordInput);
+        }
+        passwordTooltip.show();
+      } else {
+        passwordInput.classList.remove("is-invalid");
+        passwordInput.classList.add("is-valid");
+        if (passwordTooltip) {
+          passwordTooltip.hide();
+          passwordTooltip.dispose(); // Destruir la instancia del tooltip
+        }
+      }
+    });
   });
 </script>
 
-<!-- SCRIPT PARA GENERAR CONTRASEÑAS SEGURAR -->
+<!-- SCRIPT PARA GENERAR CONTRASEÑAS SEGURAS -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     document
@@ -234,11 +343,20 @@
         setTimeout(function () {
           passwordField.type = "password"; // Volver a cambiar el tipo de entrada a "password" después de 3 segundos
         }, 4000);
+
+        // Verificar si la contraseña generada cumple con los requisitos
+        if (passwordField.value.length >= 8) {
+          passwordField.classList.remove("is-invalid");
+          passwordField.classList.add("is-valid");
+        } else {
+          passwordField.classList.add("is-invalid");
+          passwordField.classList.remove("is-valid");
+        }
       });
   });
 </script>
 
-<!-- MOSTRAR TOOLTIPS CON MENSAJES DE ERRORES -->
+<!-- MOSTRAR TOOLTIPS CON MENSAJES DE ERRORES Y MOSTRAR INFORMACION ADICIONAL -->
 <script>
   var tooltipTriggerList = [].slice.call(
     document.querySelectorAll('[data-bs-toggle="tooltip-user-found"]')
@@ -285,6 +403,117 @@
     // Ocultar el tooltip de validación cuando se hace clic en el tooltip de correo electrónico ya encontrado
     tooltipEmailFound.addEventListener("click", function () {
       tooltipEmailValidation.classList.add("d-none");
+    });
+  });
+</script>
+
+<!-- EVITA EL USO DE ESPACIOS, COMILLAS SIMPLES Y DOBLES EN EL EMAIL Y EN EL PASSWORD -->
+<script>
+  // Función para validar la entrada de contraseña y eliminar espacios, comillas simples y dobles
+  document.getElementById("password").addEventListener("input", function (event) {
+    // Obtener el valor actual del campo de contraseña
+    var passwordInput = event.target.value;
+    // Eliminar los espacios, comillas simples y dobles del valor actual
+    var passwordCleaned = passwordInput.replace(/[ '\"\t\\]/g, "");
+    // Actualizar el valor del campo de contraseña sin espacios, comillas simples y dobles
+    event.target.value = passwordCleaned;
+  });
+
+  // Función para eliminar espacios, comillas simples y dobles del campo de correo electrónico
+  document.getElementById("email").addEventListener("input", function (event) {
+    // Obtener el valor actual del campo de correo electrónico
+    var emailInput = event.target.value;
+    // Eliminar los espacios, comillas simples y dobles del valor actual
+    var emailCleaned = emailInput.replace(/[^\w\s@.]/g, "");
+    // Actualizar el valor del campo de correo electrónico sin espacios, comillas simples y dobles
+    event.target.value = emailCleaned;
+  });
+</script>
+
+<!-- ELIMINAR LOS ESPACIOS EN BLANCO DEL PRINCIPIO Y FINAL DE LOS INPUTS APELLIDOS Y NOMBRE-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var trimDelay = 500; // Cambia este valor según el tiempo que desees en milisegundos
+    var timeout = null;
+
+    // Función para eliminar espacios en blanco de los valores de los campos de entrada
+    function trimInputFields() {
+      var inputFields = document.querySelectorAll("input");
+      inputFields.forEach(function (input) {
+        input.value = input.value.trim();
+      });
+    }
+
+    // Función para reiniciar el temporizador
+    function resetTrimTimer() {
+      clearTimeout(timeout);
+      timeout = setTimeout(trimInputFields, trimDelay);
+    }
+
+    // Función para manejar el evento de pegar y eliminar espacios en blanco
+    function handlePaste(event) {
+      var paste = (event.clipboardData || window.clipboardData).getData('text');
+      event.preventDefault();
+      var trimmedPaste = paste.trim();
+      document.execCommand('insertText', false, trimmedPaste);
+      resetTrimTimer();
+    }
+
+    // Agregar eventos a todos los campos de entrada
+    var inputFields = document.querySelectorAll("input");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", resetTrimTimer);
+      input.addEventListener("change", resetTrimTimer);
+      input.addEventListener("blur", resetTrimTimer);
+      input.addEventListener("paste", handlePaste);
+    });
+  });
+</script>
+
+<!-- SOLO PERMITE AGREGAR UN UNICO ESPACIO ENTRE PALABRA EN LOS INPUTS NOMBRE Y APELLIDOS -->
+<script>
+  // Función para mantener solo un espacio entre palabras en los campos de nombre, apellido paterno y materno
+  function limitarEspacios(event) {
+    // Obtener el valor actual del campo
+    var valorCampo = event.target.value;
+    // Reemplazar múltiples espacios por uno solo
+    var valorSinEspaciosRepetidos = valorCampo.replace(/\s+/g, " ");
+    // Actualizar el valor del campo con un solo espacio entre palabras
+    event.target.value = valorSinEspaciosRepetidos;
+  }
+
+  // Agregar evento de escucha para los campos de nombre, apellido paterno y materno
+  document.getElementById("name").addEventListener("input", limitarEspacios);
+  document
+    .getElementById("apellidoPaterno")
+    .addEventListener("input", limitarEspacios);
+  document
+    .getElementById("apellidoMaterno")
+    .addEventListener("input", limitarEspacios);
+</script>
+
+<!-- LIMITA EL NÚMERO DE CARACTERES DE LAS ENTRADAS-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Definir los máximos de caracteres para cada tipo de campo de entrada
+    var maxCharacters = {
+      "text": 30,
+      "email": 55,
+      "password": 15
+    };
+
+    // Función para manejar el evento de entrada y limitar la longitud de los campos de entrada
+    function handleInput(event) {
+      var inputType = event.target.type.toLowerCase();
+      if (event.target.value.length > maxCharacters[inputType]) {
+        event.target.value = event.target.value.substring(0, maxCharacters[inputType]); // Limita según el tipo de campo de entrada
+      }
+    }
+
+    // Agregar evento de entrada a todos los campos de entrada
+    var inputFields = document.querySelectorAll("input");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", handleInput);
     });
   });
 </script>

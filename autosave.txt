@@ -155,42 +155,6 @@ endblock %} {% block content %}
   }
 </style>
 
-<!-- ESTILO PARA LAS TOAST-->
-<style>
-  /* Estilo personalizado para el toast */
-.toast {
-  position: relative;
-  padding: .75rem 1.25rem;
-  margin-bottom: .75rem;
-  background-color: #f8f9fa; /* Color de fondo similar al de las alertas de Apple */
-  border: 1px solid rgba(0, 0, 0, .125); /* Borde similar al de las alertas de Apple */
-  color: #212529; /* Color del texto */
-  border-radius: 4px;
-}
-
-/* Estilo para el título del toast */
-.toast-header {
-  background-color: #ffc107;
-  display: flex;
-  align-items: center;
-  padding-bottom: .5rem;
-  margin-bottom: -.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, .125);
-}
-
-/* Estilo para el cuerpo del toast */
-.toast-body {
-  padding: .5rem 0;
-}
-
-/* Estilo para el botón de cerrar el toast */
-.btn-close {
-  padding: .25rem .75rem;
-  margin: .25rem 0 .25rem auto;
-}
-
-</style>
-
 <!-- CUERPO -->
 <div class="container-fluid mt-5">
   <!-- Agregamos la clase mt-5 para añadir margen superior -->
@@ -299,7 +263,39 @@ endblock %} {% block content %}
 </div>
 
 <!-- MODAL DE ADVERTENCIA -->
-<div id="toastContainer" aria-live="assertive" aria-atomic="true" class="mt-5 position-fixed p-3 end-0 bottom-0"></div>
+<div
+  class="modal fade"
+  id="productExistsModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-top">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Producto existente</h5>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="alert alert-warning" role="alert">
+          Este producto ya ha sido agregado.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- SCRIPT PARA CARGAR TOOLTIPS -->
 <script>
@@ -321,77 +317,6 @@ endblock %} {% block content %}
   });
 </script>
 
-<!-- SCRIPT PARA ENVIAR LOS DATOS AL SERVIDOR -->
-<script>
-  document.getElementById("addSale").addEventListener("click", function () {
-    const xhr = new XMLHttpRequest();
-    const url = "/sales/MakeSales";
-    const method = "POST";
-    const headers = { "Content-Type": "application/json" };
-    const salesData = obtenerDatosTabla(); // Función para obtener los datos de la tabla
-
-    xhr.open(method, url);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        console.log("Success:", xhr.responseText);
-      } else {
-        console.error("Error:", xhr.statusText);
-      }
-    };
-    xhr.onerror = function () {
-      console.error("Error:", xhr.statusText);
-    };
-    xhr.send(JSON.stringify(salesData));
-  });
-
-  function obtenerDatosTabla() {
-    const rows = document.querySelectorAll("#saleTable tr");
-    const salesData = [];
-
-    rows.forEach((row) => {
-      const dataId = row.getAttribute("data-id");
-      const cells = row.querySelectorAll("td");
-      const rowData = { id: dataId };
-
-      cells.forEach((cell, index) => {
-        let cellValue;
-        if (cell.querySelector("input")) {
-          cellValue = cell.querySelector("input").value;
-        } else {
-          cellValue = cell.textContent.trim();
-        }
-
-        console.log(index);
-
-        switch (index) {
-          case 0:
-            rowData.quantity = cellValue;
-            break;
-          case 1:
-            rowData.productName = cellValue;
-            break;
-          case 2:
-            rowData.price = cellValue;
-            break;
-        }
-      });
-
-      salesData.push(rowData);
-    });
-    console.log(salesData);
-    return salesData;
-  }
-</script>
-
-<!-- SCRIPT PARA MOSTRAR CORRECTAMENTE LOS NOMBRES -->
-<script>
-  // Reemplazar guiones bajos "_" por espacios en blanco en los nombres de productos
-  document.querySelectorAll(".product-name").forEach(function (element) {
-    element.innerText = element.innerText.replace(/_/g, " ");
-  });
-</script>
-
 <!-- SCRIPT PARA AGREGAR PRODUCTOS A LA TABLA MEDIANTE LA BARRA DE BUSQUEDA O LOS BOTONES -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -409,12 +334,10 @@ endblock %} {% block content %}
       );
 
       if (existingProduct) {
-        showToast("El producto ya está en la tabla.", "error");
-        return;
-      }
-
-      if (parseInt(productInfo[2]) <= 0) {
-        showToast("No hay suficientes existencias para agregar este producto.", "error");
+        const productExistsModal = new bootstrap.Modal(
+          document.getElementById("productExistsModal")
+        );
+        productExistsModal.show();
         return;
       }
 
@@ -504,7 +427,7 @@ endblock %} {% block content %}
     // Event listener para el botón de agregar
     addButton.addEventListener("click", function () {
       if (!selectedProduct) {
-        showToast("No hay ningún producto seleccionado.", "warning");
+        alert("No hay ningún producto seleccionado.");
         return;
       }
       addProductToTable([
@@ -520,39 +443,76 @@ endblock %} {% block content %}
     const row = button.closest("tr");
     row.remove();
   }
+</script>
 
-  // Función para mostrar toasts personalizados
-  function showToast(message, type) {
-    const toastContainer = document.getElementById("toastContainer");
-    const toast = document.createElement("div");
-    toast.classList.add("toast");
-    toast.classList.add("show");
-    toast.setAttribute("role", "alert");
-    toast.setAttribute("aria-live", "assertive");
-    toast.setAttribute("aria-atomic", "true");
-    toast.setAttribute("data-bs-autohide", "true");
+<!-- SCRIPT PARA ENVIAR LOS DATOS AL SERVIDOR -->
+<script>
+  document.getElementById("addSale").addEventListener("click", function () {
+    const xhr = new XMLHttpRequest();
+    const url = "/sales/MakeSales";
+    const method = "POST";
+    const headers = { "Content-Type": "application/json" };
+    const salesData = obtenerDatosTabla(); // Función para obtener los datos de la tabla
 
-    // Obtener la hora actual
-    const currentTime = new Date().toLocaleTimeString();
+    xhr.open(method, url);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        console.log("Success:", xhr.responseText);
+      } else {
+        console.error("Error:", xhr.statusText);
+      }
+    };
+    xhr.onerror = function () {
+      console.error("Error:", xhr.statusText);
+    };
+    xhr.send(JSON.stringify(salesData));
+  });
 
-    toast.innerHTML = `
-      <div class="toast-header">
-        <i class="fas fa-exclamation-circle"></i>
-        <strong class="me-auto mx-2">Warning!</strong>
-        <small>${currentTime}</small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body mt-1">
-        ${message}
-      </div>
-    `;
-    toastContainer.appendChild(toast);
-    const bsToast = new bootstrap.Toast(toast);
-    bsToast.show();
-    toast.addEventListener('hidden.bs.toast', function () {
-      toast.remove();
+  function obtenerDatosTabla() {
+    const rows = document.querySelectorAll("#saleTable tr");
+    const salesData = [];
+
+    rows.forEach((row) => {
+      const dataId = row.getAttribute("data-id");
+      const cells = row.querySelectorAll("td");
+      const rowData = { id: dataId };
+
+      cells.forEach((cell, index) => {
+        let cellValue;
+        if (cell.querySelector("input")) {
+          cellValue = cell.querySelector("input").value;
+        } else {
+          cellValue = cell.textContent.trim();
+        }
+
+        console.log(index);
+
+        switch (index) {
+          case 0:
+            rowData.quantity = cellValue;
+            break;
+          case 1:
+            rowData.productName = cellValue;
+            break;
+          case 2:
+            rowData.price = cellValue;
+            break;
+        }
+      });
+
+      salesData.push(rowData);
     });
+    console.log(salesData);
+    return salesData;
   }
 </script>
 
+<!-- SCRIPT PARA MOSTRAR CORRECTAMENTE LOS NOMBRES -->
+<script>
+  // Reemplazar guiones bajos "_" por espacios en blanco en los nombres de productos
+  document.querySelectorAll(".product-name").forEach(function (element) {
+    element.innerText = element.innerText.replace(/_/g, " ");
+  });
+</script>
 {% endblock %}

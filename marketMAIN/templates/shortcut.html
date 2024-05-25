@@ -1,86 +1,156 @@
-{% extends 'top navbar/top-navbar.html' %}
-{% block title %} Shortcut {% endblock %}
-{% block content %}
+{% extends 'top navbar/top-navbar.html' %} {% block title %} Shortcut {%
+endblock %} {% block content %}
 
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products-shortcut-style.css') }}">
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/products-shortcut-style.css') }}"
+/>
+
+<style>
+  .custom-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 6px; /* Ligero redondeo para las esquinas */
+    padding: 20px; /* Espaciado interno para mantener proporción del contenido */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 6px 8px rgba(0, 0, 0, 0.1); /* Sombra externa para efecto 3D */
+
+    width: 9vw; /* Tamaño cuadrado */
+    height: 9vw; /* Tamaño cuadrado */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    background-image: linear-gradient(
+      to top,
+      #ffffff,
+      #f1f1f1
+    ); /* Gradiente suave para efecto 3D */
+  }
+
+  .custom-btn:hover {
+    background-color: #e9ecef;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 8px 12px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada al pasar el ratón */
+  }
+
+  .custom-tooltip .tooltip-inner {
+    background-color: #343a40;
+    color: #fff;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    padding: 5px 10px;
+    max-width: 200px;
+    text-align: center;
+  }
+
+  .custom-tooltip .arrow::before {
+    border-top-color: #343a40;
+  }
+</style>
 
 <!-- animate__animated animate__fadeInUp -->
-<div class="container-fluid mx-4 ">
-    <div class="row justify-content-center align-items-center" style="height: calc(100vh - 56px);">
+<div class="container-fluid mx-4">
+  <div
+    class="row justify-content-center align-items-center"
+    style="height: calc(100vh - 56px)"
+  >
+    <div class="col-xl-10">
+      <div class="row justify-content-center">
         <div class="col-xl-10">
-            <div class="row justify-content-center">
-                <div class="col-xl-10">
-                    <form class="d-flex justify-content-center align-items-center mb-4">
-                        <div class="col-sm-6 me-2">
-                            <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-                        </div>
-                        <button type="button" class="btn btn-outline-primary">Search</button>
-                    </form>
-                </div>
+          <form class="d-flex justify-content-center align-items-center mb-4">
+            <div class="col-sm-6 me-2">
+              <input
+                class="form-control"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
             </div>
-            <div class="row justify-content-center">
-                <div class="col-xl-10">
-                    <div class="row justify-content-center">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="buttons border border-Tertiary border-Secondary p-3 rounded d-flex justify-content-center align-items-center">
-
-                                <a class="btn btn-outline-Secondary btn-Secondary square-btn mx-4" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                    data-bs-title="This top tooltip is themed via CSS variables." href="{{url_for('sales.addsalesworker')}}">
-                                    <div class="d-flex flex-column align-items-center">
-                                        <span class="material-symbols-outlined">
-                                            point_of_sale
-                                        </span>
-                                        <span class="d-none d-md-block">Sales</span>
-                                    </div>
-                                </a>
-
-                                <a class="btn btn-outline-Secondary btn-Secondary square-btn mx-4" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                    data-bs-title="This top tooltip is themed via CSS variables."
-                                    href="{{url_for('products.warehouse')}}">
-                                    <div class="d-flex flex-column align-items-center">
-                                        <span class="material-symbols-outlined">
-                                            view_list
-                                        </span>
-                                        <span class="d-none d-md-block">warehouse</span>
-                                    </div>
-                                </a>
-
-                                <a class="btn btn-outline-Secondary btn-Secondary square-btn mx-4" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                    data-bs-title="This top tooltip is themed via CSS variables." href="#">
-                                    <div class="d-flex flex-column align-items-center">
-                                        <span class="material-symbols-outlined">
-                                            manage_accounts
-                                        </span>
-                                        <span class="d-none d-md-block">accounts</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <button type="button" class="btn btn-outline-primary">
+              Search
+            </button>
+          </form>
         </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-xl-10">
+          <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <div
+                class="buttons border border-Tertiary border-Secondary p-3 rounded d-flex justify-content-center align-items-center"
+              >
+                <a
+                  class="btn custom-btn mx-4"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  data-bs-custom-class="custom-tooltip"
+                  data-bs-title="Agregar un trabajador de ventas"
+                  href="{{url_for('sales.addsalesworker')}}"
+                >
+                  <div class="d-flex flex-column align-items-center">
+                    <span class="material-symbols-outlined">
+                      point_of_sale
+                    </span>
+                    <span class="d-none d-md-block">Sales</span>
+                  </div>
+                </a>
+
+                <a
+                  class="btn custom-btn mx-4"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  data-bs-custom-class="custom-tooltip"
+                  data-bs-title="Ir al almacén de productos"
+                  href="{{url_for('products.warehouse')}}"
+                >
+                  <div class="d-flex flex-column align-items-center">
+                    <span class="material-symbols-outlined"> view_list </span>
+                    <span class="d-none d-md-block">Warehouse</span>
+                  </div>
+                </a>
+
+                <a
+                  class="btn custom-btn mx-4"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  data-bs-custom-class="custom-tooltip"
+                  data-bs-title="Gestionar cuentas"
+                  href="#"
+                >
+                  <div class="d-flex flex-column align-items-center">
+                    <span class="material-symbols-outlined">
+                      manage_accounts
+                    </span>
+                    <span class="d-none d-md-block">Accounts</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-        const tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
-            trigger: 'manual'
-        });
-
-        tooltipTriggerEl.addEventListener('mouseenter', function () {
-            tooltip.show();
-        });
-
-        tooltipTriggerEl.addEventListener('mouseleave', function () {
-            tooltip.hide();
-        });
+  const tooltipTriggerList = document.querySelectorAll(
+    '[data-bs-toggle="tooltip"]'
+  );
+  tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+    const tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
+      trigger: "manual",
     });
+
+    tooltipTriggerEl.addEventListener("mouseenter", function () {
+      tooltip.show();
+    });
+
+    tooltipTriggerEl.addEventListener("mouseleave", function () {
+      tooltip.hide();
+    });
+  });
 </script>
 
 {% endblock %}

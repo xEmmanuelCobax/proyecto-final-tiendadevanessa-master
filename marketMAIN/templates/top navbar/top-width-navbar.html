@@ -4,6 +4,7 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Improved Menu</title>
+      <script src="https://cdn.jsdelivr.net/npm/@imdone/google-translate-api@1.0.0/dist/google-translate-api.min.js"></script>
 
       <style>
         .list-group-item {
@@ -96,6 +97,7 @@
     </head>
 
     <body>
+      
       <div class="col-12 col-lg-3 border border-Tertiary rounded p-0">
         <nav class="nav flex-column" aria-label="Main Navigation">
           <div class="list-group d-flex flex-column">
@@ -106,6 +108,9 @@
               <span>Warehouse</span>
               <i class="fas fa-chevron-down toggle-icon"></i>
             </div>
+          
+             
+           
             <ul class="nav flex-column ml-3 submenu" id="warehouseSubmenu">
               <li>
                 <a class="list-group-item list-group-item-action" href="{{ url_for('products.warehouse') }}" tabindex="0">
@@ -114,7 +119,7 @@
               </li>
               <li>
                 <a class="list-group-item list-group-item-action" href="{{ url_for('products.managewarehouse') }}" tabindex="0">
-                  <i class="fas fa-cogs"></i> Manage Warehouse
+                  <i class="fas fa-cogs"></i>  <span >Manage Warehouse</span>
                 </a>
               </li>
               <li>
@@ -199,6 +204,7 @@
           });
         });
       </script>
+      
     </body>
   </html>
 

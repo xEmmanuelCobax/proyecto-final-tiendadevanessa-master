@@ -1,21 +1,13 @@
 {% extends 'top navbar/top-navbar.html' %} {% block title %} Manage warehouse {%
 endblock %} {% block content %}
+
+<!-- TERMINADO -->
+
 <link
   rel="stylesheet"
   type="text/css"
   href="{{ url_for('static', filename='css/products.css') }}"
 />
-
-<script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
-
-<style>
-  .table-rounded {
-    border-radius: 10px; /* Redondear las esquinas de la tabla */
-    border: 2px solid #ccc; /* Agregar un borde de 2px sólido con color gris */
-    overflow: hidden; /* Permitir que el contenido desborde los bordes redondeados */
-    background-color: rgba(128, 128, 128, 0.252);
-  }
-</style>
 
 <div class="container-fluid mt-5">
   <!-- Agregamos la clase mt-5 para añadir margen superior -->
@@ -100,7 +92,7 @@ endblock %} {% block content %}
   </div>
 </div>
 
-<!--CREAR PRODUCTOS MODAL-->
+<!-- CREAR PRODUCTOS MODAL -->
 <div
   class="modal fade"
   id="createmodal"
@@ -138,9 +130,7 @@ endblock %} {% block content %}
                   id="marca"
                   name="marca"
                   required
-                  oninput="limitTextInput(this)"
                 />
-                <div class="invalid-feedback">Por favor ingresa una marca.</div>
               </div>
               <div class="mb-3">
                 <label for="producto" class="form-label">Name Product:</label>
@@ -150,25 +140,17 @@ endblock %} {% block content %}
                   id="producto"
                   name="producto"
                   required
-                  oninput="limitTextInput(this)"
                 />
-                <div class="invalid-feedback">
-                  Por favor ingresa un producto.
-                </div>
               </div>
               <div class="mb-3">
-                <label for="SelectUnitOfMeasure" class="form-label"
-                  >Select Unit of Measure:</label
-                >
+                <label for="SelectUnitOfMeasure" class="form-label">Select Unit of Measure:</label>
                 <select
                   class="form-select"
                   id="SelectUnitOfMeasure"
                   name="SelectUnitOfMeasure"
                   required
                 >
-                  <option value="" disabled selected>
-                    Select Unit Of Measure
-                  </option>
+                  <option value="" disabled selected>Select Unit Of Measure</option>
                   <option value="pieces">Pieces</option>
                   <option value="liters">Liters</option>
                   <option value="milliliters">Milliliters</option>
@@ -176,28 +158,20 @@ endblock %} {% block content %}
                   <option value="grams">Grams</option>
                   <option value="customize">Customized</option>
                 </select>
-                <div class="invalid-feedback">
-                  Please select a unit of measure.
-                </div>
               </div>
               <div class="mb-3">
-                <label for="unitquantity" class="form-label"
-                  >Unit Quantity:</label
-                >
+                <label for="unitquantity" class="form-label">Unit Quantity:</label>
                 <div class="input-group">
                   <input
                     type="number"
                     class="form-control"
                     id="unitquantity"
                     name="unitquantity"
-                    maxlength="4"
-                    min="0"
+                    min="1"
                     required
+                    disabled
                   />
                   <span class="input-group-text" id="unitLabel"></span>
-                </div>
-                <div class="invalid-feedback">
-                  Please enter a non-negative quantity.
                 </div>
               </div>
             </div>
@@ -215,7 +189,6 @@ endblock %} {% block content %}
                   <option value="{{ company[0] }}">{{ company[1] }}</option>
                   {% endfor %}
                 </select>
-                <div class="invalid-feedback">Please select a company.</div>
               </div>
               <div class="mb-3">
                 <label for="intermedary-select">Select Intermediary:</label>
@@ -225,19 +198,11 @@ endblock %} {% block content %}
                   name="intermedary_id"
                   required
                 >
-                  <option value="" disabled selected>
-                    Select Intermediary
-                  </option>
+                  <option value="" disabled selected>Select Intermediary</option>
                   {% for relation in relations %}
-                  <option value="{{ relation[2] }}">
-                    {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
-                    relation[5] }}
-                  </option>
+                  <option value="{{ relation[2] }}">{{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{ relation[5] }}</option>
                   {% endfor %}
                 </select>
-                <div class="invalid-feedback">
-                  Please select an intermediary.
-                </div>
               </div>
               <div class="mb-3">
                 <label for="cantidadInput" class="form-label">Quantity:</label>
@@ -246,12 +211,9 @@ endblock %} {% block content %}
                   class="form-control"
                   id="cantidad"
                   name="cantidad"
+                  min="1"
                   required
-                  oninput="limitQualityInput(this)"
                 />
-                <div class="invalid-feedback">
-                  Por favor ingresa una cantidad válida.
-                </div>
               </div>
               <div class="col-md-6">
                 <div class="mb-3">
@@ -263,12 +225,10 @@ endblock %} {% block content %}
                       class="form-control"
                       id="precio"
                       name="precio"
-                      step="0.001"
+                      min="1"
+                      step="0.01"
                       required
                     />
-                    <div class="invalid-feedback">
-                      Please enter a valid price.
-                    </div>
                   </div>
                 </div>
               </div>
@@ -283,7 +243,13 @@ endblock %} {% block content %}
             >
               Close
             </button>
-            <button type="submit" class="btn btn-success">Save Products</button>
+            <button
+              id="submitProductSave"
+              type="submit"
+              class="btn btn-success"
+            >
+              Save Products
+            </button>
           </div>
         </form>
       </div>
@@ -330,42 +296,29 @@ endblock %} {% block content %}
                   id="newmarca"
                   name="newmarca"
                   required
-                  oninput="limitTextInput(this)"
                 />
-                <div class="invalid-feedback">Por favor ingresa una marca.</div>
               </div>
               <!--NEW-NAME-PRODUCTOS-id>newproducto-->
               <div class="mb-3">
-                <label for="newproducto" class="form-label"
-                  >New Name Product:</label
-                >
+                <label for="newproducto" class="form-label">New Name Product:</label>
                 <input
                   type="text"
                   class="form-control"
                   id="newproducto"
                   name="newproducto"
                   required
-                  oninput="limitTextInput(this)"
                 />
-                <div class="invalid-feedback">
-                  Por favor ingresa un producto.
-                </div>
               </div>
               <!--SLECT-NEW-UNIT-id>EditSelectUnitOfMeasure-->
               <div class="mb-3">
-                <label for="EditSelectUnitOfMeasure" class="form-label"
-                  >Select Unit of Measure:</label
-                >
+                <label for="EditSelectUnitOfMeasure" class="form-label">Select Unit of Measure:</label>
                 <select
                   class="form-select"
                   id="EditSelectUnitOfMeasure"
                   name="EditSelectUnitOfMeasure"
-                  onchange="updateQuantityIncrement()"
                   required
                 >
-                  <option value="" disabled selected>
-                    Select Unit Of Measure
-                  </option>
+                  <option value="" disabled selected>Select Unit Of Measure</option>
                   <option value="pieces">Pieces</option>
                   <option value="liters">Liters</option>
                   <option value="milliliters">Milliliters</option>
@@ -376,24 +329,18 @@ endblock %} {% block content %}
               </div>
               <!--NEW-UNIT-QUANTITY-id>editunitquantity-->
               <div class="mb-3">
-                <label for="editunitquantity" class="form-label"
-                  >New Unit Quantity:</label
-                >
+                <label for="editunitquantity" class="form-label">New Unit Quantity:</label>
                 <div class="input-group">
                   <input
                     type="number"
                     class="form-control"
                     id="editunitquantity"
                     name="editunitquantity"
-                    maxlength="4"
-                    min="0"
+                    min="1"
                     required
                     disabled
                   />
                   <span class="input-group-text" id="editunitLabel"></span>
-                </div>
-                <div class="invalid-feedback">
-                  Please enter a non-negative quantity.
                 </div>
               </div>
             </div>
@@ -401,7 +348,7 @@ endblock %} {% block content %}
             <div class="col-md-6">
               <!--EDITAR-COMPANIA-SELECCIONADO-id>company-new-select-->
               <div class="mb-3">
-                <label for="company-select">Select New Company:</label>
+                <label for="company-new-select">Select New Company:</label>
                 <select
                   class="form-select"
                   id="company-new-select"
@@ -417,45 +364,35 @@ endblock %} {% block content %}
 
               <!--EDITAR-INTERMEDIARIO-SELECCIONADO-id>intermedary-new-select-->
               <div class="mb-3">
-                <label for="intermedary-new-select">Select Intermedary:</label>
+                <label for="intermedary-new-select">Select Intermediary:</label>
                 <select
                   class="form-select"
                   id="intermedary-new-select"
                   name="intermedary-new-select"
                   required
                 >
-                  <option value="" disabled selected>Select intermedary</option>
-                  {% for relation in relations%}
-                  <option value="{{ relation[2] }}">
-                    {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
-                    relation[5] }}
-                  </option>
+                  <option value="" disabled selected>Select Intermediary</option>
+                  {% for relation in relations %}
+                  <option value="{{ relation[2] }}">{{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{ relation[5] }}</option>
                   {% endfor %}
                 </select>
               </div>
               <!--NUEVA-CANTIDAD-id>newcantidad-->
               <div class="mb-3">
-                <label for="newcantidadInput" class="form-label"
-                  >New Quantity:</label
-                >
+                <label for="newcantidadInput" class="form-label">New Quantity:</label>
                 <input
                   type="number"
                   class="form-control"
                   id="newcantidadInput"
                   name="newcantidad"
+                  min="1"
                   required
-                  oninput="limitQualityInput(this)"
                 />
-                <div class="invalid-feedback">
-                  Please enter a valid quantity.
-                </div>
               </div>
               <!--NUEVO-PRECIO-id>newprecio2-->
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label for="newprecio2" class="form-label"
-                    >New Unit Price:</label
-                  >
+                  <label for="newprecio2" class="form-label">New Unit Price:</label>
                   <div class="input-group">
                     <span class="input-group-text">$</span>
                     <input
@@ -463,12 +400,10 @@ endblock %} {% block content %}
                       class="form-control"
                       id="newprecio2"
                       name="newprecio"
-                      step="0.001"
+                      step="0.01"
+                      min="1"
                       required
                     />
-                    <div class="invalid-feedback">
-                      Please enter a valid price.
-                    </div>
                   </div>
                 </div>
               </div>
@@ -479,18 +414,23 @@ endblock %} {% block content %}
               type="button"
               class="btn btn-warning me-2"
               data-bs-dismiss="modal"
-              onclick="limpiarEditModal()"
+             
             >
               Close
             </button>
-            <!---->
             <input
               id="editproduct_id"
               type="hidden"
               name="editproduct_id"
               value=""
             />
-            <button type="submit" class="btn btn-success">Save Changes</button>
+            <button
+              id="submitEditProductSave"
+              type="submit"
+              class="btn btn-success"
+            >
+              Save Changes
+            </button>
           </div>
         </form>
       </div>
@@ -549,34 +489,9 @@ endblock %} {% block content %}
 <!-- Elemento oculto para almacenar los datos de 'members' -->
 <div id="members-data" data-members="{{ members }}" style="display: none"></div>
 
-<!-- no permitir campos vacios en el modal create-->
-<script>
-  // Bootstrap validation script
-  (function () {
-    "use strict";
-
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.querySelectorAll(".needs-validation");
-
-    // Loop over them and prevent submission
-    Array.prototype.slice.call(forms).forEach(function (form) {
-      form.addEventListener(
-        "submit",
-        function (event) {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-
-          form.classList.add("was-validated");
-        },
-        false
-      );
-    });
-  })();
-</script>
-
 <!-- <script src="{{ url_for('static', filename='js/qrScan.js') }}"></script>-->
+
+<!--               FUNCIONALIDADES COMPARTIDAS POR MODAL                   -->
 
 <!--CREATE MODAL SCRIPT PARA MANEJO DE COMPAÑIAS E INTERMEDIARIOS DINAMICOS-->
 <script>
@@ -682,5 +597,463 @@ endblock %} {% block content %}
     console.log("productId EDITAR>" + productId);
   }
 </script>
+
+<!-- VALIDA LOS ESPACIOS INICIALES Y FINALES QUE EL USUARIO PUEDA LLEGAR A PONER, Y QUE NO PUEDA COPIAR Y PEGARSE ESPACIOS-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var trimDelay = 500; // Cambia este valor según el tiempo que desees en milisegundos
+    var timeout = null;
+
+    // Función para eliminar espacios en blanco de los valores de los campos de entrada
+    function trimInputFields() {
+      var inputFields = document.querySelectorAll("input:not([type='number'])");
+      inputFields.forEach(function (input) {
+        input.value = input.value.trim();
+      });
+    }
+
+    // Función para reiniciar el temporizador
+    function resetTrimTimer() {
+      clearTimeout(timeout);
+      timeout = setTimeout(trimInputFields, trimDelay);
+    }
+
+    // Función para manejar el evento de pegar y eliminar espacios en blanco
+    function handlePaste(event) {
+      var paste = (event.clipboardData || window.clipboardData).getData("text");
+      event.preventDefault();
+      var trimmedPaste = paste.trim();
+      document.execCommand("insertText", false, trimmedPaste);
+      resetTrimTimer();
+    }
+
+    // Agregar eventos a todos los campos de entrada que no son de tipo "number"
+    var inputFields = document.querySelectorAll("input:not([type='number'])");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", resetTrimTimer);
+      input.addEventListener("change", resetTrimTimer);
+      input.addEventListener("blur", resetTrimTimer);
+      input.addEventListener("paste", handlePaste);
+    });
+  });
+</script>
+
+<!-- LIMITA EL NÚMERO DE CARACTERES DE LAS ENTRADAS-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var maxCharactersText = 15; // Máximo de caracteres para campos de texto
+    var maxCharactersNumber = 6; // Máximo de caracteres para campos de número
+
+    // Función para manejar el evento de entrada y limitar la longitud de los campos de entrada
+    function handleInput(event) {
+      if (event.target.type === "text" && event.target.value.length > maxCharactersText) {
+        event.target.value = event.target.value.substring(0, maxCharactersText); // Limita a maxCharactersText para campos de texto
+      } else if (event.target.type === "number" && event.target.value.length > maxCharactersNumber) {
+        event.target.value = event.target.value.substring(0, maxCharactersNumber); // Limita a maxCharactersNumber para campos de número
+      }
+    }
+
+    // Agregar evento de entrada a todos los campos de entrada
+    var inputFields = document.querySelectorAll("input");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", handleInput);
+    });
+  });
+</script>
+
+<!-- VALIDA EL NULO INGRESO DE OPERADORES EN LOS INPUTS DE TIPO NUMERO-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Función para prevenir caracteres no numéricos y operadores en inputs de tipo number
+    function preventInvalidChars(event) {
+      if (
+        event.target.type === "number" &&
+        (event.key === "e" ||
+        event.key === "E" ||
+        event.key === "-" ||
+        event.key === "+" ||
+        (event.key === "." && !["cantidad", "newcantidadInput"].includes(event.target.id)))
+      ) {
+        event.preventDefault();
+      }
+    }
+
+    // Agregar evento solo a los campos de entrada de tipo number
+    var numberFields = document.querySelectorAll("input[type='number']");
+    numberFields.forEach(function (input) {
+      input.addEventListener("keydown", preventInvalidChars);
+    });
+  });
+</script>
+
+<!-- EVITA COPIAR Y PEGAR EN TODOS LOS INPUTS-->
+<script>
+  const inputs = document.querySelectorAll("input");
+
+  inputs.forEach((input) => {
+    input.addEventListener("keydown", function (event) {
+      // Bloquea las teclas de acceso rápido (Ctrl+C, Ctrl+V, Ctrl+X, etc.)
+      if (
+        event.ctrlKey &&
+        (event.key === "c" || event.key === "v" || event.key === "x")
+      ) {
+        event.preventDefault();
+      }
+    });
+
+    input.addEventListener("paste", function (event) {
+      // Bloquea el evento de pegar
+      event.preventDefault();
+    });
+
+    input.addEventListener("copy", function (event) {
+      // Bloquea el evento de copiar
+      event.preventDefault();
+    });
+  });
+</script>
+
+<!-- SOLO PERMITE AGREGAR UN UNICO ESPACIO EN TODOS LOS INPUTS-->
+<script>
+  // Función para mantener solo un espacio entre palabras en los campos de entrada de texto
+  function limitarEspacios(event) {
+    // Obtener el valor actual del campo
+    var valorCampo = event.target.value;
+    // Reemplazar múltiples espacios por uno solo
+    var valorSinEspaciosRepetidos = valorCampo.replace(/\s+/g, " ");
+    // Actualizar el valor del campo con un solo espacio entre palabras
+    event.target.value = valorSinEspaciosRepetidos;
+  }
+
+  // Seleccionar todos los campos de entrada de texto y textarea
+  var inputspace = document.querySelectorAll('input[type="text"], input[type="password"], input[type="email"], input[type="number"], textarea');
+
+  // Agregar evento de escucha para cada campo de entrada
+  inputspace.forEach(function(input) {
+    input.addEventListener("input", limitarEspacios);
+  });
+</script>
+
+<!-- EVITA EL USO DE COMILLAS EN TODOS LOS CAMPOS-->
+<script>
+  // Función para eliminar comillas simples y dobles de todos los campos de entrada
+document.querySelectorAll("input").forEach(function(input) {
+  input.addEventListener("input", function(event) {
+    // Obtener el valor actual del campo de entrada
+    var inputValue = event.target.value;
+    // Eliminar comillas simples y comillas dobles del valor actual
+    var cleanedValue = inputValue.replace(/['"]+/g, "");
+    // Actualizar el valor del campo de entrada sin comillas simples y comillas dobles
+    event.target.value = cleanedValue;
+  });
+});
+
+</script>
+
+<!-- RESETEA LOS MODALES A UN ESTADO POR DEFECTO -->
+<script>
+  // Función para limpiar los campos del modal de creación de productos
+  function limpiarModal() {
+    // Limpia los campos del formulario
+    document.getElementById("createproductmodal").reset();
+  }
+
+  // Función para limpiar los campos del modal de edición de productos
+  function limpiarEditModal() {
+    // Limpia los campos del formulario
+    document.getElementById("editproductform").reset();
+  }
+
+  // Escuchar el evento de cierre del modal de creación de productos
+  $('#createmodal').on('hidden.bs.modal', function () {
+    // Llamar a la función para limpiar los campos del modal
+    limpiarModal();
+  });
+
+  // Escuchar el evento de cierre del modal de edición de productos
+  $('#editproduct').on('hidden.bs.modal', function () {
+    // Llamar a la función para limpiar los campos del modal
+    limpiarEditModal();
+  });
+</script>
+
+<!-- DA FEEDBACK PARA GUIAR AL USUARIO DE NO INGRESAR CANTIDAD DE 0 -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const inputsNumber = document.querySelectorAll('input[type="number"]');
+      inputsNumber.forEach(function(input) {
+        console.log("PASA AQUI TEST 1")
+          const tooltip = document.createElement('div');
+          tooltip.classList.add('tooltip');
+          tooltip.textContent = 'La cantidad no puede ser 0';
+          input.parentNode.appendChild(tooltip);
+
+          input.addEventListener('keyup', function() {
+            console.log("PASA AQUI TEST 2")
+              const cantidad = parseFloat(this.value);
+              if (cantidad === 0) {
+                  tooltip.style.display = 'block';
+                  this.classList.add('error');
+              } else {
+                  tooltip.style.display = 'none';
+                  this.classList.remove('error');
+              }
+          });
+      });
+  });
+</script>
+
+
+<!--                FIN DE FUNCIONALIDADES COMPARTIDAS                     -->
+<!---->
+<!---->
+<!---->
+<!---->
+<!--                                  CREATE MODAL VALIDACIONES                                   -->
+
+<!-- EVITA ENVIAR EL FORMULARIO SI LOS CAMPOS ESTAN POR DEFECTO O SI CONTIENEN ALGUN ERROR CRITICO-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("createproductmodal");
+    var saveButton = document.getElementById("submitProductSave");
+    var tooltip = new bootstrap.Tooltip(saveButton, {
+      placement: "top",
+      title: "Please fill in all fields.",
+      trigger: "manual",
+      customClass: "custom-tooltip", // Aquí se aplica la clase personalizada
+    });
+
+    function validateForm() {
+      var requiredFields = form.querySelectorAll("[required]");
+      var isEmpty = false;
+      requiredFields.forEach(function (field) {
+        if (!field.value.trim()) {
+          isEmpty = true;
+        }
+      });
+      saveButton.disabled = isEmpty;
+      if (isEmpty) {
+        saveButton.classList.remove("btn-success");
+        saveButton.classList.add("btn-danger");
+        tooltip.show();
+      } else {
+        saveButton.classList.remove("btn-danger");
+        saveButton.classList.add("btn-success");
+        tooltip.hide();
+      }
+    }
+
+    form.addEventListener("submit", function (event) {
+      validateForm();
+      if (saveButton.disabled) {
+        event.preventDefault();
+      }
+    });
+
+    form.addEventListener("input", function () {
+      validateForm();
+    });
+
+    $('#createmodal').on('hidden.bs.modal', function () {
+      form.reset();
+      saveButton.classList.remove("btn-danger");
+      saveButton.classList.add("btn-success");
+      saveButton.disabled = false;
+      tooltip.hide();
+    });
+
+    document.getElementById("SelectUnitOfMeasure").addEventListener("change", function () {
+      var unitQuantityInput = document.getElementById("unitquantity");
+      var unitLabel = document.getElementById("unitLabel");
+      if (this.value) {
+        unitQuantityInput.disabled = false;
+        unitLabel.textContent = this.options[this.selectedIndex].text;
+      } else {
+        unitQuantityInput.disabled = true;
+        unitQuantityInput.value = "";
+        unitLabel.textContent = "";
+      }
+      validateForm();
+    });
+  });
+</script>
+
+<!-- FUNCIONALIDAD PARA EL LIST DE UNIDAD DE MEDIDA-->
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const selectUnit = document.getElementById('SelectUnitOfMeasure');
+    const unitQuantityInput = document.getElementById('unitquantity');
+    const unitLabel = document.getElementById('unitLabel');
+
+    let currentUnit = '';
+    let incrementValue = 1;
+
+    selectUnit.addEventListener('change', function() {
+      const selectedOption = this.value;
+      currentUnit = selectedOption;
+      if (selectedOption !== '') {
+        unitQuantityInput.removeAttribute('disabled');
+        updateUnitLabel(selectedOption);
+      } else {
+        unitQuantityInput.setAttribute('disabled', 'disabled');
+        unitLabel.textContent = '';
+      }
+      updateIncrementValue(unitQuantityInput.value);
+    });
+
+    unitQuantityInput.addEventListener('input', function() {
+      updateIncrementValue(this.value);
+    });
+
+    function updateUnitLabel(unit) {
+      switch(unit) {
+        case 'pieces':
+          unitLabel.textContent = '';
+          break;
+        case 'liters':
+          unitLabel.textContent = 'L';
+          break;
+        case 'milliliters':
+          unitLabel.textContent = 'mL';
+          break;
+        case 'kilogram':
+          unitLabel.textContent = 'kg';
+          break;
+        case 'grams':
+          unitLabel.textContent = 'g';
+          break;
+        default:
+          unitLabel.textContent = 'custom';
+      }
+    }
+  });
+</script>
+
+<!--                             FIN DEL CREATE MODAL VALIDACIONES                                -->
+<!---->
+<!---->
+<!---->
+<!---->
+<!--                                  EDIT MODAL VALIDACIONES                                     -->
+
+<!-- EVITA ENVIAR EL FORMULARIO SI LOS CAMPOS ESTAN POR DEFECTO O SI CONTIENEN ALGUN ERROR CRITICO-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("editproductform");
+    var saveButton = document.getElementById("submitEditProductSave");
+    var tooltip = new bootstrap.Tooltip(saveButton, {
+      placement: "top",
+      title: "Please fill in all fields.",
+      trigger: "manual",
+      customClass: "custom-tooltip", // Aquí se aplica la clase personalizada
+    });
+
+    function validateForm() {
+      var requiredFields = form.querySelectorAll("[required]");
+      var isEmpty = false;
+      requiredFields.forEach(function (field) {
+        if (!field.value.trim()) {
+          isEmpty = true;
+        }
+      });
+      saveButton.disabled = isEmpty;
+      if (isEmpty) {
+        saveButton.classList.remove("btn-success");
+        saveButton.classList.add("btn-danger");
+        tooltip.show();
+      } else {
+        saveButton.classList.remove("btn-danger");
+        saveButton.classList.add("btn-success");
+        tooltip.hide();
+      }
+    }
+
+    form.addEventListener("submit", function (event) {
+      validateForm();
+      if (saveButton.disabled) {
+        event.preventDefault();
+      }
+    });
+
+    form.addEventListener("input", function () {
+      validateForm();
+    });
+
+    $('#editproduct').on('hidden.bs.modal', function () {
+      form.reset();
+      saveButton.classList.remove("btn-danger");
+      saveButton.classList.add("btn-success");
+      saveButton.disabled = false;
+      tooltip.hide();
+    });
+
+    document.getElementById("EditSelectUnitOfMeasure").addEventListener("change", function () {
+      var unitQuantityInput = document.getElementById("editunitquantity");
+      var unitLabel = document.getElementById("editunitLabel");
+      if (this.value) {
+        unitQuantityInput.disabled = false;
+        unitLabel.textContent = this.options[this.selectedIndex].text;
+      } else {
+        unitQuantityInput.disabled = true;
+        unitQuantityInput.value = "";
+        unitLabel.textContent = "";
+      }
+      validateForm();
+    });
+  });
+</script>
+
+<!-- FUNCIONALIDAD PARA EL LIST DE UNIDAD DE MEDIDA-->
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const selectUnit = document.getElementById('EditSelectUnitOfMeasure');
+    const unitQuantityInput = document.getElementById('editunitquantity');
+    const unitLabel = document.getElementById('editunitLabel');
+
+    let currentUnit = '';
+    let incrementValue = 1;
+
+    selectUnit.addEventListener('change', function() {
+      const selectedOption = this.value;
+      currentUnit = selectedOption;
+      if (selectedOption !== '') {
+        unitQuantityInput.removeAttribute('disabled');
+        updateUnitLabel(selectedOption);
+      } else {
+        unitQuantityInput.setAttribute('disabled', 'disabled');
+        unitLabel.textContent = '';
+      }
+      updateIncrementValue(unitQuantityInput.value);
+    });
+
+    unitQuantityInput.addEventListener('input', function() {
+      updateIncrementValue(this.value);
+    });
+
+    function updateUnitLabel(unit) {
+      switch(unit) {
+        case 'pieces':
+          unitLabel.textContent = '';
+          break;
+        case 'liters':
+          unitLabel.textContent = 'L';
+          break;
+        case 'milliliters':
+          unitLabel.textContent = 'mL';
+          break;
+        case 'kilogram':
+          unitLabel.textContent = 'kg';
+          break;
+        case 'grams':
+          unitLabel.textContent = 'g';
+          break;
+        default:
+          unitLabel.textContent = 'custom';
+      }
+    }
+  });
+</script>
+
+<!--                                 FIN EDIT MODAL VALIDACIONES                                  -->
 
 {% endblock %}

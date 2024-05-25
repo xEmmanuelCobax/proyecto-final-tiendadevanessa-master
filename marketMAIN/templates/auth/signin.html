@@ -32,7 +32,7 @@
             <!-- Agregar la clase text-center para centrar el título -->
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <label for="email">Email address</label>
+              <label for="email">Email Address</label>
               <!-- Eliminar la clase text-end de la etiqueta -->
               <div class="col-sm-10">
                 <input
@@ -45,7 +45,8 @@
                   data-bs-toggle="tooltip-bademail"
                   data-bs-placement="left"
                   data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if email_not_found %}Email not found.{% endif %}"
+                  data-bs-title="{% if email_not_found %}Email not found.{% else %}Please enter a valid email address with @gmail.com, @hotmail.com, @live.com, or @outlook.com domain.{% endif %}"
+
                 />
                 <!-- Eliminar la clase text-end del campo de entrada -->
               </div>
@@ -95,12 +96,16 @@
                 >
               </div>
               <!-- Enlace "Forgot password?" -->
-              <a href="#!" class="forget">Already haven't an account?</a>
+              <div class="">
+                <a>Don’t have an account?</a>
+                <a href="{{url_for('auth.signup')}}" class="forget">Registered</a>
+              </div>
             </div>
             <!-- Submit button -->
             <button
               type="submit"
               class="btn__form btn btn-primary btn-lg btn-block"
+              id="submitButton"
             >
               Sign in
             </button>
@@ -155,6 +160,69 @@
 </script>
 {% endif %} 
 
+<!-- TOOLTIP PARA MOSTRAR RECOMENDACION DEL EMAIL -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var tooltipTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    document.getElementById("email").addEventListener("input", function () {
+      var emailInput = this.value;
+      var emailIsValid =
+        /^[\w-\.]+@(?:(?:[\w]+\.)+)?(?:gmail\.com|hotmail\.com|live\.com|outlook\.com)$/.test(
+          emailInput
+        );
+      var tooltip = bootstrap.Tooltip.getInstance(this);
+
+      if (!emailIsValid) {
+        this.classList.add("is-invalid");
+        this.classList.remove("is-valid");
+        if (!tooltip) {
+          tooltip = new bootstrap.Tooltip(this);
+        }
+        tooltip.show();
+      } else {
+        this.classList.remove("is-invalid");
+        this.classList.add("is-valid");
+        if (tooltip) {
+          tooltip.hide();
+          tooltip.dispose(); // Destruir la instancia del tooltip
+        }
+      }
+    });
+  });
+</script>
+
+<!-- TOOLTIP PARA MOSTRAR RECOMENDACION DEL EMAIL -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    var emailInput = document.getElementById("email");
+    var submitButton = document.getElementById("submitButton");
+
+    emailInput.addEventListener("input", function () {
+      var emailIsValid = /^[\w-\.]+@(?:(?:[\w]+\.)+)?(?:gmail\.com|hotmail\.com|live\.com|outlook\.com)$/.test(emailInput.value);
+      
+      if (!emailIsValid) {
+        emailInput.classList.add("is-invalid");
+        submitButton.classList.remove("btn-primary");
+        submitButton.classList.add("btn-danger");
+        submitButton.disabled = true; // Deshabilitar el botón de envío
+      } else {
+        emailInput.classList.remove("is-invalid");
+        submitButton.classList.remove("btn-danger");
+        submitButton.classList.add("btn-primary");
+        submitButton.disabled = false; // Habilitar el botón de envío
+      }
+    });
+  });
+</script>
+
+
 <!-- SCRIPT PARA MOSTRAR TOOLTIPS RE ERROR-->
 <script>
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-bademail"]'));
@@ -167,6 +235,55 @@
       return new bootstrap.Tooltip(tooltipTriggerEl);
   });
 
+</script>
+
+<!-- EVITA EL USO DE ESPACIOS, COMILLAS SIMPLES Y DOBLES EN EL EMAIL Y EN EL PASSWORD -->
+<script>
+  // Función para validar la entrada de contraseña y eliminar espacios, comillas simples y dobles
+  document.getElementById("password").addEventListener("input", function (event) {
+    // Obtener el valor actual del campo de contraseña
+    var passwordInput = event.target.value;
+    // Eliminar los espacios, comillas simples y dobles del valor actual
+    var passwordCleaned = passwordInput.replace(/[ '\"\t\\]/g, "");
+    // Actualizar el valor del campo de contraseña sin espacios, comillas simples y dobles
+    event.target.value = passwordCleaned;
+  });
+
+  // Función para eliminar espacios, comillas simples y dobles del campo de correo electrónico
+  document.getElementById("email").addEventListener("input", function (event) {
+    // Obtener el valor actual del campo de correo electrónico
+    var emailInput = event.target.value;
+    // Eliminar los espacios, comillas simples y dobles del valor actual
+    var emailCleaned = emailInput.replace(/[^\w\s@.]/g, "");
+    // Actualizar el valor del campo de correo electrónico sin espacios, comillas simples y dobles
+    event.target.value = emailCleaned;
+  });
+</script>
+
+<!-- LIMITA EL NÚMERO DE CARACTERES DE LAS ENTRADAS-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Definir los máximos de caracteres para cada tipo de campo de entrada
+    var maxCharacters = {
+      "text": 30,
+      "email": 55,
+      "password": 15
+    };
+
+    // Función para manejar el evento de entrada y limitar la longitud de los campos de entrada
+    function handleInput(event) {
+      var inputType = event.target.type.toLowerCase();
+      if (event.target.value.length > maxCharacters[inputType]) {
+        event.target.value = event.target.value.substring(0, maxCharacters[inputType]); // Limita según el tipo de campo de entrada
+      }
+    }
+
+    // Agregar evento de entrada a todos los campos de entrada
+    var inputFields = document.querySelectorAll("input");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", handleInput);
+    });
+  });
 </script>
 
 {% endblock %}

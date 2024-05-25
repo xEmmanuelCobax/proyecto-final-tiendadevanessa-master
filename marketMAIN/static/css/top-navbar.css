@@ -76,3 +76,43 @@ body, html {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #555; /* Color del "pulgarcito" cuando se pasa el mouse sobre él */
 }
+
+.flags{
+  width:70px;
+  display: flex;
+  justify-content: space-between;
+
+} 
+
+.flags__item{
+  width: 20px;
+  margin-right: 10px;
+} 
+
+/* DISEÑOS MÁS MINIMALISTAS */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #FAF9F6;
+}
+
+.border-Tertiary {
+  border-color: #ced4da !important;
+}
+
+.rounded {
+  border-radius: 6px;
+}
+
+.table-rounded th,
+.table-rounded td {
+  border-radius: 6px;
+}
+
+.table-rounded .table-group-divider > tr:last-child > td {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.container-fluid * {
+  transition: all 0.3s ease-in-out;
+}
