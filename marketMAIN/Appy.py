@@ -866,7 +866,15 @@ def managecompany():
             AND dbo.Intermediario.ESTATUS = 1
             """
         )
-        return render_template("products/manage-company.html", relations=relations, companies=ConsultaCompanias())
+        return render_template("products/manage-company.html", relations=relations, 
+                            companies=ConsultaCompanias(),
+                            OtrosErroresBorrarIntermediario=OtrosErroresBorrarIntermediario,
+                            OtrosErroresCrearIntermediario=OtrosErroresCrearIntermediario,
+                            OtrosErroresEditarIntermediario=OtrosErroresEditarIntermediario,
+                            ErrorIntermediarioTelefono=ErrorIntermediarioTelefono,
+                            ErrorIntermediarioRegistrado=ErrorIntermediarioRegistrado,
+                            CasoActualizarIntermediario=CasoActualizarIntermediario,
+                            )
     else:
         print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("auth.signin"))
