@@ -1,4 +1,4 @@
-import re
+import re, config
 
 def validar_entrada(texto):
     # a-z y A-Z son para minusculas y mayusculas
@@ -47,12 +47,48 @@ def validar_float(texto):
 
 
 # Ejemplos de uso
-entrada1 = "123123123"
+entrada1 = "#$!!"
 entrada2 = (123.2323)
 
 print(validar_entrada(entrada1))  # Debería imprimir: True
 print(validar_float(entrada2))  # Debería imprimir: False
 
 
-
-
+def ConsultaProductos():
+    auxiliar = []
+    productos = []
+    auxiliar = config.Read(
+        """
+        SELECT 
+            ID_PRODUCTO, 
+            NOMBRE, 
+            PRECIO_UNITARIO, 
+            EXISTENCIAS 
+        FROM dbo.Almacen 
+        WHERE dbo.Almacen.ESTATUS = 1
+        """
+    )
+    for i in range(len(auxiliar)):
+        if auxiliar[i][3] <= 0:
+            print(int(auxiliar[i][0]))
+            config.CUD(
+                """
+                UPDATE dbo.Almacen 
+                    SET 
+                    ESTATUS = ?
+                WHERE ID_PRODUCTO = ?
+                """,
+                (0, int(auxiliar[i][0])),
+            )
+    productos = config.Read(
+        """
+        SELECT 
+            ID_PRODUCTO, 
+            NOMBRE, 
+            PRECIO_UNITARIO, 
+            EXISTENCIAS 
+        FROM dbo.Almacen 
+        WHERE dbo.Almacen.ESTATUS = 1
+        """
+    )
+    return productos

@@ -16,6 +16,7 @@ endblock %} {% block content %}
 
     {% include 'top navbar/top-width-navbar.html' %}
 
+    <!-- BODY DE LOS BOTONES Y DE LA TABLA-->
     <div class="col-12 col-lg-9 mt-3">
       <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
       <form class="d-flex mt-3">
@@ -28,7 +29,9 @@ endblock %} {% block content %}
           data-bs-target="#createmodal"
           data-bs-whatever="@mdo"
         >
-          Create
+          <span data-section="manage-werehouse" data-value="Create"
+            >Create</span
+          >
         </button>
       </form>
 
@@ -39,29 +42,63 @@ endblock %} {% block content %}
           class="table-responsive"
           style="max-height: 500px; overflow-y: auto"
         >
-          <table class="table table-bordered table-striped table-rounded mb-3">
+          <table
+            class="table table-bordered table-striped table-rounded mb-3"
+            id="product-table"
+          >
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Amount</th>
-                <th>Price</th>
-                <th>dato</th>
-                <th>dato</th>
-                <th>dato</th>
-                <th>Actions</th>
+                <th scope="col">#</th>
+
+                <th scope="col">
+                  <span data-section="werehouse" data-value="Name Product"
+                    >Name Product</span
+                  >
+                </th>
+
+                <th scope="col">
+                  <span data-section="werehouse" data-value="Company"
+                    >Company</span
+                  >
+                </th>
+
+                <th scope="col">
+                  <span data-section="werehouse" data-value="Name Intermedary"
+                    >Name Intermedary</span
+                  >
+                </th>
+
+                <th scope="col">
+                  <span data-section="werehouse" data-value="Stock">Stock</span>
+                </th>
+
+                <th scope="col">
+                  <span data-section="werehouse" data-value="Unit Price"
+                    >Unit Price</span
+                  >
+                </th>
+
+                <th scope="col">
+                  <span data-section="manage-company" data-value="Actions"
+                    >Actions</span
+                  >
+                </th>
               </tr>
             </thead>
             <tbody class="table-group-divider">
               {% for product in products %}
-              <tr>
-                <td>{{ product[0] }}</td>
+              <tr data-product-id="{{ product[0] }}">
+                <th scope="row">{{ product[0] }}</th>
+
                 <td>{{ product[1] }}</td>
+
+                <td>{{ product[9] }}</td>
+
+                <td>{{ product[5] }} {{ product[6] }} {{ product[7] }}</td>
+
                 <td>{{ product[3] }}</td>
-                <td>{{ product[2] }}</td>
-                <td>{{ product[4] }}</td>
-                <td>{{ product[5] }}</td>
-                <td>{{ product[6] }}</td>
+
+                <td>{{ product[2] }} $</td>
                 <td
                   class="text-center d-flex justify-content-center align-items-center"
                 >
@@ -222,7 +259,7 @@ endblock %} {% block content %}
                 </select>
               </div>
               <div class="mb-3">
-                <label for="cantidadInput" class="form-label">Quantity:</label>
+                <label for="cantidadInput" class="form-label">Stock:</label>
                 <input
                   type="number"
                   class="form-control"
@@ -347,7 +384,7 @@ endblock %} {% block content %}
                   <option value="milliliters">Milliliters</option>
                   <option value="kilogram">Kilogram</option>
                   <option value="grams">Grams</option>
-                  <option value="customize">Customized</option>
+                  <option value="custom">Customized</option>
                 </select>
               </div>
               <!--NEW-UNIT-QUANTITY-id>editunitquantity-->
@@ -363,7 +400,6 @@ endblock %} {% block content %}
                     name="editunitquantity"
                     min="1"
                     required
-                    disabled
                   />
                   <span class="input-group-text" id="editunitLabel"></span>
                 </div>
@@ -373,7 +409,7 @@ endblock %} {% block content %}
             <div class="col-md-6">
               <!--EDITAR-COMPANIA-SELECCIONADO-id>company-new-select-->
               <div class="mb-3">
-                <label for="company-new-select">Select New Company:</label>
+                <option value="" disabled selected>Select Company</option>
                 <select
                   class="form-select"
                   id="company-new-select"
@@ -410,7 +446,7 @@ endblock %} {% block content %}
               <!--NUEVA-CANTIDAD-id>newcantidad-->
               <div class="mb-3">
                 <label for="newcantidadInput" class="form-label"
-                  >New Quantity:</label
+                  >New Stock:</label
                 >
                 <input
                   type="number"
@@ -526,6 +562,172 @@ endblock %} {% block content %}
 
 <!--               FUNCIONALIDADES COMPARTIDAS POR MODAL                   -->
 
+<!-- OBTIENE EL ID DEL PRODUCTO Y LO TOMA PARA PODER ENVIARLO A LA DB O PRECARGAR DATOS (NO BORRAR)-->
+<script>
+  function setProductId(productId) {
+    document.getElementById("product-id-input").value = productId;
+    console.log("productId BORRAR>" + productId);
+  }
+
+  function setEditProductId(productId) {
+    console.log("Pasa aqui 2");
+    console.log("productId EDITAR>" + productId);
+
+    // Encuentra la fila con el data-product-id correspondiente
+    var table = document.getElementById("product-table");
+    var rows = table.getElementsByTagName("tr");
+    var foundRow = null;
+    for (var i = 0; i < rows.length; i++) {
+      var rowProductId = rows[i].getAttribute("data-product-id");
+      if (rowProductId === productId) {
+        foundRow = rows[i];
+        break;
+      }
+    }
+
+    if (foundRow) {
+      console.log("Se encontró la fila con productId =", productId);
+      // Obtiene todos los datos de las celdas en la fila
+      var rowData = Array.from(foundRow.children).map((cell) =>
+        cell.textContent.trim()
+      );
+
+      // Asigna los datos a variables
+      //var id = rowData[0];
+
+      //NOMBRE DEL PRODUCTO (FUNCIONA)
+      var nombreProducto = rowData[1].replace(/_/g, " "); // Reemplazar "_" con espacio
+      nombreProducto = nombreProducto.replace(/\s\d+.*/, "");
+      console.log(nombreProducto);
+      document.getElementById("newmarca").value = nombreProducto;
+      //FIN
+
+      //NOMBRE DEL PRODUCTO (FUNCIONA)
+      var stock = rowData[4];
+      document.getElementById("newcantidadInput").value = stock;
+      //FIN
+
+      //PRECIO POR UNIDAD (FUNCIONA)
+      var precioUnitario = parseFloat(rowData[5].replace("$", "")).toFixed(2);
+      document.getElementById("newprecio2").value = precioUnitario;
+      //FIN
+
+      //UNIDAD DE PRESENTACIÓN (FUNCIONA)
+      var captureUnitofMeasure = rowData[1].replace(/_/g, " "); // Reemplazar "_" con espacio
+      var numeroProducto = captureUnitofMeasure.match(/\d+/); // Esto extraerá cualquier secuencia de dígitos
+      var numeroProductoFlotante = parseFloat(numeroProducto);
+      console.log(
+        "LA UNIDAD DE MEDIDA ES DE SELECCIONADO ES DE " + numeroProductoFlotante
+      );
+      document.getElementById("editunitquantity").value =
+        numeroProductoFlotante;
+      //FIN
+
+     //SELECCIONAR EL NOMBRE Y EXTRAE LAS UNIDADES PARA INGRESARLO EN MI SELECT UNITOFMEASURE
+      let nameProductExtract = rowData[1];
+
+      // Expresión regular para capturar la unidad de medida
+      let abreviaturas = /(\d+)\s*(gr|Pzs|l|ml|kg|custom)$/;
+
+      let capturarAbreviatura = nameProductExtract.match(abreviaturas);
+
+      let unidad_de_medida = capturarAbreviatura[2]; // Unidad de medida
+      console.log("Unidad de medida que se extrajo:", unidad_de_medida);
+
+      // Segunda condición para determinar la unidad de medida en base a lo que se haya capturado
+      let unidad_traducida;
+      switch (unidad_de_medida) {
+        case "Pzs":
+          unidad_traducida = "pieces";
+          break;
+        case "l":
+          unidad_traducida = "liters";
+          break;
+        case "ml":
+          unidad_traducida = "milliliters";
+          break;
+        case "kg":
+          unidad_traducida = "kilogram";
+          break;
+        case "gr":
+          unidad_traducida = "grams";
+          break;
+        default:
+          unidad_traducida = "custom";
+      }
+
+      console.log("Unidad de medida que se extrajo:", unidad_traducida);
+
+      // Obtener el elemento select
+      var selectElement = document.getElementById("EditSelectUnitOfMeasure");
+
+      // Iterar sobre las opciones del elemento select
+      for (var i = 0; i < selectElement.options.length; i++) {
+        var option = selectElement.options[i];
+        console.log("Opción", i, "Valor:", option.value, "Texto:", option.text);
+        // Verificar si el texto de la opción coincide con el nombre de la empresa
+        if (option.value === unidad_traducida) {
+          // Establecer el valor del elemento select a la opción correspondiente
+          selectElement.selectedIndex = i;
+          console.log("Opción seleccionada del intermediario:", option.text);
+          // Opcionalmente, puedes salir del bucle si solo quieres seleccionar la primera coincidencia
+          // break;
+        }
+      }
+      //FIN
+
+      //SELECCIONAR COMPAÑIA (TERMINADO)
+      // Obtener el nombre de la empresa
+      var nombreEmpresa = rowData[2].toString();
+      console.log("Nombre de la empresa:", nombreEmpresa);
+
+      // Obtener el elemento select
+      var selectElement = document.getElementById("company-new-select");
+
+      // Iterar sobre las opciones del elemento select
+      for (var i = 0; i < selectElement.options.length; i++) {
+        var option = selectElement.options[i];
+        console.log("Opción", i, "Valor:", option.value, "Texto:", option.text);
+        // Verificar si el texto de la opción coincide con el nombre de la empresa
+        if (option.text === nombreEmpresa) {
+          // Establecer el valor del elemento select a la opción correspondiente
+          selectElement.selectedIndex = i;
+          console.log("Opción seleccionada:", option.text);
+          // Opcionalmente, puedes salir del bucle si solo quieres seleccionar la primera coincidencia
+          // break;
+        }
+      }
+      //FIN
+
+      //SELECCIONAR INTERMEDIARIOS (TERMINADO)
+      // Obtener el nombre del intermediario
+      var nombreIntermediario =
+        rowData[2] + " " + rowData[3].replace(/\s+/g, " ").trim(); // Eliminar espacios extra
+      console.log("Nombre del intermediario:", nombreIntermediario);
+
+      // Obtener el elemento select
+      var selectElement = document.getElementById("intermedary-new-select");
+
+      // Iterar sobre las opciones del elemento select
+      for (var i = 0; i < selectElement.options.length; i++) {
+        var option = selectElement.options[i];
+        console.log("Opción", i, "Valor:", option.value, "Texto:", option.text);
+        // Verificar si el texto de la opción coincide con el nombre de la empresa
+        if (option.text === nombreIntermediario) {
+          // Establecer el valor del elemento select a la opción correspondiente
+          selectElement.selectedIndex = i;
+          console.log("Opción seleccionada del intermediario:", option.text);
+          // Opcionalmente, puedes salir del bucle si solo quieres seleccionar la primera coincidencia
+          // break;
+        }
+      }
+      //FIN
+    } else {
+      console.log("Fila no encontrada para productId:", productId);
+    }
+  }
+</script>
+
 <!--CREATE MODAL SCRIPT PARA MANEJO DE COMPAÑIAS E INTERMEDIARIOS DINAMICOS-->
 <script>
   // Función para filtrar intermediarios basados en la compañía seleccionada
@@ -618,17 +820,27 @@ endblock %} {% block content %}
   filterIntermediaries();
 </script>
 
-<!-- OBTIENE EL ID DEL PRODUCTO (NO BORRAR)-->
+<!-- EVITA COPIAR, PEGAR, CORTAR EN TODOS LOS INPUTS MENOS EN LOS DE NOMBRE-->
 <script>
-  //NO QUITAR, AQUI OBTENGO ID
-  function setProductId(productId) {
-    document.getElementById("product-id-input").value = productId;
-    console.log("productId BORRAR>" + productId);
-  }
-  function setEditProductId(productId) {
-    document.getElementById("editproduct_id").value = productId;
-    console.log("productId EDITAR>" + productId);
-  }
+  document.addEventListener("DOMContentLoaded", (event) => {
+    // Deshabilitar copiar, pegar y cortar en todos los inputs
+    document.querySelectorAll("input").forEach((input) => {
+      input.addEventListener("copy", (e) => e.preventDefault());
+      input.addEventListener("paste", (e) => e.preventDefault());
+      input.addEventListener("cut", (e) => e.preventDefault());
+    });
+
+    // Habilitar copiar, pegar y cortar en los inputs específicos
+    const enableEvents = ["marca", "producto", "newmarca", "newproducto"];
+    enableEvents.forEach((id) => {
+      let input = document.getElementById(id);
+      if (input) {
+        input.removeEventListener("copy", (e) => e.preventDefault());
+        input.removeEventListener("paste", (e) => e.preventDefault());
+        input.removeEventListener("cut", (e) => e.preventDefault());
+      }
+    });
+  });
 </script>
 
 <!-- VALIDA LOS ESPACIOS INICIALES Y FINALES QUE EL USUARIO PUEDA LLEGAR A PONER, Y QUE NO PUEDA COPIAR Y PEGARSE ESPACIOS-->
@@ -674,7 +886,7 @@ endblock %} {% block content %}
 <!-- LIMITA EL NÚMERO DE CARACTERES DE LAS ENTRADAS-->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    var maxCharactersText = 15; // Máximo de caracteres para campos de texto
+    var maxCharactersText = 35; // Máximo de caracteres para campos de texto
     var maxCharactersNumber = 6; // Máximo de caracteres para campos de número
 
     // Función para manejar el evento de entrada y limitar la longitud de los campos de entrada
@@ -725,33 +937,6 @@ endblock %} {% block content %}
     var numberFields = document.querySelectorAll("input[type='number']");
     numberFields.forEach(function (input) {
       input.addEventListener("keydown", preventInvalidChars);
-    });
-  });
-</script>
-
-<!-- EVITA COPIAR Y PEGAR EN TODOS LOS INPUTS-->
-<script>
-  const inputs = document.querySelectorAll("input");
-
-  inputs.forEach((input) => {
-    input.addEventListener("keydown", function (event) {
-      // Bloquea las teclas de acceso rápido (Ctrl+C, Ctrl+V, Ctrl+X, etc.)
-      if (
-        event.ctrlKey &&
-        (event.key === "c" || event.key === "v" || event.key === "x")
-      ) {
-        event.preventDefault();
-      }
-    });
-
-    input.addEventListener("paste", function (event) {
-      // Bloquea el evento de pegar
-      event.preventDefault();
-    });
-
-    input.addEventListener("copy", function (event) {
-      // Bloquea el evento de copiar
-      event.preventDefault();
     });
   });
 </script>
@@ -829,7 +1014,7 @@ endblock %} {% block content %}
         input.removeClass("is-valid").addClass("is-invalid");
         input
           .tooltip({
-            title: "Tip: Don't enter zero quantities",
+            title: "Tip: don't record prices, stock or units of zero (0).",
             placement: "top",
             trigger: "manual",
             customClass: "custom-tooltip", // Aquí se aplica la clase personalizada
@@ -841,23 +1026,25 @@ endblock %} {% block content %}
       }
     }
 
-    $("#unitquantity, #cantidad, #precio, #editunitquantity, #newcantidadInput, #newprecio2").on("input", function () {
+    $(
+      "#unitquantity, #cantidad, #precio, #editunitquantity, #newcantidadInput, #newprecio2"
+    ).on("input", function () {
       validateInput($(this));
     });
 
     // Escucha el evento de cierre del modal
-    $('.modal').on('hidden.bs.modal', function () {
+    $(".modal").on("hidden.bs.modal", function () {
       // Selecciona todos los campos de entrada que necesitas resetear
-      $("#unitquantity, #cantidad, #precio, #editunitquantity, #newcantidadInput, #newprecio2")
-        .each(function () {
-          $(this).removeClass("is-valid is-invalid"); // Remueve las clases de validación
-          $(this).tooltip("dispose"); // Destruye el tooltip
-          $(this).val(''); // Opcional: Limpia el valor del campo de entrada
-        });
+      $(
+        "#unitquantity, #cantidad, #precio, #editunitquantity, #newcantidadInput, #newprecio2"
+      ).each(function () {
+        $(this).removeClass("is-valid is-invalid"); // Remueve las clases de validación
+        $(this).tooltip("dispose"); // Destruye el tooltip
+        $(this).val(""); // Opcional: Limpia el valor del campo de entrada
+      });
     });
   });
 </script>
-
 
 <!--                FIN DE FUNCIONALIDADES COMPARTIDAS                     -->
 <!---->
@@ -965,13 +1152,13 @@ endblock %} {% block content %}
     function updateUnitLabel(unit) {
       switch (unit) {
         case "pieces":
-          unitLabel.textContent = "";
+          unitLabel.textContent = "Pzs";
           break;
         case "liters":
-          unitLabel.textContent = "L";
+          unitLabel.textContent = "l";
           break;
         case "milliliters":
-          unitLabel.textContent = "mL";
+          unitLabel.textContent = "ml";
           break;
         case "kilogram":
           unitLabel.textContent = "kg";
@@ -1092,13 +1279,13 @@ endblock %} {% block content %}
     function updateUnitLabel(unit) {
       switch (unit) {
         case "pieces":
-          unitLabel.textContent = "";
+          unitLabel.textContent = "Pzs";
           break;
         case "liters":
-          unitLabel.textContent = "L";
+          unitLabel.textContent = "l";
           break;
         case "milliliters":
-          unitLabel.textContent = "mL";
+          unitLabel.textContent = "ml";
           break;
         case "kilogram":
           unitLabel.textContent = "kg";

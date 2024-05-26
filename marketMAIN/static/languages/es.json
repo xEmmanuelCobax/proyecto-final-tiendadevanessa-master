@@ -1,6 +1,53 @@
 {
     "top-navbar":{
         "titulo":"Tiendita Valencia",
-        "description": "hola bienvenido"
+        "sesionc": "Cerrar sesión",
+        "lenguaje": "Seleccione el idioma:",
+        "sesioni": "Iniciar sesión"
+    },
+
+    "width-navbar":{
+        "werehouse": "Almacén",
+        "home": "Inicio",
+        "View Warehouse": "Ver almacén",
+        "Manage Warehouse": "Administrar almacén",
+        "Manage Companies": "Administrar compañia",
+        "Sales": "Ventas",
+        "add Sales": "Agregar ventas",
+        "Manage Sales": "Administrar ventas",
+        "Sales Reports": "Reportes de ventas"
+
+
+    },
+
+    "werehouse":{
+        "Search": "Buscar",
+        "Name Product": "Nombre del producto",
+        "Company": "Compañia",
+        "Name Intermedary": "Nombre del intermediario",
+        "Stock": "Existencias",
+        "Unit Price": "Precio unitario"
+    },
+
+    "manage-werehouse":{
+        "Create": "Crear"
+
+    },
+    "manage-company":{
+        "Name Company": "Nombre de la compañia",
+        "Actions": "Acciones",
+        "Manage Companies": "administrar compañias",
+        "Create Company": "Crear compañia"
+        
+    },
+    "Sale":{
+        "Name": "Nombre",
+        "Quantity": "Cantidad",
+        "Price": "Precio",
+        "Actions": "Acciones",
+        "Make sale": "Vender",
+        "Add Product": "Agregar producto"
+
     }
+
 }

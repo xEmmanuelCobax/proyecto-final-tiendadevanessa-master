@@ -60,3 +60,11 @@
     return salesData;
   }
 </script>
+
+
+   <style>
+      /* Ocultar contenido inicialmente */
+      body.hidden {
+        visibility: hidden;
+      }
+    </style>

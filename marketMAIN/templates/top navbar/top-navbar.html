@@ -51,10 +51,12 @@
     <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+   
+
 
   </head>
 
-  <body class="dark-mode-toggle">
+  <body class="dark-mode-toggle hidden" >
     <!-- Barra de navegación principal -->
     <nav
       class="navbar navbar-expand-lg bg-body-tertiary fixed-top py-0"
@@ -68,7 +70,7 @@
           >SaleTrackStar</a
         >
         {% endif %} {% if 'email' not in session %}
-        <a class="navbar-brand" href="{{ url_for('index') }}">SaleTrackStar</a>
+        <a class="navbar-brand" data-section="top-navbar" data-value="titulo" href="{{ url_for('index') }}">SaleTrackStar</a>
         {% endif %}
 
         <button
@@ -97,7 +99,7 @@
             </li>
     
             <div id="languageDropdown">
-              <label for="languageSelect">Select Language:</label>
+              <label data-section="top-navbar" data-value="lenguaje" for="languageSelect">Select Language:</label>
               <select id="languageSelect">
                 <option value="en">English</option>
                 <option value="es">Español</option>
@@ -108,6 +110,7 @@
               <a
                 class="nav-link active"
                 aria-current="page"
+                data-section="top-navbar" data-value="sesionc"
                 href="{{ url_for('signout') }}"
                 >Sign Out</a
               >
@@ -116,6 +119,7 @@
             <li class="nav-item me-4">
               <a
                 class="nav-link active"
+                data-section="top-navbar" data-value="sesioni"
                 aria-current="page"
                 href="{{ url_for('auth.signin') }}"
                 >Sign in</a
@@ -124,6 +128,7 @@
             <li class="nav-item me-4">
               <a
                 class="nav-link active"
+                data-section="top-navbar" data-value="sesioni"
                 aria-current="page"
                 href="{{ url_for('auth.signup') }}"
                 >Sign up</a
@@ -186,29 +191,55 @@
     <script>  
     //que haces w? xD
     //traducción
+     
+
+    document.addEventListener("DOMContentLoaded", async function () {
+    const languageSelect = document.getElementById("languageSelect");
     const textsToChange = document.querySelectorAll("[data-section]");
 
-    document.addEventListener("DOMContentLoaded", function () {
-    
-      const languageSelect = document.getElementById("languageSelect");
-
-      
-
-      const changeLanguage = async (language) => {
+    const changeLanguage = async (language) => {
         const requestJson = await fetch(`../static/languages/${language}.json`);
         const texts = await requestJson.json();
-        for(textsToChange of textsToChange){
-          console.log(textsToChange);
-        };
-        
-      };
 
-      languageSelect.addEventListener("change", function () {
+        textsToChange.forEach(textElement => {
+            const section = textElement.dataset.section;
+            const value = textElement.dataset.value;
+            if (texts[section] && texts[section][value]) {
+              const textNode = document.createTextNode(texts[section][value]);
+                
+                // Limpiar solo el contenido de texto y mantener los hijos (como los iconos)
+                while (textElement.firstChild && textElement.firstChild.nodeType === Node.TEXT_NODE) {
+                    textElement.removeChild(textElement.firstChild);
+                }
+
+                // Insertar el nuevo texto
+                textElement.insertBefore(textNode, textElement.firstChild);
+                
+            }
+            
+        });
+
+        // Guardar el idioma seleccionado en localStorage
+        localStorage.setItem('selectedLanguage', language);
+    };
+
+    // Cargar el idioma seleccionado desde localStorage al cargar la página
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    if (savedLanguage) {
+        languageSelect.value = savedLanguage;
+        await changeLanguage(savedLanguage);
+    }
+
+    document.body.classList.remove('hidden');
+    
+    // Evento para el cambio de idioma
+    languageSelect.addEventListener("change", function () {
         const selectedLanguage = languageSelect.value;
-        // Llama a la función changeLanguage con el idioma seleccionado
         changeLanguage(selectedLanguage);
-      });
     });
+
+});
+
   
     </script>
   

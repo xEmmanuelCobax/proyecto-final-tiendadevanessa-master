@@ -272,7 +272,7 @@ endblock %} {% block content %}
                 type="button"
                 class="btn btn-outline-primary btn-sm ms-2"
               >
-                Add Product
+              <span data-section="Sale" data-value="Add Product">Add Product</span>
               </button>
             </div>
             <div id="searchResults" class="dropdown-menu"></div>
@@ -280,7 +280,7 @@ endblock %} {% block content %}
           <div class="col-md col-lg-6 my-2">
             <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
             <button id="addSale" type="button" class="btn btn-success w-100">
-              Make sale
+              <span data-section="Sale" data-value="Make sale">Make sale</span>
             </button>
           </div>
         </div>
@@ -336,10 +336,10 @@ endblock %} {% block content %}
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">id</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Actions</th>
+                  <th scope="col"><span data-section="Sale" data-value="Name">Name</span></th>
+                  <th scope="col"><span data-section="Sale" data-value="Quantity">Quantity</span></th>
+                  <th scope="col"><span data-section="Sale" data-value="Price">Price</span></th>
+                  <th scope="col"><span data-section="Sale" data-value="Actions">Actions</span></th>
                 </tr>
               </thead>
               <tbody class="table-group-divider">

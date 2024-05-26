@@ -10,7 +10,7 @@ endblock %} {% block content %}
 
 <div class="container-fluid mt-5">
   <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
-    <h6 class="mt-1 d-none d-sm-flex">Manage Companies</h6>
+    <h6 class="mt-1 d-none d-sm-flex"><span span data-section="manage-company" data-value="Manage Companies">Manage Companies</span></h6>
 
     {% include 'top navbar/top-width-navbar.html' %}
 
@@ -24,7 +24,7 @@ endblock %} {% block content %}
           data-bs-target="#createmodal"
           data-bs-whatever="@mdo"
         >
-          Create Company
+          <span data-section="manage-company" data-value="Create Company">Create Company</span>
         </button>
       </form>
 
@@ -39,10 +39,10 @@ endblock %} {% block content %}
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Intermediary</th>
+                <th scope="col"><span data-section="manage-company" data-value="Name Company">Name Company</span></th>
+                <th scope="col"><span data-section="werehouse" data-value="Name Intermedary">Name Intermedary</span></th>
                 <th scope="col">Tel.</th>
-                <th scope="col">Actions</th>
+                <th scope="col"><span data-section="manage-company" data-value="Actions">Actions</span></th>
               </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -525,7 +525,7 @@ endblock %} {% block content %}
     var form = document.getElementById("createCompanyForm");
     var saveButton = document.getElementById("submitProductSave");
     var tooltip = new bootstrap.Tooltip(saveButton, {
-      placement: "top",
+      placement: "bottom",
       title: "Please fill in all fields.",
       trigger: "manual", // Configurar la tooltip para que se muestre manualmente
       customClass: "custom-tooltip", // Aquí se aplica la clase personalizada
@@ -584,7 +584,7 @@ endblock %} {% block content %}
     var form = document.getElementById("editCompanyForm");
     var saveButton = document.getElementById("submitEditProductSave");
     var tooltip = new bootstrap.Tooltip(saveButton, {
-      placement: "top",
+      placement: "bottom",
       title: "Please fill in all fields.",
       trigger: "manual",
       customClass: "custom-tooltip", // Aquí se aplica la clase personalizada

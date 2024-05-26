@@ -11,7 +11,7 @@ from flask import (
     jsonify,
 )
 
-import config, locale # Importar config.py en donde se hacen las consultas de la base de datos
+import config, locale, re # Importar config.py en donde se hacen las consultas de la base de datos
 from datetime import datetime
 locale.setlocale(locale.LC_TIME, "es_ES")
 class MyException(Exception):
@@ -28,7 +28,24 @@ p = Blueprint("profile", __name__, url_prefix="/profile")
 sc = Blueprint("shortcut", __name__, url_prefix="/shortcut")
 sales = Blueprint("sales", __name__, url_prefix="/sales")
 
+
 app.config["SECRET_KEY"] = config.HEX_SEC_KEY
+# Metodos de validacion:
+def validar_entrada(texto):
+    # a-z y A-Z son para minusculas y mayusculas
+    # \u00e1\u00e9\u00ed\u00f3\u00fa\u00f1\u00c1\u00c9\u00cd\u00d3\u00da\u00d1  Letras mayusculas y minusculas con acentos
+    # \s Espacios en blanco
+    # '' Al menos un caracter del conjunto
+    # $ Al final de la cadena
+    # Definimos el patrón que NO queremos en la entrada
+    patron = r"^[a-zA-Z\u00e1\u00e9\u00ed\u00f3\u00fa\u00f1\u00c1\u00c9\u00cd\u00d3\u00da\u00d1\s]+$"
+
+    # Buscamos si hay alguna coincidencia en el texto
+    if not re.search(patron, texto):
+        return False
+    else:
+        return True
+
 
 # Bienvenida (Terminado)
 @p.route("/welcomeuser") 
@@ -207,31 +224,7 @@ def successful_registration():
 
 
 def ConsultaProductos():
-    auxiliar = []
     productos = []
-    auxiliar = config.Read(
-        """
-        SELECT 
-            ID_PRODUCTO, 
-            NOMBRE, 
-            PRECIO_UNITARIO, 
-            EXISTENCIAS 
-        FROM dbo.Almacen 
-        WHERE dbo.Almacen.ESTATUS = 1
-        """
-    )
-    for i in range(len(auxiliar)):
-        if auxiliar[i][3] <= 0:
-            print(int(auxiliar[i][0]))
-            config.CUD(
-                """
-                UPDATE dbo.Almacen 
-                    SET 
-                    ESTATUS = ?
-                WHERE ID_PRODUCTO = ?
-                """,
-                (0, int(auxiliar[i][0])),
-            )
     productos = config.Read(
         """
         SELECT 
@@ -250,14 +243,14 @@ def ConsultaPIA():
     Cpia = config.Read(
         """
     SELECT 
-        dbo.Almacen.ID_INTERMEDIARIO,
+        dbo.Almacen.ID_PRODUCTO,
         dbo.Almacen.NOMBRE, 
         dbo.Almacen.PRECIO_UNITARIO, 
         dbo.Almacen.EXISTENCIAS,
         dbo.Almacen.PRECIO_EXISTENCIA, 
         dbo.Intermediario.NOMBRE,
         dbo.Intermediario.AP_PAT,
-        dbo.Intermediario.AP_PAT,
+        dbo.Intermediario.AP_MAT,
         dbo.Intermediario.TEL,
         dbo.Proveedor.NOMBRE
     FROM dbo.Proveedor, dbo.Intermediario, dbo.Almacen
@@ -272,7 +265,7 @@ def ConsultaIntermediarios():
     Intermediarios = config.Read(
         """
         SELECT 
-            dbo.Proveedor.ID_PRODUCTO,
+            dbo.Proveedor.ID_COMPANIA,
             dbo.Proveedor.NOMBRE,
             dbo.Intermediario.ID_INTERMEDIARIO,
             dbo.Intermediario.NOMBRE, 
@@ -337,6 +330,9 @@ def managewarehouse():
         ErrorRelacion = request.args.get(
             'ErrorRelacion'
         )
+        CasoActivarProducto = request.args.get(
+            'CasoActivarProducto'
+        )
         # Renderizar con los datos
         print("OtrosErroresBorrarProducto > ",OtrosErroresBorrarProducto)
         print("OtrosErroresCrearProducto > ",OtrosErroresCrearProducto)
@@ -346,11 +342,20 @@ def managewarehouse():
         print("ErrorPrecio > ", ErrorPrecio)
         print("ErrorProductoExiste > ", ErrorProductoExiste)
         print("ErrorRelacion > ", ErrorRelacion)
+        print("ErrorRelacion > ", CasoActivarProducto)
         return render_template(
             "products/manage-warehouse.html",
-            products=ConsultaProductos(),
+            products=ConsultaPIA(),
             relations=ConsultaIntermediarios(),
             companies=ConsultaCompanias(),
+            OtrosErroresBorrarProducto=OtrosErroresBorrarProducto,
+            OtrosErroresCrearProducto=OtrosErroresCrearProducto,
+            OtrosErroresActualizarProducto=OtrosErroresActualizarProducto,
+            ErrorCantidad=ErrorCantidad,
+            ErrorPrecio=ErrorPrecio,
+            ErrorProductoExiste=ErrorProductoExiste,
+            ErrorRelacion=ErrorRelacion,
+            CasoActivarProducto=CasoActivarProducto,
         )
     else:
         return redirect(url_for("auth.signin"))
@@ -436,6 +441,7 @@ def create_product():
     ErrorProductoExiste = False
     ErrorRelacion = False
     OtrosErroresCrearProducto = False
+    CasoActivarProducto = False
     if "email" in session and session["ES_ADMIN"]:
         print("<#################### CREAR PRODUCTOS ####################")
         if request.method == "POST":
@@ -560,6 +566,8 @@ def create_product():
                     print(
                         "====================! Producto existente (Oculto) en la BD.====================>"
                     )
+                    CasoActivarProducto = True
+
                     product_id = productoinactivo[0][0]
 
                     config.CUD(
@@ -628,6 +636,7 @@ def create_product():
                     ErrorPrecio=ErrorPrecio,
                     ErrorProductoExiste=ErrorProductoExiste,
                     ErrorRelacion=ErrorRelacion,
+                    CasoActivarProducto=CasoActivarProducto,
                 )
             )
     else:
@@ -831,6 +840,14 @@ def update_product() :
 # Manejar los intermediario (En Desarrollo)
 @products.route("/manage_company")
 def managecompany():
+    # Errores
+    OtrosErroresBorrarIntermediario=request.args.get('OtrosErroresBorrarIntermediario')
+    OtrosErroresCrearIntermediario=request.args.get('OtrosErroresCrearIntermediario')
+    OtrosErroresEditarIntermediario=request.args.get('OtrosErroresEditarIntermediario')
+    ErrorIntermediarioTelefono=request.args.get('ErrorIntermediarioTelefono')
+    ErrorIntermediarioRegistrado=request.args.get('ErrorIntermediarioRegistrado')
+    # Casos
+    CasoActualizarIntermediario = request.args.get("CasoActualizarIntermediario")
     if "email" in session and session["ES_ADMIN"]:
         relations = []
         relations = config.Read(
@@ -858,23 +875,28 @@ def managecompany():
 # Borrar intermediarios (En Desarrollo)
 @products.route("/delete_company", methods=["POST"])
 def delete_company():
+    # Errores
+    OtrosErroresBorrarIntermediario = False
     # Verificar si el usuario tiene una sesión activa
     if "email" in session and session["ES_ADMIN"]:
         # Verificar si el método de solicitud es POST
         if request.method == "POST":
-            print("<#################### delete_company ####################")
-            # Obtener el ID del intermediario de los datos del formulario
-            id_intermediario = int(request.form.get("DeleteIntermediaryId")) #Se obtiene de un dato oculto
-            print("<==================== DATOS OBTENIDOS ====================")
-            print(f"company_id - {id_intermediario}")
-            print("========================================>")
-            config.CUD(
-                """
-                UPDATE dbo.Intermediario SET ESTATUS = 0 WHERE ID_INTERMEDIARIO = ?;
-                """,
-                (int(id_intermediario),),
-            )
-            print("#################### FIN ####################>")
+            try:
+                print("<#################### delete_company ####################")
+                # Obtener el ID del intermediario de los datos del formulario
+                id_intermediario = int(request.form.get("DeleteIntermediaryId")) #Se obtiene de un dato oculto
+                print("<==================== DATOS OBTENIDOS ====================")
+                print(f"company_id - {id_intermediario}")
+                print("========================================>")
+                config.CUD(
+                    """
+                    UPDATE dbo.Intermediario SET ESTATUS = 0 WHERE ID_INTERMEDIARIO = ?;
+                    """,
+                    (int(id_intermediario),),
+                )
+                print("#################### FIN ####################>")
+            except Exception as ex:
+                print("Hola papus")
             return redirect(url_for("products.managecompany"))
     # Si el usuario no tiene una sesión activa, redirigirlo a la página de inicio de sesión
     else:
@@ -885,6 +907,11 @@ def delete_company():
 # crear intermediario (En Desarrollo)
 @products.route("/create_company", methods=["POST"])
 def create_company():
+    # Errores
+    ErrorIntermediarioTelefono = False
+    ErrorIntermediarioRegistrado = False
+    OtrosErroresCrearIntermediario = False
+    CasoActualizarIntermediario = False
     if "email" in session and session["ES_ADMIN"]:
         print("<#################### CREAR EMPRESA ####################")
         if request.method == "POST":
@@ -947,15 +974,18 @@ def create_company():
                 # Cualquier error
                 if existe or tel_existe:
                     if existe:
+                        ErrorIntermediarioRegistrado = True
                         raise MyException(
                             "ErrorIntermediary",
                             "The intermediary already exists in the DB.",
                         )
                     if tel_existe:
+                        ErrorIntermediarioTelefono = True
                         raise MyException(
                             "ErrorTel", "The phone number is already registered"
                         )
                 if VerificarInactivo:
+                    CasoActualizarIntermediario = True
                     config.CUD(
                         """
                         UPDATE dbo.Intermediario 
@@ -979,6 +1009,7 @@ def create_company():
                     )
                     print("#################### FIN (Se inserto en la BD) ####################>")
             except MyException as ex:
+                OtrosErroresCrearIntermediario = False
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"Type {Tipo} : {Mensaje}")
@@ -987,7 +1018,15 @@ def create_company():
                 print(f"Type : {e}")
                 flash(f"Type : {e}")
                 print("#################### FIN (No se inserto) ####################>")
-            return redirect(url_for("products.managecompany"))
+            return redirect(
+                url_for(
+                    "products.managecompany",
+                    ErrorIntermediarioTelefono=ErrorIntermediarioTelefono,
+                    ErrorIntermediarioRegistrado=ErrorIntermediarioRegistrado,
+                    OtrosErroresCrearIntermediario=OtrosErroresCrearIntermediario,
+                    CasoActualizarIntermediario=CasoActualizarIntermediario
+                )
+            )
     else:
         print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("auth.signin"))
@@ -996,6 +1035,10 @@ def create_company():
 # Editar intermediario (En Desarrollo)
 @products.route("/edit_company", methods=["GET", "POST"])
 def edit_company():
+    # Errores
+    ErrorIntermediarioTelefono = False
+    ErrorIntermediarioRegistrado = False
+    OtrosErroresEditarIntermediario = False
     if "email" in session and session["ES_ADMIN"]:
         print("<#################### EDITAR EMPRESA ####################")
         # Verificar si el método es POST para procesar el formulario
@@ -1081,10 +1124,18 @@ def edit_company():
                 flash(f"Type {Tipo} : {Mensaje}")
                 print("#################### FIN (No se inserto) ####################>")
             except Exception as e:
+                OtrosErroresEditarIntermediario = True
                 print(f"Type : {e}")
                 flash(f"Type : {e}")
                 print("#################### FIN (No se inserto) ####################>")
-            return redirect(url_for("products.managecompany"))
+            return redirect(
+                url_for(
+                    "products.managecompany",
+                    ErrorIntermediarioTelefono=ErrorIntermediarioTelefono,
+                    ErrorIntermediarioRegistrado=ErrorIntermediarioRegistrado,
+                    OtrosErroresEditarIntermediario=OtrosErroresEditarIntermediario,
+                )
+            )
     else:
         print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("auth.signin"))
@@ -1110,6 +1161,8 @@ def settings():
 # Ventas
 @sales.route("/addsalesworker")
 def addsalesworker():
+    # Errores 
+
     # sales.addsalesworker
     if "email" in session:
         print("<#################### addsalesworker ####################")
@@ -1190,7 +1243,6 @@ def MakeSales():
                     AnioA = Auxiliar.strftime("%Y")  # Anio
                     # Imprimir
                     print(DiaA, MesA, AnioA)
-
                     # Encontrar ID_DIA en BD DIA
                     Dia = int(
                         config.Read(

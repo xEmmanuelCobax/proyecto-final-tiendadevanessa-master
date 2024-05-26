@@ -10,7 +10,7 @@ endblock %} {% block content %}
 <div class="container-fluid mt-5">
   <!-- Agregamos la clase mt-5 para añadir margen superior -->
   <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
-    <h6 class="mt-1 d-none d-sm-flex">Warehouse</h6>
+    <h6 class="mt-1 d-none d-sm-flex"><span data-section="width-navbar" data-value="werehouse">Warehouse</span></h6>
 
     {% include 'top navbar/top-width-navbar.html' %}
 
@@ -32,7 +32,7 @@ endblock %} {% block content %}
         </div>
         <div class="mx-3"></div>
         <!-- Este div se expandirá para ocupar el espacio disponible -->
-        <button class="btn btn-primary" type="submit">Search</button>
+        <button class="btn btn-primary" type="submit"><span data-section="werehouse" data-value="Search">Search</span></button>
       </form>
 
       <div
@@ -47,15 +47,20 @@ endblock %} {% block content %}
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Price</th>
-                <th scope="col">dato</th>
-                <th scope="col">dato</th>
-                <th scope="col">dato</th>
-                <th scope="col">dato</th>
-                <th scope="col">dato</th>
-                <th scope="col">dato</th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Name Product">Name Product</span></th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Company">Company</span></th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Name Intermedary">Name Intermedary</span></th>
+
+                <th scope="col"><span >Tel. </span></th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Stock">Stock</span></th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Unit Price">Unit Price</span></th>
+
+
                 
               </tr>
             </thead>
@@ -63,16 +68,21 @@ endblock %} {% block content %}
               <!-- Enviar mediante un array llamada task los valores (el nombre lo vamos a cambiar a futuro) -->
               {% for product in products %}
               <tr>
-                <td>{{ product[0] }}</td>
+
+                <th scope="row">{{ product[0] }}</th>
+
                 <td>{{ product[1] }}</td>
-                <td>{{ product[3] }}</td>
-                <td>{{ product[2] }}</td>
-                <td>{{ product[4] }}</td>
-                <td>{{ product[5] }}</td>
-                <td>{{ product[6] }}</td>
-                <td>{{ product[7] }}</td>
-                <td>{{ product[8] }}</td>
+
                 <td>{{ product[9] }}</td>
+
+                <td>{{ product[5] }} {{ product[6] }} {{ product[7] }} </td>
+
+                <td>{{ product[8] }}</td>
+                
+                <td>{{ product[3] }}</td>
+
+                <td>{{ product[2] }} $</td>
+               
               </tr>
               {% endfor %}
             </tbody>
