@@ -382,15 +382,11 @@ def managewarehouse():
 # Buscar producto (Terminado)
 @products.route("/search_product", methods=["GET", "POST"])
 def search_product():
-    print("<#################### BUSCAR PRODUCTOS ####################")
-    if "email" not in session:
-        print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
-
     products = []
     if "email" in session:
         if session["ES_ADMIN"]:
             if request.method == "POST":
+                print("<#################### BUSCAR PRODUCTOS ####################")
                 search_term = (str(request.form.get("search_term"))).strip()
                 # Pruebas
                 print("<==================== DATOS OBTENIDOS ====================")
