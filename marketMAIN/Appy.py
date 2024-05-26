@@ -207,7 +207,31 @@ def successful_registration():
 
 
 def ConsultaProductos():
+    auxiliar = []
     productos = []
+    auxiliar = config.Read(
+        """
+        SELECT 
+            ID_PRODUCTO, 
+            NOMBRE, 
+            PRECIO_UNITARIO, 
+            EXISTENCIAS 
+        FROM dbo.Almacen 
+        WHERE dbo.Almacen.ESTATUS = 1
+        """
+    )
+    for i in range(len(auxiliar)):
+        if auxiliar[i][3] <= 0:
+            print(int(auxiliar[i][0]))
+            config.CUD(
+                """
+                UPDATE dbo.Almacen 
+                    SET 
+                    ESTATUS = ?
+                WHERE ID_PRODUCTO = ?
+                """,
+                (0, int(auxiliar[i][0])),
+            )
     productos = config.Read(
         """
         SELECT 
@@ -221,13 +245,34 @@ def ConsultaProductos():
     )
     return productos
 
-
+def ConsultaPIA():
+    Cpia = []
+    Cpia = config.Read(
+        """
+    SELECT 
+        dbo.Almacen.ID_INTERMEDIARIO,
+        dbo.Almacen.NOMBRE, 
+        dbo.Almacen.PRECIO_UNITARIO, 
+        dbo.Almacen.EXISTENCIAS,
+        dbo.Almacen.PRECIO_EXISTENCIA, 
+        dbo.Intermediario.NOMBRE,
+        dbo.Intermediario.AP_PAT,
+        dbo.Intermediario.AP_PAT,
+        dbo.Intermediario.TEL,
+        dbo.Proveedor.NOMBRE
+    FROM dbo.Proveedor, dbo.Intermediario, dbo.Almacen
+    WHERE dbo.Proveedor.ID_COMPANIA = dbo.Intermediario.ID_COMPANIA
+    AND dbo.Intermediario.ID_INTERMEDIARIO = dbo.Almacen.ID_INTERMEDIARIO
+    AND dbo.Almacen.ESTATUS = 1
+        """
+    )
+    return Cpia
 def ConsultaIntermediarios():
     Intermediarios = []
     Intermediarios = config.Read(
         """
         SELECT 
-            dbo.Proveedor.ID_COMPANIA,
+            dbo.Proveedor.ID_PRODUCTO,
             dbo.Proveedor.NOMBRE,
             dbo.Intermediario.ID_INTERMEDIARIO,
             dbo.Intermediario.NOMBRE, 
@@ -261,7 +306,11 @@ def ConsultaCompanias():
 def warehouse():
     if "email" in session and session["ES_ADMIN"]:
         # Renderizar con los datos
-        return render_template("products/warehouse.html", products=ConsultaProductos(), IsAdmin = session["ES_ADMIN"])
+        return render_template(
+            "products/warehouse.html",
+            products=ConsultaPIA(),
+            IsAdmin=session["ES_ADMIN"],
+        )
     else:
         return redirect(url_for("auth.signin"))
 
@@ -276,10 +325,27 @@ def managewarehouse():
         OtrosErroresActualizarProducto = request.args.get(
             'OtrosErroresActualizarProducto'
         )
+        ErrorCantidad = request.args.get(
+            'ErrorCantidad'
+        )
+        ErrorPrecio = request.args.get(
+            'ErrorPrecio'
+        )
+        ErrorProductoExiste = request.args.get(
+            'ErrorProductoExiste'
+        )
+        ErrorRelacion = request.args.get(
+            'ErrorRelacion'
+        )
         # Renderizar con los datos
         print("OtrosErroresBorrarProducto > ",OtrosErroresBorrarProducto)
         print("OtrosErroresCrearProducto > ",OtrosErroresCrearProducto)
         print("OtrosErroresActualizarProducto > ", OtrosErroresActualizarProducto)
+        #
+        print("ErrorCantidad > ", ErrorCantidad)
+        print("ErrorPrecio > ", ErrorPrecio)
+        print("ErrorProductoExiste > ", ErrorProductoExiste)
+        print("ErrorRelacion > ", ErrorRelacion)
         return render_template(
             "products/manage-warehouse.html",
             products=ConsultaProductos(),
@@ -557,7 +623,11 @@ def create_product():
             return redirect(
                 url_for(
                     "products.managewarehouse",
-                    OtrosErroresCrearProducto=OtrosErroresCrearProducto,ErrorCantidad = ErrorCantidad,ErrorPrecio = ErrorPrecio,
+                    OtrosErroresCrearProducto=OtrosErroresCrearProducto,
+                    ErrorCantidad=ErrorCantidad,
+                    ErrorPrecio=ErrorPrecio,
+                    ErrorProductoExiste=ErrorProductoExiste,
+                    ErrorRelacion=ErrorRelacion,
                 )
             )
     else:
@@ -571,6 +641,8 @@ def update_product() :
     # Errores
     ErrorCantidad = False
     ErrorPrecio = False
+    ErrorProductoExiste = False
+    ErrorRelacion = False
     OtrosErroresActualizarProducto = False
     if "email" in session and session["ES_ADMIN"]:
         print("<#################### Actualizar PRODUCTOS ####################")
@@ -612,16 +684,20 @@ def update_product() :
                 # Errores
                 if cantidad <= 0 or precio <= 0:
                     if cantidad <= 0 or precio <= 0:
+                        ErrorCantidad = True
+                        ErrorPrecio = True
                         raise MyException(
                             "NonPositive",
                             f"Los valores proporcionados {cantidad,precio} no son positivos. Debem ser mayor que cero.",
                         )
                     elif cantidad <= 0:
+                        ErrorCantidad = True
                         raise MyException(
                             "NonPositive",
                             f"El valor proporcionado {cantidad} no es positivo. Debe ser mayor que cero.",
                         )
                     elif precio <= 0:
+                        ErrorPrecio = True
                         raise MyException(
                             "NonPositive",
                             f"El valor proporcionado {precio} no es positivo. Debe ser mayor que cero.",
@@ -681,18 +757,20 @@ def update_product() :
                     print(
                         "====================! Producto existente en la BD.====================>"
                     )
+                    ErrorProductoExiste = True
                     raise MyException(
-                        "ProductError",
-                        "Producto existente en la BD.",
+                        "ProductExists",
+                        "El producto existe",
                     )
                 elif not existe:
                     # Si la compañía o el intermediario no cumplen las condiciones, redireccionar con un mensaje de error
                     print(
                         "====================! La compañía o el intermediario no cumplen las condiciones necesarias.====================>"
                     )
+                    ErrorRelacion = True
                     raise MyException(
-                        "OtherError",
-                        "The company or the intermediary does not meet the necessary conditions.",
+                        "CIConditions",
+                        "La compañia o el intermediario no cumplen con las condiciones necesarias.",
                     )
                 else:
                     # Actualizar el producto en la base de datos
@@ -733,12 +811,20 @@ def update_product() :
                 print(f"Type: {e}")
                 flash(f"Type: {e}")
                 print("#################### FIN ####################>")
-            return redirect(url_for("products.managewarehouse"))
+            return redirect(
+                url_for(
+                    "products.managewarehouse",
+                    OtrosErroresActualizarProducto=OtrosErroresActualizarProducto,
+                    ErrorCantidad=ErrorCantidad,
+                    ErrorPrecio=ErrorPrecio,
+                    ErrorProductoExiste=ErrorProductoExiste,
+                    ErrorRelacion=ErrorRelacion,
+                )
+            )
     else:    
         print("#################### NO HAY SESSION ####################>")
         return redirect(
             url_for("auth.signin"),
-            OtrosErroresActualizarProducto=OtrosErroresActualizarProducto,
         )
 
 
@@ -1039,7 +1125,7 @@ def addsalesworker():
                 WHERE dbo.Almacen.ESTATUS = 1
                 """
             )
-        print("#################### FIN ####################>")
+        print("#################### FIN en addsalesworker ####################>")
         return render_template("sales/add-sales-worker.html", products=products)
     else:
         print("#################### NO HAY SESSION ####################>")
@@ -1055,13 +1141,12 @@ def MakeSales():
                 sales_data = request.get_json()
                 Entrada = []
                 print("Sales Data Received:", sales_data)
-                for i in range(1,len(sales_data)):
-                    if i>=1: # La primera no se agarra
-                        id = sales_data[i].get("id")
-                        cantidad= sales_data[i].get("price")
-                        print("ID>",id) # El id
-                        print("cantidad>",cantidad)
-                        Entrada.append([int(id), int(cantidad)])
+                for i in range(len(sales_data)):
+                    id = sales_data[i].get("id")
+                    cantidad = sales_data[i].get("quantity")
+                    print("ID>",id) # El id
+                    print("cantidad>",cantidad)
+                    Entrada.append([int(id), int(cantidad)])
                 #
                 print("<==================== DATOS OBTENIDOS ====================")
                 for producto in Entrada:

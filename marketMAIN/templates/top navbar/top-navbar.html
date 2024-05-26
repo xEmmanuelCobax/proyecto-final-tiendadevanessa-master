@@ -50,7 +50,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
 
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
   </head>
 
   <body class="dark-mode-toggle">
@@ -60,9 +61,10 @@
       data-bs-theme=""
       id="navbar"
     >
+    
       <div class="container-fluid">
         {% if 'email' in session %}
-        <a class="navbar-brand" href="{{ url_for('shortcut.shortcut') }}"
+        <a class="navbar-brand" data-section="top-navbar" data-value="titulo" href="{{ url_for('shortcut.shortcut') }}"
           >SaleTrackStar</a
         >
         {% endif %} {% if 'email' not in session %}
@@ -93,20 +95,15 @@
                 >{{ email }}</a
               >
             </li>
-            <li class="nav-item me-4">
-              <div id="flags" class="flags">
-                <div class="flags__item" data-language="en">
-                  <button type="button" class="flag-button">
-                    <span class="flag-icon">🇺🇸</span> 
-                  </button>
-                </div>
-                <div class="flags__item" data-language="es">
-                  <button type="button" class="flag-button">
-                    <span class="flag-icon">🇲🇽</span> 
-                  </button>
-                </div>
-              </div>
-            </li>
+    
+            <div id="languageDropdown">
+              <label for="languageSelect">Select Language:</label>
+              <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </div>
+          
             <li class="nav-item me-4">
               <a
                 class="nav-link active"
@@ -136,7 +133,9 @@
           </ul>
         </div>
       </div>
+      
     </nav>
+    
 
     <div
       class="main-content d-flex justify-content-center align-items-center"
@@ -185,18 +184,32 @@
 
     </script>
     <script>  
-      const flagsElement = document.getElementById("flags");
+    //que haces w? xD
+    //traducción
+    const textsToChange = document.querySelectorAll("[data-section]");
 
-      const changeLanguage = async (language)=>{
-        const requestJson =await fetch('./language/${language}.json')
+    document.addEventListener("DOMContentLoaded", function () {
+    
+      const languageSelect = document.getElementById("languageSelect");
+
+      
+
+      const changeLanguage = async (language) => {
+        const requestJson = await fetch(`../static/languages/${language}.json`);
         const texts = await requestJson.json();
-        console.long(texts)
+        for(textsToChange of textsToChange){
+          console.log(textsToChange);
+        };
+        
       };
 
-      flagsElement.addEventListener("click", (e) => {
-        changeLanguage(e.target.parentElement.dataset.language);
-      
+      languageSelect.addEventListener("change", function () {
+        const selectedLanguage = languageSelect.value;
+        // Llama a la función changeLanguage con el idioma seleccionado
+        changeLanguage(selectedLanguage);
+      });
     });
+  
     </script>
   
   </body>

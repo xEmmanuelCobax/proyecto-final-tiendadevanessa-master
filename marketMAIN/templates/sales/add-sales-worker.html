@@ -155,40 +155,95 @@ endblock %} {% block content %}
   }
 </style>
 
-<!-- ESTILO PARA LAS TOAST-->
+<!-- ESTILO PARA LAS TOAST WARNING-->
 <style>
   /* Estilo personalizado para el toast */
-.toast {
-  position: relative;
-  padding: .75rem 1.25rem;
-  margin-bottom: .75rem;
-  background-color: #f8f9fa; /* Color de fondo similar al de las alertas de Apple */
-  border: 1px solid rgba(0, 0, 0, .125); /* Borde similar al de las alertas de Apple */
-  color: #212529; /* Color del texto */
-  border-radius: 4px;
-}
+  #toastContainer .toast {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0.75rem;
+    background-color: #f8f9fa; /* Color de fondo similar al de las alertas de Apple */
+    border: 1px solid rgba(0, 0, 0, 0.125); /* Borde similar al de las alertas de Apple */
+    color: #212529; /* Color del texto */
+    border-radius: 4px;
+  }
 
-/* Estilo para el título del toast */
-.toast-header {
-  background-color: #ffc107;
-  display: flex;
-  align-items: center;
-  padding-bottom: .5rem;
-  margin-bottom: -.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, .125);
-}
+  /* Estilo para el título del toast */
+  #toastContainer .toast-header {
+    background-color: #ffc107;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    margin-bottom: -0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
 
-/* Estilo para el cuerpo del toast */
-.toast-body {
-  padding: .5rem 0;
-}
+  /* Estilo para el cuerpo del toast */
+  #toastContainer .toast-body {
+    padding: 0.5rem 0;
+  }
 
-/* Estilo para el botón de cerrar el toast */
-.btn-close {
-  padding: .25rem .75rem;
-  margin: .25rem 0 .25rem auto;
-}
+  /* Estilo para el botón de cerrar el toast */
+  #toastContainer .btn-close {
+    padding: 0.25rem 0.75rem;
+    margin: 0.25rem 0 0.25rem auto;
+  }
+</style>
 
+<!-- ESTILO PARA LAS TOAST SUCCESS-->
+<style>
+  /* Estilo personalizado para el toast con ID toastContainerSuccess */
+  #toastContainerSuccess .toast {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0.75rem;
+    background-color: #f8f9fa; /* Color de fondo similar al de las alertas de Apple */
+    border: 1px solid rgba(0, 0, 0, 0.125); /* Borde similar al de las alertas de Apple */
+    color: #212529; /* Color del texto */
+    border-radius: 4px;
+  }
+
+  /* Estilo para el título del toast */
+  #toastContainerSuccess .toast-header {
+    background-color: #4cd964;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    margin-bottom: -0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  /* Estilo para el cuerpo del toast */
+  #toastContainerSuccess .toast-body {
+    padding: 0.5rem 0;
+  }
+
+  /* Estilo para el botón de cerrar el toast */
+  #toastContainerSuccess .btn-close {
+    padding: 0.25rem 0.75rem;
+    margin: 0.25rem 0 0.25rem auto;
+  }
+</style>
+
+<!-- ESTILOS PARA EL CONTENEDOR DEL SPINNER Y EL SPPNNER-->
+<style>
+  #spinner-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo opaco */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que el spinner esté por encima de todo */
+  }
+
+  #spinner {
+    z-index: 1001; /* Asegura que el spinner esté por encima del fondo opaco */
+  }
 </style>
 
 <!-- CUERPO -->
@@ -298,8 +353,28 @@ endblock %} {% block content %}
   </div>
 </div>
 
-<!-- MODAL DE ADVERTENCIA -->
-<div id="toastContainer" aria-live="assertive" aria-atomic="true" class="mt-5 position-fixed p-3 end-0 bottom-0"></div>
+<!-- TOAST DE ALERTAS-->
+<div
+  id="toastContainer"
+  aria-live="assertive"
+  aria-atomic="true"
+  class="mt-5 position-fixed p-3 end-0 bottom-0"
+></div>
+
+<!-- TOAST DE SUCESS-->
+<div
+  id="toastContainerSuccess"
+  aria-live="assertive"
+  aria-atomic="true"
+  class="mt-5 position-fixed p-3 end-0 bottom-0"
+></div>
+
+<!-- Spinner -->
+<div id="spinner-container" style="display: none;">
+  <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status" id="spinner" >
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
 
 <!-- SCRIPT PARA CARGAR TOOLTIPS -->
 <script>
@@ -321,74 +396,26 @@ endblock %} {% block content %}
   });
 </script>
 
-<!-- SCRIPT PARA ENVIAR LOS DATOS AL SERVIDOR -->
-<script>
-  document.getElementById("addSale").addEventListener("click", function () {
-    const xhr = new XMLHttpRequest();
-    const url = "/sales/MakeSales";
-    const method = "POST";
-    const headers = { "Content-Type": "application/json" };
-    const salesData = obtenerDatosTabla(); // Función para obtener los datos de la tabla
-
-    xhr.open(method, url);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        console.log("Success:", xhr.responseText);
-      } else {
-        console.error("Error:", xhr.statusText);
-      }
-    };
-    xhr.onerror = function () {
-      console.error("Error:", xhr.statusText);
-    };
-    xhr.send(JSON.stringify(salesData));
-  });
-
-  function obtenerDatosTabla() {
-    const rows = document.querySelectorAll("#saleTable tr");
-    const salesData = [];
-
-    rows.forEach((row) => {
-      const dataId = row.getAttribute("data-id");
-      const cells = row.querySelectorAll("td");
-      const rowData = { id: dataId };
-
-      cells.forEach((cell, index) => {
-        let cellValue;
-        if (cell.querySelector("input")) {
-          cellValue = cell.querySelector("input").value;
-        } else {
-          cellValue = cell.textContent.trim();
-        }
-
-        console.log(index);
-
-        switch (index) {
-          case 0:
-            rowData.quantity = cellValue;
-            break;
-          case 1:
-            rowData.productName = cellValue;
-            break;
-          case 2:
-            rowData.price = cellValue;
-            break;
-        }
-      });
-
-      salesData.push(rowData);
-    });
-    console.log(salesData);
-    return salesData;
-  }
-</script>
-
 <!-- SCRIPT PARA MOSTRAR CORRECTAMENTE LOS NOMBRES -->
 <script>
   // Reemplazar guiones bajos "_" por espacios en blanco en los nombres de productos
   document.querySelectorAll(".product-name").forEach(function (element) {
     element.innerText = element.innerText.replace(/_/g, " ");
+  });
+</script>
+
+<!-- EVITA EL USO DE COMILLAS EN TODOS LOS CAMPOS-->
+<script>
+  // Función para eliminar comillas simples y dobles de todos los campos de entrada
+  document.querySelectorAll("input").forEach(function (input) {
+    input.addEventListener("input", function (event) {
+      // Obtener el valor actual del campo de entrada
+      var inputValue = event.target.value;
+      // Eliminar comillas simples y comillas dobles del valor actual
+      var cleanedValue = inputValue.replace(/['"]+/g, "");
+      // Actualizar el valor del campo de entrada sin comillas simples y comillas dobles
+      event.target.value = cleanedValue;
+    });
   });
 </script>
 
@@ -414,7 +441,10 @@ endblock %} {% block content %}
       }
 
       if (parseInt(productInfo[2]) <= 0) {
-        showToast("No hay suficientes existencias para agregar este producto.", "error");
+        showToast(
+          "No hay suficientes existencias para agregar este producto.",
+          "error"
+        );
         return;
       }
 
@@ -549,10 +579,154 @@ endblock %} {% block content %}
     toastContainer.appendChild(toast);
     const bsToast = new bootstrap.Toast(toast);
     bsToast.show();
-    toast.addEventListener('hidden.bs.toast', function () {
+    toast.addEventListener("hidden.bs.toast", function () {
       toast.remove();
     });
   }
 </script>
 
+<!-- SCRIPT PARA ENVIAR LOS DATOS AL SERVIDOR -->
+<script>
+  document.getElementById("addSale").addEventListener("click", function () {
+    const salesData = obtenerDatosTabla(); // Función para obtener los datos de la tabla
+
+    // Verificar si la tabla está vacía
+    if (salesData.length === 0) {
+      showToast(
+        "La tabla está vacía. Por favor, agregue productos antes de realizar una venta.",
+        "warning"
+      );
+      return;
+    }
+
+    // Mostrar el spinner de carga
+    document.getElementById("spinner-container").style.display = "flex";
+
+    const xhr = new XMLHttpRequest();
+    const url = "/sales/MakeSales";
+    const method = "POST";
+
+    xhr.open(method, url);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function () {
+      // Ocultar el spinner de carga después de la respuesta
+      document.getElementById("spinner-container").style.display = "none";
+
+      if (xhr.status === 200) {
+        console.log("Success:", xhr.responseText);
+        showToastSuccess("Venta realizada con éxito.");
+        setTimeout(() => {
+          location.reload(); // Recargar la página después de 1 segundo
+        }, 1000); // 1000 milisegundos = 1 segundo
+      } else {
+        console.error("Error:", xhr.statusText);
+      }
+    };
+    xhr.onerror = function () {
+      console.error("Error:", xhr.statusText);
+    };
+    xhr.send(JSON.stringify(salesData));
+  });
+
+  function obtenerDatosTabla() {
+    const rows = document.querySelectorAll("#saleTable tbody tr");
+    const salesData = [];
+
+    rows.forEach((row) => {
+      const dataId = row.getAttribute("data-id");
+      const cells = row.querySelectorAll("td");
+      const rowData = { id: dataId };
+
+      cells.forEach((cell, index) => {
+        let cellValue;
+        if (cell.querySelector("input")) {
+          cellValue = cell.querySelector("input").value;
+        } else {
+          cellValue = cell.textContent.trim();
+        }
+
+        switch (index) {
+          case 2: // Quantity is in the 3rd column (index 2)
+            rowData.quantity = cellValue;
+            break;
+          case 3: // Name is in the 4th column (index 3)
+            rowData.productName = cellValue;
+            break;
+          case 4: // Price is in the 5th column (index 4)
+            rowData.price = cellValue;
+            break;
+        }
+      });
+
+      salesData.push(rowData);
+    });
+    return salesData;
+  }
+
+  // Función para mostrar toasts personalizados
+  function showToast(message, type) {
+    const toastContainer = document.getElementById("toastContainer");
+    const toast = document.createElement("div");
+    toast.classList.add("toast");
+    toast.classList.add("show");
+    toast.setAttribute("role", "alert");
+    toast.setAttribute("aria-live", "assertive");
+    toast.setAttribute("aria-atomic", "true");
+    toast.setAttribute("data-bs-autohide", "true");
+
+    // Obtener la hora actual
+    const currentTime = new Date().toLocaleTimeString();
+
+    toast.innerHTML = `
+      <div class="toast-header">
+        <i class="fas fa-exclamation-circle"></i>
+        <strong class="me-auto mx-2">Warning!</strong>
+        <small>${currentTime}</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body mt-1">
+        ${message}
+      </div>
+    `;
+    toastContainer.appendChild(toast);
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    toast.addEventListener("hidden.bs.toast", function () {
+      toast.remove();
+    });
+  }
+
+  // Función para mostrar toasts de éxito
+  function showToastSuccess(message) {
+    const toastContainer = document.getElementById("toastContainerSuccess");
+    const toast = document.createElement("div");
+    toast.classList.add("toast");
+    toast.classList.add("show");
+    toast.setAttribute("role", "alert");
+    toast.setAttribute("aria-live", "assertive");
+    toast.setAttribute("aria-atomic", "true");
+    toast.setAttribute("data-bs-autohide", "true");
+
+    // Obtener la hora actual
+    const currentTime = new Date().toLocaleTimeString();
+
+    toast.innerHTML = `
+      <div class="toast-header">
+        <i class="fas fa-check-circle"></i>
+        <strong class="me-auto mx-2">Success!</strong>
+        <small>${currentTime}</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body mt-1">
+        ${message}
+      </div>
+    `;
+    toastContainer.appendChild(toast);
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    toast.addEventListener("hidden.bs.toast", function () {
+      toast.remove();
+    });
+  }
+</script>
 {% endblock %}

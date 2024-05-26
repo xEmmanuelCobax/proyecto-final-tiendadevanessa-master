@@ -30,7 +30,7 @@ endblock %} {% block content %}
             name="search_term"
           />
         </div>
-        <div class="flex-grow-1"></div>
+        <div class="mx-3"></div>
         <!-- Este div se expandirá para ocupar el espacio disponible -->
         <button class="btn btn-primary" type="submit">Search</button>
       </form>
@@ -50,6 +50,13 @@ endblock %} {% block content %}
                 <th scope="col">Name</th>
                 <th scope="col">Amount</th>
                 <th scope="col">Price</th>
+                <th scope="col">dato</th>
+                <th scope="col">dato</th>
+                <th scope="col">dato</th>
+                <th scope="col">dato</th>
+                <th scope="col">dato</th>
+                <th scope="col">dato</th>
+                
               </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -60,6 +67,12 @@ endblock %} {% block content %}
                 <td>{{ product[1] }}</td>
                 <td>{{ product[3] }}</td>
                 <td>{{ product[2] }}</td>
+                <td>{{ product[4] }}</td>
+                <td>{{ product[5] }}</td>
+                <td>{{ product[6] }}</td>
+                <td>{{ product[7] }}</td>
+                <td>{{ product[8] }}</td>
+                <td>{{ product[9] }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -69,7 +82,6 @@ endblock %} {% block content %}
     </div>
   </div>
 </div>
-
 
 <!-- VALIDA LOS ESPACIOS INICIALES Y FINALES QUE EL USUARIO PUEDA LLEGAR A PONER, Y QUE NO PUEDA COPIAR Y PEGARSE ESPACIOS-->
 <script>
