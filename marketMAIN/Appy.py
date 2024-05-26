@@ -238,6 +238,7 @@ def ConsultaProductos():
     )
     return productos
 
+
 def ConsultaPIA():
     Cpia = []
     Cpia = config.Read(
@@ -260,6 +261,8 @@ def ConsultaPIA():
         """
     )
     return Cpia
+
+
 def ConsultaIntermediarios():
     Intermediarios = []
     Intermediarios = config.Read(
@@ -294,16 +297,24 @@ def ConsultaCompanias():
     return companias
 
 
+# ShortCut
+@sc.route("/shortcut")
+def shortcut():
+    return render_template("shortcut.html", IsAdmin=session["ES_ADMIN"])
+
+
 # Mostrar los productos (Terminado)
 @products.route("/warehouse")
 def warehouse():
-    if "email" in session and session["ES_ADMIN"]:
-        # Renderizar con los datos
-        return render_template(
-            "products/warehouse.html",
-            products=ConsultaPIA(),
-            IsAdmin=session["ES_ADMIN"],
-        )
+    if "email" in session:
+        if session["ES_ADMIN"]:
+            # Renderizar con los datos
+            return render_template(
+                "products/warehouse.html",
+                products=ConsultaPIA(),
+                IsAdmin=session["ES_ADMIN"],
+            )
+        return redirect(url_for("shortcut.shortcut"))
     else:
         return redirect(url_for("auth.signin"))
 
@@ -311,52 +322,59 @@ def warehouse():
 # Manejar el inventario (Terminado)
 @products.route("/manage_warehouse", methods=["GET", "POST"])
 def managewarehouse():
-    if "email" in session and session["ES_ADMIN"]:
-        # Errores
-        OtrosErroresBorrarProducto = request.args.get('OtrosErroresBorrarProducto')
-        OtrosErroresCrearProducto = request.args.get('OtrosErroresCrearProducto')
-        OtrosErroresActualizarProducto = request.args.get(
-            'OtrosErroresActualizarProducto'
-        )
-        ErrorCantidad = request.args.get(
-            'ErrorCantidad'
-        )
-        ErrorPrecio = request.args.get(
-            'ErrorPrecio'
-        )
-        ErrorProductoExiste = request.args.get(
-            'ErrorProductoExiste'
-        )
-        ErrorRelacion = request.args.get(
-            'ErrorRelacion'
-        )
-        CasoActivarProducto = request.args.get(
-            'CasoActivarProducto'
-        )
-        # Renderizar con los datos
-        print("OtrosErroresBorrarProducto > ",OtrosErroresBorrarProducto)
-        print("OtrosErroresCrearProducto > ",OtrosErroresCrearProducto)
-        print("OtrosErroresActualizarProducto > ", OtrosErroresActualizarProducto)
-        #
-        print("ErrorCantidad > ", ErrorCantidad)
-        print("ErrorPrecio > ", ErrorPrecio)
-        print("ErrorProductoExiste > ", ErrorProductoExiste)
-        print("ErrorRelacion > ", ErrorRelacion)
-        print("ErrorRelacion > ", CasoActivarProducto)
-        return render_template(
-            "products/manage-warehouse.html",
-            products=ConsultaPIA(),
-            relations=ConsultaIntermediarios(),
-            companies=ConsultaCompanias(),
-            OtrosErroresBorrarProducto=OtrosErroresBorrarProducto,
-            OtrosErroresCrearProducto=OtrosErroresCrearProducto,
-            OtrosErroresActualizarProducto=OtrosErroresActualizarProducto,
-            ErrorCantidad=ErrorCantidad,
-            ErrorPrecio=ErrorPrecio,
-            ErrorProductoExiste=ErrorProductoExiste,
-            ErrorRelacion=ErrorRelacion,
-            CasoActivarProducto=CasoActivarProducto,
-        )
+    if "email" in session:
+        if session["ES_ADMIN"]:
+            # Errores
+            OtrosErroresBorrarProducto = request.args.get('OtrosErroresBorrarProducto')
+            OtrosErroresCrearProducto = request.args.get('OtrosErroresCrearProducto')
+            OtrosErroresActualizarProducto = request.args.get(
+                'OtrosErroresActualizarProducto'
+            )
+            ErrorCantidad = request.args.get(
+                'ErrorCantidad'
+            )
+            ErrorPrecio = request.args.get(
+                'ErrorPrecio'
+            )
+            ErrorProductoExiste = request.args.get(
+                'ErrorProductoExiste'
+            )
+            ErrorRelacion = request.args.get(
+                'ErrorRelacion'
+            )
+            CasoActivarProducto = request.args.get(
+                'CasoActivarProducto'
+            )
+
+            print("<==================== DATOS OBTENIDOS ====================")
+            # Errores no contemplados
+            print("OtrosErroresBorrarProducto > ",OtrosErroresBorrarProducto)
+            print("OtrosErroresCrearProducto > ",OtrosErroresCrearProducto)
+            print("OtrosErroresActualizarProducto > ", OtrosErroresActualizarProducto)
+            # Errores
+            print("ErrorCantidad > ", ErrorCantidad)
+            print("ErrorPrecio > ", ErrorPrecio)
+            print("ErrorProductoExiste > ", ErrorProductoExiste)
+            print("ErrorRelacion > ", ErrorRelacion)
+            # Casos
+            print("ErrorRelacion > ", CasoActivarProducto)
+            print("========================================>")
+
+            return render_template(
+                "products/manage-warehouse.html",
+                products=ConsultaPIA(),
+                relations=ConsultaIntermediarios(),
+                companies=ConsultaCompanias(),
+                OtrosErroresBorrarProducto=OtrosErroresBorrarProducto,
+                OtrosErroresCrearProducto=OtrosErroresCrearProducto,
+                OtrosErroresActualizarProducto=OtrosErroresActualizarProducto,
+                ErrorCantidad=ErrorCantidad,
+                ErrorPrecio=ErrorPrecio,
+                ErrorProductoExiste=ErrorProductoExiste,
+                ErrorRelacion=ErrorRelacion,
+                CasoActivarProducto=CasoActivarProducto,
+            )
+        return redirect(url_for("shortcut.shortcut"))
     else:
         return redirect(url_for("auth.signin"))
 
@@ -364,30 +382,37 @@ def managewarehouse():
 # Buscar producto (Terminado)
 @products.route("/search_product", methods=["GET", "POST"])
 def search_product():
+    print("<#################### BUSCAR PRODUCTOS ####################")
+    if "email" not in session:
+        print("#################### NO HAY SESSION ####################>")
+        return redirect(url_for("auth.signin"))
+
     products = []
-    if "email" in session and session["ES_ADMIN"]:
-        if request.method == "POST":
-            print("<#################### BUSCAR PRODUCTOS ####################")
-            search_term = (str(request.form.get("search_term"))).strip()
-            # Pruebas
-            print("<==================== DATOS OBTENIDOS ====================")
-            print(f"nombre - {search_term}")
-            print("========================================>")
-            products = config.Read(
-                """
-                SELECT 
-                    dbo.Almacen.ID_PRODUCTO,
-                    dbo.Almacen.NOMBRE, 
-                    dbo.Almacen.PRECIO_UNITARIO, 
-                    dbo.Almacen.EXISTENCIAS 
-                FROM  dbo.Almacen 
-                WHERE NOMBRE LIKE ?
-                AND dbo.Almacen.ESTATUS = 1;
-                """,
-                ("%" + search_term + "%",),
-            )
-            print("#################### FIN ####################>")
-        return render_template("products/warehouse.html", products=products)
+    if "email" in session:
+        if session["ES_ADMIN"]:
+            if request.method == "POST":
+                search_term = (str(request.form.get("search_term"))).strip()
+                # Pruebas
+                print("<==================== DATOS OBTENIDOS ====================")
+                print(f"nombre - {search_term}")
+                print("========================================>")
+                products = config.Read(
+                    """
+                    SELECT 
+                        dbo.Almacen.ID_PRODUCTO,
+                        dbo.Almacen.NOMBRE, 
+                        dbo.Almacen.PRECIO_UNITARIO, 
+                        dbo.Almacen.EXISTENCIAS 
+                    FROM  dbo.Almacen 
+                    WHERE NOMBRE LIKE ?
+                    AND dbo.Almacen.ESTATUS = 1;
+                    """,
+                    ("%" + search_term + "%",),
+                )
+                print("#################### FIN ####################>")
+            return render_template("products/warehouse.html", products=products) # Es admin
+        else:
+            return redirect(url_for("shortcut.shortcut")) # No es admin
     else:
         print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("auth.signin"))
@@ -866,6 +891,19 @@ def managecompany():
             AND dbo.Intermediario.ESTATUS = 1
             """
         )
+
+        print("<==================== ERRORES Y CASOS ====================")
+        # Errores no contemplados
+        print("OtrosErroresBorrarIntermediario > ", OtrosErroresBorrarIntermediario)
+        print("OtrosErroresCrearProducto > ", OtrosErroresCrearIntermediario)
+        print("OtrosErroresActualizarProducto > ", OtrosErroresEditarIntermediario)
+        # Errores
+        print("ErrorIntermediarioTelefono > ", ErrorIntermediarioTelefono)
+        print("ErrorIntermediarioRegistrado > ", ErrorIntermediarioRegistrado)
+        # Casos
+        print("CasoActualizarIntermediario > ", CasoActualizarIntermediario)
+        print("========================================>")
+
         return render_template("products/manage-company.html", relations=relations, 
                             companies=ConsultaCompanias(),
                             OtrosErroresBorrarIntermediario=OtrosErroresBorrarIntermediario,
@@ -905,7 +943,12 @@ def delete_company():
                 print("#################### FIN ####################>")
             except Exception as ex:
                 print("Hola papus")
-            return redirect(url_for("products.managecompany"))
+            return redirect(
+                url_for(
+                    "products.managecompany",
+                    OtrosErroresBorrarIntermediario=OtrosErroresBorrarIntermediario,
+                )
+            )
     # Si el usuario no tiene una sesión activa, redirigirlo a la página de inicio de sesión
     else:
         print("#################### NO HAY SESSION ####################>")
@@ -1152,13 +1195,6 @@ def edit_company():
 @p.route("/profile")
 def profile():
     return render_template("profile/profile.html")
-
-
-# Ni idea
-@sc.route("/shortcut")
-def shortcut():
-    return render_template("shortcut.html")
-
 
 # Ni idea
 @sc.route("/settings")
