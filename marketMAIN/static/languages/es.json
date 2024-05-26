@@ -48,6 +48,29 @@
         "Make sale": "Vender",
         "Add Product": "Agregar producto"
 
+    },
+
+    "welcome":{
+        "Welcome to SaleTrack":  "Bienvenido a SaleTrack",
+        "shortcut": "Atajo"
+    },
+
+    "shortcut":{
+        "Sales": "Ventas",
+        "Warehouse": "Almacén",
+        "Accounts": "Cuentas"
+    },
+
+    "singin":{
+        "Sign In": "Iniciar sesión",
+        "Email Address": "Correo electrónico",
+        "Email not found.": "No se encontro el correo electrónico.",
+        "Password": "Contraseña",
+        "Invalid password": "Contraseña invalida.",
+        "Remember me": "Recuérdame ",
+        "Don’t have an account?": "¿No tienes una cuenta?",
+        "Sign in": "Iniciar sesión",
+        "check in": "Registrarte"
     }
 
 }

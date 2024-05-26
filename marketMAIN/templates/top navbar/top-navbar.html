@@ -91,6 +91,15 @@
           id="navbarText"
         >
           <ul class="navbar-nav ms-auto mb-5 mb-lg-1">
+            <li class="nav-item d-flex align-items-center me-4" id="languageDropdown">
+              <label class="me-2 mb-0" for="languageSelect" data-section="top-navbar" data-value="lenguaje">
+                Select Language:
+              </label>
+              <select id="languageSelect" class="form-select form-select-sm">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </li>
             {% if 'email' in session %}
             <li class="nav-item me-4">
               <a class="nav-link active" aria-current="page" href="holamundo:D"
@@ -98,13 +107,7 @@
               >
             </li>
     
-            <div id="languageDropdown">
-              <label data-section="top-navbar" data-value="lenguaje" for="languageSelect">Select Language:</label>
-              <select id="languageSelect">
-                <option value="en">English</option>
-                <option value="es">Español</option>
-              </select>
-            </div>
+            
           
             <li class="nav-item me-4">
               <a
@@ -116,6 +119,7 @@
               >
             </li>
             {% endif %} {% if 'email' not in session %}
+            
             <li class="nav-item me-4">
               <a
                 class="nav-link active"

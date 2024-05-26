@@ -56,6 +56,7 @@ endblock %} {% block content %}
     style="height: calc(100vh - 56px)"
   >
     <div class="col-xl-10">
+      
       <div class="row justify-content-center">
         <div class="col-xl-10">
           <form class="d-flex justify-content-center align-items-center mb-4">
@@ -73,6 +74,7 @@ endblock %} {% block content %}
           </form>
         </div>
       </div>
+
       <div class="row justify-content-center">
         <div class="col-xl-10">
           <div class="row justify-content-center">
@@ -80,6 +82,7 @@ endblock %} {% block content %}
               <div
                 class="buttons border border-Tertiary border-Secondary p-3 rounded d-flex justify-content-center align-items-center"
               >
+
                 <a
                   class="btn custom-btn mx-4"
                   data-bs-toggle="tooltip"
@@ -92,24 +95,24 @@ endblock %} {% block content %}
                     <span class="material-symbols-outlined">
                       point_of_sale
                     </span>
-                    <span class="d-none d-md-block">Sales</span>
+                    <span data-section="shortcut" data-value="Sales" class="d-none d-md-block">Sales</span>
                   </div>
                 </a>
-
-                <a
-                  class="btn custom-btn mx-4"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  data-bs-custom-class="custom-tooltip"
-                  data-bs-title="Ir al almacén de productos"
-                  href="{{url_for('products.warehouse')}}"
-                >
-                  <div class="d-flex flex-column align-items-center">
-                    <span class="material-symbols-outlined"> view_list </span>
-                    <span class="d-none d-md-block">Warehouse</span>
-                  </div>
-                </a>
-
+                {% if IsAdmin %}
+                  <a
+                    class="btn custom-btn mx-4"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Ir al almacén de productos"
+                    href="{{url_for('products.warehouse')}}"
+                  >
+                    <div class="d-flex flex-column align-items-center">
+                      <span class="material-symbols-outlined"> view_list </span>
+                      <span data-section="shortcut" data-value="Warehouse" class="d-none d-md-block">Warehouse</span>
+                    </div>
+                  </a>
+                
                 <a
                   class="btn custom-btn mx-4"
                   data-bs-toggle="tooltip"
@@ -122,14 +125,16 @@ endblock %} {% block content %}
                     <span class="material-symbols-outlined">
                       manage_accounts
                     </span>
-                    <span class="d-none d-md-block">Accounts</span>
+                    <span data-section="shortcut" data-value="Accounts"  class="d-none d-md-block">Accounts</span>
                   </div>
                 </a>
+                {% endif %}
               </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>

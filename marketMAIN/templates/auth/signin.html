@@ -28,11 +28,11 @@
           <!-- Aquí comienza la sección del formulario -->
           <form method="post" action="">
             <!-- Eliminar la clase text-end del formulario -->
-            <h1 class="fw-bold mb-4 signin__titulo text-center">Sign In</h1>
+            <h1 class="fw-bold mb-4 signin__titulo text-center" data-section="singin" data-value="Sign In">Sign In</h1>
             <!-- Agregar la clase text-center para centrar el título -->
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <label for="email">Email Address</label>
+              <label for="email" data-section="singin" data-value="Email Address">Email Address</label>
               <!-- Eliminar la clase text-end de la etiqueta -->
               <div class="col-sm-10">
                 <input
@@ -51,13 +51,13 @@
                 <!-- Eliminar la clase text-end del campo de entrada -->
               </div>
               {% if email_not_found %}
-              <div class="invalid-feedback">Email not found.</div>
+              <div class="invalid-feedback" >Email not found.</div>
               <!-- Eliminar la clase text-end del mensaje de error -->
               {% endif %}
             </div>
             <!-- Password input -->
             <div class="form-outline mb-4">
-              <label for="password">Password</label>
+              <label for="password" data-section="singin" data-value="Password" >Password</label>
               <!-- Eliminar la clase text-end de la etiqueta -->
               <div class="col-sm-10">
                 <input
@@ -91,14 +91,14 @@
                   id="form1Example3"
                   checked
                 />
-                <label class="form-check-label" for="form1Example3"
+                <label class="form-check-label" for="form1Example3" data-section="singin" data-value="Remember me"
                   >Remember me</label
                 >
               </div>
               <!-- Enlace "Forgot password?" -->
               <div class="">
-                <a>Don’t have an account?</a>
-                <a href="{{url_for('auth.signup')}}" class="forget">Registered</a>
+                <a data-section="singin" data-value="Don’t have an account?">Don’t have an account?</a>
+                <a data-section="singin" data-value="check in" href="{{url_for('auth.signup')}}" class="forget">check in</a>
               </div>
             </div>
             <!-- Submit button -->
@@ -107,7 +107,7 @@
               class="btn__form btn btn-primary btn-lg btn-block"
               id="submitButton"
             >
-              Sign in
+              <span data-section="singin" data-value="Sign in">Sign in</span>
             </button>
             <!-- Eliminar la clase text-end del botón -->
           </form>

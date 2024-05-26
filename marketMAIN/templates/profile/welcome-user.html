@@ -11,10 +11,10 @@
       <!-- 56px es la altura aproximada del navbar, ajusta este valor según sea necesario -->
       <div class="col-xl-10">
         <div class="row">
-          <h1>Welcome to SaleTrack {{ user }}</h1>
+          <h1><span data-section="welcome" data-value="Welcome to SaleTrack">Welcome to SaleTrack</span> {{ user }}</h1>
   
         </div>
-        <a href="{{ url_for('shortcut.shortcut') }}" class="btn__form btn btn-primary btn-lg btn-block mt-4 ">shortcut</a>
+        <a href="{{ url_for('shortcut.shortcut') }}" class="btn__form btn btn-primary btn-lg btn-block mt-4 "><span data-section="welcome" data-value="shortcut">shortcut</span></a>
         <!-- Fin de la fila -->
       </div>
     </div>

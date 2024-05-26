@@ -46,6 +46,31 @@
         "Actions": "Actions",
         "Make sale": "Make sale",
         "Add Product": "Add Product"
+    },
+
+    "welcome":{
+        "Welcome to SaleTrack":  "Welcome to SaleTrack",
+        "shortcut": "Shortcut"
+    },
+
+    "shortcut":{
+        "Sales": "Sales",
+        "Warehouse": "Warehouse",
+        "Accounts": "Accounts"
+    },
+
+    "singin":{
+        "Sign In": "Sign In",
+        "Email Address": "Email Address",
+        "Email not found.": "Email not found.",
+        "Password": "Password",
+        "Invalid password": "Invalid password.",
+        "Remember me": "Remember me",
+        "Don’t have an account?": "Don’t have an account?",
+        "Sign in": "Sign in",
+        "check in": "Registered"
+      
+        
     }
 
 }
