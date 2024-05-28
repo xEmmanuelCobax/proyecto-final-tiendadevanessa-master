@@ -3,7 +3,8 @@
         "titulo":"SaleTrackStar",
         "sesionc": "Sign Out",
         "lenguaje": "Select Language:",
-        "sesioni": "Sing in"
+        "sesioni": "Sign in",
+        "sesionis": "Sign up"
     },
 
     "width-navbar":{
@@ -11,7 +12,7 @@
         "home": "Home",
         "View Warehouse": "View Warehouse",
         "Manage Warehouse": "Manage Warehouse",
-        "Manage Companies": "Manage Companies",
+        "Manage Companies": "Manage intermediary",
         "Sales": "Sales",
         "add Sales": "add Sales",
         "Manage Sales": "Manage Sales",
@@ -31,10 +32,10 @@
         "Create": "Create"
 
     },
-    "manage-company":{
+    "manage-intermediary":{
         "Name Company": "Name Company",
         "Actions": "Actions",
-        "Manage Companies": "Manage Companies",
+        "Manage Companies": "manage intermediary",
         "Create Company": "Create Company"
 
     },
@@ -46,6 +47,10 @@
         "Actions": "Actions",
         "Make sale": "Make sale",
         "Add Product": "Add Product"
+    },
+
+    "Sales report":{
+       "Sales report": "Sales report" 
     },
 
     "welcome":{

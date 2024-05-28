@@ -1,0 +1,211 @@
+{% extends 'top navbar/top-navbar.html' %} {% block title %} Warehouse {%
+endblock %} {% block content %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/products.css') }}"
+/>
+
+
+<div class="container-fluid mt-5">
+  <!-- Agregamos la clase mt-5 para añadir margen superior -->
+  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
+    <h6 class="mt-1 d-none d-sm-flex"><span data-section="width-navbar" data-value="werehouse">Warehouse</span></h6>
+
+    {% include 'top navbar/top-width-navbar.html' %}
+
+    <div class="col-12 col-lg-9 mt-3">
+      <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
+      <form
+        class="d-flex mt-3"
+        method="POST"
+        action="{{ url_for('products.search_product') }}"
+      >
+        <div class="col-sm-4">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            name="search_term"
+          />
+        </div>
+        <div class="mx-3"></div>
+        <!-- Este div se expandirá para ocupar el espacio disponible -->
+        <button class="btn btn-primary" type="submit"><span data-section="werehouse" data-value="Search">Search</span></button>
+      </form>
+
+      <div
+        class="col-md-12 mt-3 border border-Tertiary p-3 rounded flex-wrap justify-content-center align-items-start"
+      >
+        <div
+          class="table-responsive"
+          style="max-height: 500px; overflow-y: auto"
+        >
+          <table class="table table-bordered table-striped table-rounded mb-3">
+            <!-- Mantenemos las clases existentes y agregamos espaciado -->
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Name Product">Name Product</span></th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Company">Company</span></th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Name Intermedary">Name Intermedary</span></th>
+
+                <th scope="col"><span >Tel. </span></th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Stock">Stock</span></th>
+
+                <th scope="col"><span data-section="werehouse" data-value="Unit Price">Unit Price</span></th>
+
+
+                
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <!-- Enviar mediante un array llamada task los valores (el nombre lo vamos a cambiar a futuro) -->
+              {% for product in products %}
+              <tr>
+
+                <th scope="row">{{ product[0] }}</th>
+
+                <td>{{ product[1] }}</td>
+
+                <td>{{ product[9] }}</td>
+
+                <td>{{ product[5] }} {{ product[6] }} {{ product[7] }} </td>
+
+                <td>{{ product[8] }}</td>
+                
+                <td>{{ product[3] }}</td>
+
+                <td>{{ product[2] }} $</td>
+
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VALIDA LOS ESPACIOS INICIALES Y FINALES QUE EL USUARIO PUEDA LLEGAR A PONER, Y QUE NO PUEDA COPIAR Y PEGARSE ESPACIOS-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var trimDelay = 500; // Cambia este valor según el tiempo que desees en milisegundos
+    var timeout = null;
+
+    // Función para eliminar espacios en blanco de los valores de los campos de entrada
+    function trimInputFields() {
+      var inputFields = document.querySelectorAll("input:not([type='number'])");
+      inputFields.forEach(function (input) {
+        input.value = input.value.trim();
+      });
+    }
+
+    // Función para reiniciar el temporizador
+    function resetTrimTimer() {
+      clearTimeout(timeout);
+      timeout = setTimeout(trimInputFields, trimDelay);
+    }
+
+    // Función para manejar el evento de pegar y eliminar espacios en blanco
+    function handlePaste(event) {
+      var paste = (event.clipboardData || window.clipboardData).getData("text");
+      event.preventDefault();
+      var trimmedPaste = paste.trim();
+      document.execCommand("insertText", false, trimmedPaste);
+      resetTrimTimer();
+    }
+
+    // Agregar eventos a todos los campos de entrada que no son de tipo "number"
+    var inputFields = document.querySelectorAll("input:not([type='number'])");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", resetTrimTimer);
+      input.addEventListener("change", resetTrimTimer);
+      input.addEventListener("blur", resetTrimTimer);
+      input.addEventListener("paste", handlePaste);
+    });
+  });
+</script>
+
+<!-- LIMITA EL NÚMERO DE CARACTERES DE LAS ENTRADAS-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var maxCharactersText = 25; // Máximo de caracteres para campos de texto
+    var maxCharactersNumber = 10; // Máximo de caracteres para campos de número
+    var maxCharactersSerach = 30;
+
+    // Función para manejar el evento de entrada y limitar la longitud de los campos de entrada
+    function handleInput(event) {
+      if (
+        event.target.type === "text" &&
+        event.target.value.length > maxCharactersText
+      ) {
+        event.target.value = event.target.value.substring(0, maxCharactersText); // Limita a maxCharactersText para campos de texto
+      } else if (
+        event.target.type === "number" &&
+        event.target.value.length > maxCharactersNumber
+      ) {
+        event.target.value = event.target.value.substring(
+          0,
+          maxCharactersNumber
+        ); // Limita a maxCharactersNumber para campos de número
+      } else if (
+        event.target.type === "search" &&
+        event.target.value.length > maxCharactersSerach
+      ) {
+        event.target.value = event.target.value.substring(0, maxCharactersSerach); // Limita a maxCharactersText para campos de texto
+      }
+    }
+
+    // Agregar evento de entrada a todos los campos de entrada
+    var inputFields = document.querySelectorAll("input");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", handleInput);
+    });
+  });
+</script>
+
+<!-- SOLO PERMITE AGREGAR UN UNICO ESPACIO EN TODOS LOS INPUTS-->
+<script>
+  // Función para mantener solo un espacio entre palabras en los campos de entrada de texto
+  function limitarEspacios(event) {
+    // Obtener el valor actual del campo
+    var valorCampo = event.target.value;
+    // Reemplazar múltiples espacios por uno solo
+    var valorSinEspaciosRepetidos = valorCampo.replace(/\s+/g, " ");
+    // Actualizar el valor del campo con un solo espacio entre palabras
+    event.target.value = valorSinEspaciosRepetidos;
+  }
+
+  // Seleccionar todos los campos de entrada de texto y textarea
+  var inputspace = document.querySelectorAll(
+    'input[type="text"], input[type="search"], input[type="password"], input[type="email"], input[type="number"], textarea'
+  );
+
+  // Agregar evento de escucha para cada campo de entrada
+  inputspace.forEach(function (input) {
+    input.addEventListener("input", limitarEspacios);
+  });
+</script>
+
+<!-- EVITA EL USO DE COMILLAS EN TODOS LOS CAMPOS-->
+<script>
+  // Función para eliminar comillas simples y dobles de todos los campos de entrada
+  document.querySelectorAll("input").forEach(function (input) {
+    input.addEventListener("input", function (event) {
+      // Obtener el valor actual del campo de entrada
+      var inputValue = event.target.value;
+      // Eliminar comillas simples y comillas dobles del valor actual
+      var cleanedValue = inputValue.replace(/['"]+/g, "");
+      // Actualizar el valor del campo de entrada sin comillas simples y comillas dobles
+      event.target.value = cleanedValue;
+    });
+  });
+</script>
+{% endblock %}

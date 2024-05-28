@@ -32,9 +32,29 @@ company-new-select
 intermedary-new-select
 
 newcantidadInput
+
+newprecio2
 }
 IDS PARA CREATE MODAL
 
 marca
 
 producto
+
+unitquantity
+
+cantidad
+
+precio
+
+ID PARA EL MODAL EDITAR INTERMEDIARIOS
+
+company-select2
+
+editIntermediaryName
+
+NEW-AP_PAT
+
+NEW-AP_MAT
+
+editIntermediaryPhone

@@ -3,7 +3,8 @@
         "titulo":"Tiendita Valencia",
         "sesionc": "Cerrar sesión",
         "lenguaje": "Seleccione el idioma:",
-        "sesioni": "Iniciar sesión"
+        "sesioni": "Iniciar sesión",
+        "sesionis": "Crear cuenta"
     },
 
     "width-navbar":{
@@ -11,7 +12,7 @@
         "home": "Inicio",
         "View Warehouse": "Ver almacén",
         "Manage Warehouse": "Administrar almacén",
-        "Manage Companies": "Administrar compañia",
+        "Manage Companies": "Administrar intermediarios",
         "Sales": "Ventas",
         "add Sales": "Agregar ventas",
         "Manage Sales": "Administrar ventas",
@@ -33,10 +34,10 @@
         "Create": "Crear"
 
     },
-    "manage-company":{
+    "manage-intermediary":{
         "Name Company": "Nombre de la compañia",
         "Actions": "Acciones",
-        "Manage Companies": "administrar compañias",
+        "Manage Companies": "Administrar intermediarios",
         "Create Company": "Crear compañia"
         
     },
@@ -49,6 +50,10 @@
         "Add Product": "Agregar producto"
 
     },
+
+    "Sales report":{
+        "Sales report": "Reportes de ventas" 
+     },
 
     "welcome":{
         "Welcome to SaleTrack":  "Bienvenido a SaleTrack",

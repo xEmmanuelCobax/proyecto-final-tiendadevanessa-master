@@ -54,6 +54,7 @@
               <div class="invalid-feedback" >Email not found.</div>
               <!-- Eliminar la clase text-end del mensaje de error -->
               {% endif %}
+             
             </div>
             <!-- Password input -->
             <div class="form-outline mb-4">
@@ -120,7 +121,7 @@
   </div>
 </div>
 
-{% if registration_successful %}
+{%  if registration_successful == 'True' %}
 <div class="modal fade show" id="successfulRegistrationModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">

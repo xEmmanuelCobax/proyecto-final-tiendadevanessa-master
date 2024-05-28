@@ -490,7 +490,7 @@ endblock %} {% block content %}
             <input
               id="editproduct_id"
               type="hidden"
-              name="editproduct_id"
+              name="editproductid"
               value=""
             />
             <button
@@ -555,6 +555,20 @@ endblock %} {% block content %}
   </div>
 </div>
 
+<!-- TOAST PARA DAR FEEDBACK DEL NOMBRE DE INTERMEDIARIO-->
+<div class="mt-5 position-fixed p-3 end-0 bottom-0" style="z-index: 9999;">
+  <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <i class="fas fa-exclamation-circle"></i>
+        <strong class="me-auto mx-2">Warning!</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+    </div>
+    <div class="toast-body mx-1 mt-1">
+      Ajusta nuevamente el nombre deL 
+    </div>
+  </div>
+</div>
+
 <!-- Elemento oculto para almacenar los datos de 'members' -->
 <div id="members-data" data-members="{{ members }}" style="display: none"></div>
 
@@ -570,6 +584,7 @@ endblock %} {% block content %}
   }
 
   function setEditProductId(productId) {
+    document.getElementById("editproduct_id").value = productId;
     console.log("Pasa aqui 2");
     console.log("productId EDITAR>" + productId);
 
@@ -623,7 +638,7 @@ endblock %} {% block content %}
         numeroProductoFlotante;
       //FIN
 
-     //SELECCIONAR EL NOMBRE Y EXTRAE LAS UNIDADES PARA INGRESARLO EN MI SELECT UNITOFMEASURE
+      //SELECCIONAR EL NOMBRE Y EXTRAE LAS UNIDADES PARA INGRESARLO EN MI SELECT UNITOFMEASURE
       let nameProductExtract = rowData[1];
 
       // Expresión regular para capturar la unidad de medida
@@ -722,6 +737,9 @@ endblock %} {% block content %}
         }
       }
       //FIN
+
+      var tostada = new bootstrap.Toast(document.getElementById('toast'));
+    tostada.show();
     } else {
       console.log("Fila no encontrada para productId:", productId);
     }
@@ -927,7 +945,12 @@ endblock %} {% block content %}
           event.key === "-" ||
           event.key === "+" ||
           (event.key === "." &&
-            !["cantidad", "newcantidadInput"].includes(event.target.id)))
+            ![
+              "editunitquantity",
+              "unitquantity",
+              "precio",
+              "newprecio2",
+            ].includes(event.target.id)))
       ) {
         event.preventDefault();
       }

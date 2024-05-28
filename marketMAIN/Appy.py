@@ -50,18 +50,28 @@ def validar_entrada(texto):
     else:
         return True
 
-
-# Ruta Principal
-@app.route("/")
-def index():
+# ShortCut
+@sc.route("/shortcut")
+def shortcut():
     # Errores
     print("<#################### index ####################")
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     print("#################### FIN RenderT(index.html) ####################>")
-    return render_template("index.html")
+    return render_template("shortcut.html", IsAdmin=session["ES_ADMIN"])
+
+
+# Ruta Principal
+@app.route("/")
+def index():
+    # Errores
+    if "email" not in session:
+        print("#################### NO HAY SESSION ####################>")
+        return render_template("index.html")
+    print("#################### FIN RenderT(index.html) ####################>")
+    return redirect(url_for("shortcut.shortcut"))
 
 
 # Bienvenida (Terminado)
@@ -72,7 +82,7 @@ def welcomeuser():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     print("Session > ",session)
     print("Nombre > ",session['name'])
     print("Es admin? > ", session["ES_ADMIN"])
@@ -87,8 +97,19 @@ def welcomeuser():
 @auth.route("/signin", methods=["GET", "POST"])
 def signin():
     # Errores
-    email_not_found = True  # El correo electrónico no está registrado
-    bad_password = True  # Contraseña incorrecta
+    
+    email_not_found = False # El correo electrónico no está registrado
+    bad_password = False  # La contreaseña es incorrecta - Enviar True 
+    # Datos a usar: 
+    """
+    1- Email 
+    2- Password
+    3-
+    4-
+    5-
+    """
+    registration_successful = request.args.get('registration_successful', 'False')
+
     print("<#################### signin ####################")
     if "email" in session:
         print("#################### Email In Session ####################>")
@@ -115,7 +136,6 @@ def signin():
             print(
                 "#################### Renderizar auth/signin.html - Correo electrónico no está registrado ####################>"
             )
-            return redirect(url_for("auth.signin"))
         else:
             # El correo electrónico está registrado
             if existing_email[0][6] == password:
@@ -142,9 +162,10 @@ def signin():
             "auth/signin.html",
             bad_password=bad_password,
             email_not_found=email_not_found,
+            registration_successful=registration_successful,
         )
     print("#################### Return to auth/signin.html ####################>")
-    return render_template("auth/signin.html")
+    return render_template("auth/signin.html",registration_successful=registration_successful,)
 
 
 # Registrarse (Terminado)
@@ -153,8 +174,19 @@ def signup():
     # Errores
     email_found = False # El email ya esta registrado
     user_found = False  #   El usuario ya ha sido encontradoin
+    ErrorNombre = False
+    ErrorAP_PAT = False
+    ErrorAP_MAT = False
     # Otros booleanos
     registration_successful = False
+    # Datos a usar:
+    """
+    1- name>
+    2- apellido_paterno>
+    3- apellido_materno>
+    4- email
+    5- password
+    """
     print("<#################### signup ####################")
     # Verificar si hay una dirección de correo dentro de la sesión
     if "email" in session:
@@ -169,6 +201,11 @@ def signup():
         apellido_materno = request.form.get("maternal_lastname")
         email = request.form.get("email")
         password = request.form.get("password")
+        # Probar si el formato es correcto:
+        ErrorNombre = validar_entrada(name)
+        ErrorAP_PAT = validar_entrada(apellido_paterno)
+        ErrorAP_MAT = validar_entrada(email)
+
         # Prubas
         print("<==================== DATOS OBTENIDOS ====================")
         print(f"Name - {name}")
@@ -224,11 +261,12 @@ def signup():
             registration_successful = True
             user = f"{name} {apellido_paterno} {apellido_materno} "
             print("#################### Renderizar auth/signin ####################>")
-            return render_template(
-                "auth/signup.html",
-                registration_successful=registration_successful,
-                user=user,
-            )
+            return redirect(url_for("auth.signin", registration_successful=registration_successful))
+            # return render_template(
+            #     "auth/signin.html",
+            #     registration_successful=registration_successful,
+            #     user=user,
+            # )
     else:
         print("#################### Renderizar auth/signup.html ####################>")
         return render_template("auth/signup.html")
@@ -241,7 +279,7 @@ def signout():
     if "email" in session:
         session.clear()
         print("#################### FIN (auth.signin) ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     else:
         print("#################### FIN NO HAY SESSION (auth.signin) ####################>")
     return redirect(url_for("auth.signin"))
@@ -327,12 +365,6 @@ def ConsultaCompanias():
     return companias
 
 
-# ShortCut
-@sc.route("/shortcut")
-def shortcut():
-    return render_template("shortcut.html", IsAdmin=session["ES_ADMIN"])
-
-
 # Mostrar los productos (Terminado)
 @products.route("/warehouse")
 def warehouse():
@@ -340,7 +372,7 @@ def warehouse():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -367,7 +399,7 @@ def search_product():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -408,7 +440,7 @@ def managewarehouse():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -466,7 +498,7 @@ def delete_product():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -512,7 +544,7 @@ def create_product():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -726,7 +758,7 @@ def update_product() :
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -735,7 +767,7 @@ def update_product() :
     if request.method == "POST":
         try:
             # Obtener datos del formulario
-            product_id = int(request.form.get("editproduct_id"))
+            product_id = request.form.get("editproductid")
             marca = request.form.get("newmarca")
             producto = request.form.get("newproducto")
             # Unidad de medida
@@ -913,8 +945,8 @@ def update_product() :
 
 
 # Manejar los intermediario (Terminado)
-@products.route("/manage_company")
-def managecompany():
+@products.route("/manage_intermediary")
+def manage_intermediary():
     # Errores
     OtrosErroresBorrarIntermediario=request.args.get('OtrosErroresBorrarIntermediario')
     OtrosErroresCrearIntermediario=request.args.get('OtrosErroresCrearIntermediario')
@@ -927,7 +959,7 @@ def managecompany():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -962,9 +994,11 @@ def managecompany():
     # Casos
     print("CasoActualizarIntermediario > ", CasoActualizarIntermediario)
     print("========================================>")
-    print("#################### products/manage-company.html ####################>")
+    print(
+        "#################### products/manage-intermediary.html ####################>"
+    )
     return render_template(
-        "products/manage-company.html",
+        "products/manage-intermediary.html",
         relations=relations,
         companies=ConsultaCompanias(),
         OtrosErroresBorrarIntermediario=OtrosErroresBorrarIntermediario,
@@ -978,15 +1012,15 @@ def managecompany():
 
 
 # Borrar intermediarios (Terminado)
-@products.route("/delete_company", methods=["POST"])
-def delete_company():
+@products.route("/delete_intermediary", methods=["POST"])
+def delete_intermediary():
     # Errores
     OtrosErroresBorrarIntermediario = False
     print("<#################### delete_company ####################")
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -1014,15 +1048,15 @@ def delete_company():
             print("#################### FIN (Error) ####################>")
         return redirect(
             url_for(
-                "products.managecompany",
+                "products.manage_intermediary",
                 OtrosErroresBorrarIntermediario=OtrosErroresBorrarIntermediario,
             )
         )
 
 
 # Crear intermediario (Terminado)
-@products.route("/create_company", methods=["POST"])
-def create_company():
+@products.route("/create_intermediary", methods=["POST"])
+def create_intermediary():
     # Errores
     ErrorIntermediarioTelefono = False
     ErrorIntermediarioRegistrado = False
@@ -1032,7 +1066,7 @@ def create_company():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -1144,17 +1178,18 @@ def create_company():
             print("#################### FIN (No se inserto) ####################>")
         return redirect(
             url_for(
-                "products.managecompany",
+                "products.manage_intermediary",
                 ErrorIntermediarioTelefono=ErrorIntermediarioTelefono,
                 ErrorIntermediarioRegistrado=ErrorIntermediarioRegistrado,
                 OtrosErroresCrearIntermediario=OtrosErroresCrearIntermediario,
-                CasoActualizarIntermediario=CasoActualizarIntermediario
+                CasoActualizarIntermediario=CasoActualizarIntermediario,
             )
         )
 
+
 # Editar intermediario (Terminado)
-@products.route("/edit_company", methods=["GET", "POST"])
-def edit_company():
+@products.route("/edit_intermediary", methods=["GET", "POST"])
+def edit_intermediary():
     # Errores
     ErrorIntermediarioTelefono = False
     ErrorIntermediarioRegistrado = False
@@ -1163,7 +1198,7 @@ def edit_company():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2: Verificar si el usuario es administrador
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
@@ -1255,7 +1290,7 @@ def edit_company():
             print("#################### FIN (No se inserto) ####################>")
         return redirect(
             url_for(
-                "products.managecompany",
+                "products.manage_intermediary",
                 ErrorIntermediarioTelefono=ErrorIntermediarioTelefono,
                 ErrorIntermediarioRegistrado=ErrorIntermediarioRegistrado,
                 OtrosErroresEditarIntermediario=OtrosErroresEditarIntermediario,
@@ -1270,7 +1305,7 @@ def addsalesworker():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     products = config.Read(
                 """
                 SELECT 
@@ -1302,7 +1337,7 @@ def MakeSales():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("auth.signin"))
+        return redirect(url_for("index"))
     # Capa 2:
     if request.method == "POST":
         try:
@@ -1500,6 +1535,73 @@ def MakeSales():
             print(e)
     print("#################### FIN  ####################>")
     return redirect(url_for("sales.addsalesworker"))
+
+
+@sales.route("/reportsales", methods=["POST","GET"])
+def reportsales():
+    print("<#################### reportsales ####################")
+    # Capa 1: Verificar si el usuario está autenticado
+    if "email" not in session:
+        print("#################### NO HAY SESSION ####################>")
+        return redirect(url_for("index"))
+    # Capa 2: Verificar si el usuario es administrador
+    if not session.get("ES_ADMIN"):
+        print("#################### NO ES ADMIN ####################>")
+        return redirect(url_for("shortcut.shortcut"))
+    # Capa 3: Procesar la solicitud POST
+    if request.method == "POST":
+        sale_id = request.form.get("sale_id")
+        details = config.Read(
+            """
+            SELECT dbo.Detalles.ID_PRODUCTO, dbo.Almacen.NOMBRE, dbo.Detalles.CANTIDAD, dbo.Detalles.IMPORTE, dbo.Detalles.IVA
+            FROM dbo.Almacen, dbo.Detalles
+            WHERE dbo.Almacen.ID_PRODUCTO = dbo.Detalles.ID_PRODUCTO
+            AND dbo.Detalles.ID_VENTA = ?
+            """,
+            (sale_id,),
+        )
+        sales = config.Read(
+            """
+            SELECT 
+                dbo.Ventas.ID_VENTA, 
+                dbo.Dia.DIA, 
+                dbo.Mes.MES, 
+                dbo.Anio.ANIO, 
+                dbo.Ventas.CANTIDAD_VENTA, 
+                dbo.Ventas.TOTAL
+            FROM dbo.Ventas, dbo.Dia, dbo.Mes, dbo.Anio
+            WHERE dbo.Ventas.ID_DIA = dbo.Dia.ID_DIA
+            AND dbo.Ventas.ID_MES = dbo.Mes.ID_MES
+            AND dbo.Ventas.ID_ANIO = dbo.Anio.ID_ANIO
+            """
+        )
+        return render_template("sales/report-sales.html", sales=sales, details=details,IsAdmin=session["ES_ADMIN"])
+
+    # Capa 4: Obtener todas las ventas si no hay método POST
+    print("<==================== DATOS OBTENIDOS ====================")
+    sales = config.Read(
+        """
+        SELECT 
+            dbo.Ventas.ID_VENTA, 
+            dbo.Dia.DIA, 
+            dbo.Mes.MES, 
+            dbo.Anio.ANIO, 
+            dbo.Ventas.CANTIDAD_VENTA, 
+            dbo.Ventas.TOTAL
+        FROM dbo.Ventas, dbo.Dia, dbo.Mes, dbo.Anio
+        WHERE dbo.Ventas.ID_DIA = dbo.Dia.ID_DIA
+        AND dbo.Ventas.ID_MES = dbo.Mes.ID_MES
+        AND dbo.Ventas.ID_ANIO = dbo.Anio.ID_ANIO
+        """
+    )
+    print(f"products > {sales}")
+    print("========================================>")
+    print(
+        "#################### FIN RenderT(products/warehouse.html) ####################>"
+    )
+    return render_template(
+        "sales/report-sales.html", sales=sales, IsAdmin=session["ES_ADMIN"]
+    )
 
 
 # Ajuste de perfil (En Desarrollo)
