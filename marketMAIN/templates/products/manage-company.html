@@ -48,7 +48,7 @@ endblock %} {% block content %}
         span
         data-section="manage-intermediary"
         data-value="Manage Companies"
-        >Manage Intermediaries</span
+        >Manage company</span
       >
     </h6>
 
@@ -67,7 +67,7 @@ endblock %} {% block content %}
       data-bs-target="#createmodal"
       data-bs-whatever="@mdo"
     >
-      <span data-section="manage-intermediary" data-value="Create Intermediary">Create Intermediary</span>
+      <span>Create company</span>
     </button>
   </form>  
 
@@ -92,12 +92,7 @@ endblock %} {% block content %}
                     >Name Company</span
                   >
                 </th>
-                <th scope="col">
-                  <span data-section="werehouse" data-value="Name Intermedary"
-                    >Name Intermedary</span
-                  >
-                </th>
-                <th scope="col">Tel.</th>
+                
                 <th scope="col">
                   <span data-section="manage-intermediary" data-value="Actions"
                     >Actions</span
@@ -108,30 +103,31 @@ endblock %} {% block content %}
             <tbody class="table-group-divider">
               {% for relation in relations %}
               <tr data-relation-id="{{ relation[2] }}">
-                <th scope="row">{{ relation[2] }}</th>
+                <th scope="row">{{ relation[0] }}</th>
                 <td>{{ relation[1] }}</td>
-                <td>{{ relation[3] ~ relation[4] ~ relation[5] }}</td>
-                <td>{{ relation[6] }}</td>
-                <td
+                <td class="text-center d-flex justify-content-center align-items-center">
+                </td>
+                <td deja asi w
                   class="text-center d-flex justify-content-center align-items-center"
                 >
-                  <button
-                    type="button"
-                    class="btn btn-warning mx-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#editCompany"
-                    data-Intermediary-id="{{ relation[2] }}"
-                    onclick="setEditProductId('{{ relation[2] }}')"
-                  >
-                    <span class="material-symbols-outlined">edit_square</span>
-                  </button>
+                <button
+                type="button"
+                class="btn btn-warning mx-2"
+                data-bs-toggle="modal"
+                data-bs-target="#editCompany"
+                data-company-name="{{ relation[1] }}"
+                data-Intermediary-id="{{ relation[0] }}"
+                onclick="setEditProductId('{{ relation[0] }}', '{{ relation[1] }}')"
+              >
+                <span class="material-symbols-outlined">edit_square</span>
+              </button>
                   <button
                     type="button"
                     class="btn btn-danger mx-2"
                     data-bs-toggle="modal"
                     data-bs-target="#deleteCompany"
-                    data-Intermediary-id="{{ relation[2] }}"
-                    onclick="setIntermediaryId('{{ relation[2] }}')"
+                    data-Intermediary-id="{{ relation[0] }}"
+                    onclick="setIntermediaryId('{{ relation[0] }}')"
                   >
                     <span class="material-symbols-outlined"
                       >delete_forever</span
@@ -171,76 +167,25 @@ endblock %} {% block content %}
       <div class="modal-body">
         <form
           id="createCompanyForm"
-          action="{{ url_for('products.manage_intermediary') }}"
+          action="{{ url_for('products.manage_company') }}"
           method="post"
           class="needs-validation"
           novalidate
         >
         <input type="hidden" name="action" value="create">
+      
           <div class="mb-3">
-            <label for="company-select">Select Company:</label>
-            <select
-              class="form-select"
-              id="company-select"
-              name="company_id"
-              required
-            >
-              <option value="" disabled selected>Select Company</option>
-              {% for company in companies %}
-              <option value="{{ company[0] }}">{{ company[1] }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >Intermediary Names:</label
+            <label for="company" class="form-label"
+              >Company Names:</label
             >
             <input
               type="text"
               class="form-control"
-              id="intermediaryName"
-              name="intermediaryName"
+              id="companyName"
+              name="companyName"
               required
             />
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label">Last name:</label>
-            <input
-              type="text"
-              class="form-control"
-              id="AP_PAT"
-              name="AP_PAT"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >Mother's last name:</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="AP_MAT"
-              name="AP_MAT"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediaryPhone" class="form-label"
-              >Intermediary Phone:</label
-            >
-            <input
-              type="tel"
-              class="form-control Telefono"
-              id="intermediaryPhone"
-              name="intermediaryPhone"
-              required
-            />
-          </div>
+          </div> 
 
           <div class="text-end">
             <button
@@ -288,78 +233,22 @@ endblock %} {% block content %}
       <div class="modal-body">
         <form
           id="editCompanyForm"
-          action="{{ url_for('products.manage_intermediary') }}"
+          action="{{ url_for('products.manage_company') }}"
           method="post"
           class="needs-validation"
           novalidate
         >
         <input type="hidden" name="action" value="edit">
+    
           <div class="mb-3">
-            <label for="editCompanyName" class="form-label"
+            <label for="editcompanyName" class="form-label"
               >New Company Name:</label
             >
-            <select
-              class="form-select"
-              id="company-select2"
-              name="Edit-company_id"
-              required
-            >
-              <option value="" disabled selected>Select Company</option>
-              {% for company in companies %}
-              <option value="{{ company[0] }}">{{ company[1] }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >New Intermediary Names:</label
-            >
             <input
               type="text"
               class="form-control"
-              id="editIntermediaryName"
-              name="editIntermediaryName"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >Paternal Last name:</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="NEW-AP_PAT"
-              name="NEW-AP_PAT"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >Maternal last name:</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="NEW-AP_MAT"
-              name="NEW-AP_MAT"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >New Intermediary Phone:</label
-            >
-            <input
-              type="tel"
-              class="form-control Telefono
-              "
-              id="editIntermediaryPhone"
-              name="editIntermediaryPhone"
+              id="editcompanyName"
+              name="editcompanyName"
               required
             />
           </div>
@@ -423,7 +312,7 @@ endblock %} {% block content %}
         </button>
         <form
           id="delete-product-form"
-          action="{{ url_for('products.manage_intermediary') }}"
+          action="{{ url_for('products.manage_company') }}"
           method="post"
         >
         <input type="hidden" name="action" value="delete">
@@ -467,50 +356,6 @@ endblock %} {% block content %}
   </div>
 </div>
 
-<!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
-<div id="flash-messages" style="display: none;">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-  {% for category, message in messages %}
-  <div class="alert alert-{{ category }}" role="alert">
-    {{ message }}
-  </div>
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-</div>
-
-<!-- MOTAL PARA MOSTRAR FLASH -->
-<div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="flashModalLabel">Notification</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="flashModalBody">
-        <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- MOSTRAR EL MODAL PARA MOSTRAR ERRORES Y MENSAJES  -->
-<script>
-  $(document).ready(function () {
-    var flashMessages = $('#flash-messages').html().trim();
-    if (flashMessages) {
-      $('#flashModalBody').html(flashMessages);
-      $('#flashModal').modal('show');
-    }
-  });
-</script>
-
 <!--               FUNCIONALIDADES COMPARTIDAS POR MODAL                   -->
 
 <!-- OBTENCION LOS ID (NO BORRAR)-->
@@ -520,8 +365,9 @@ endblock %} {% block content %}
     console.log("IntermediaryId BORRAR>" + IntermediaryId);
   }
 
-  function setEditProductId(IntermediaryId) {
+  function setEditProductId(IntermediaryId, companyName) {
     document.getElementById("EditValueIntermediary_id").value = IntermediaryId;
+    document.getElementById("editcompanyName").value = companyName;
     console.log("EditIntermediary_id EDITAR>" + IntermediaryId);
 
     // Encuentra la fila con el data-relation-id correspondiente
@@ -544,9 +390,10 @@ endblock %} {% block content %}
       );
 
       //var idIntermedary = rowData[0];}
-
+      
       //SELECCIONA LA COMPAÑIA PARA CARGARLA
-      var companyName = rowData[1];
+      
+
       // Obtener el elemento select
       var selectElement = document.getElementById("company-select2");
 
@@ -563,6 +410,8 @@ endblock %} {% block content %}
           // break;
         }
       }
+
+    
       //FIN
 
       var intermedaryName = rowData[2].replace(/\s+/g, " ").trim();
@@ -582,40 +431,18 @@ endblock %} {% block content %}
 
 <!-- EVITA EL USO DE COMILLAS EN TODOS LOS CAMPOS-->
 <script>
-  // Función para eliminar caracteres no permitidos de todos los campos de entrada, excepto los especificados
+  // Función para eliminar comillas simples y dobles de todos los campos de entrada
   document.querySelectorAll("input").forEach(function (input) {
-    // Verifica si el campo de entrada no tiene la clase "Telefono"
-    if (!input.classList.contains("Telefono")) {
-      input.addEventListener("input", function (event) {
-        // Obtener el valor actual del campo de entrada
-        var inputValue = event.target.value;
-        // Eliminar caracteres no permitidos (excepto letras con acentos y espacios)
-        var cleanedValue = inputValue.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]+/g, "");
-        // Actualizar el valor del campo de entrada
-        event.target.value = cleanedValue;
-      });
-    }
+    input.addEventListener("input", function (event) {
+      // Obtener el valor actual del campo de entrada
+      var inputValue = event.target.value;
+      // Eliminar comillas simples y comillas dobles del valor actual
+      var cleanedValue = inputValue.replace(/['"]+/g, "");
+      // Actualizar el valor del campo de entrada sin comillas simples y comillas dobles
+      event.target.value = cleanedValue;
+    });
   });
 </script>
-
-
-<script>
-  // Función para eliminar caracteres no permitidos de todos los campos de entrada, excepto los especificados
-  document.querySelectorAll("input").forEach(function (input) {
-    // Verifica si el campo de entrada tiene la clase "Telefono"
-    if (input.classList.contains("Telefono")) {
-      input.addEventListener("input", function (event) {
-        // Obtener el valor actual del campo de entrada
-        var inputValue = event.target.value;
-        // Eliminar todos los caracteres no numéricos
-        var cleanedValue = inputValue.replace(/\D/g, "");
-        // Actualizar el valor del campo de entrada
-        event.target.value = cleanedValue;
-      });
-    }
-  });
-</script>
-
 
 <!-- SOLO PERMITE AGREGAR UN UNICO ESPACIO EN TODOS LOS INPUTS-->
 <script>
@@ -654,7 +481,7 @@ endblock %} {% block content %}
       ) {
         event.target.value = event.target.value.substring(0, maxCharactersText); // Limita a maxCharactersText para campos de texto
       } else if (
-        event.target.type === "tel" &&
+        event.target.type === "number" &&
         event.target.value.length > maxCharactersNumber
       ) {
         event.target.value = event.target.value.substring(
@@ -712,7 +539,30 @@ endblock %} {% block content %}
   });
 </script>
 
-<!-- VALIDA LAS ENTRADAS DE TIPO TEL-->
+<!-- VALIDA EL NULO INGRESO DE OPERADORES EN LOS INPUTS DE TIPO NUMERO-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Función para prevenir caracteres no numéricos, el operador "." y el dígito "0" en inputs de tipo number
+    function preventInvalidChars(event) {
+      if (
+        event.key === "e" ||
+        event.key === "E" ||
+        event.key === "-" ||
+        event.key === "+" ||
+        event.key === "."
+      ) {
+        event.preventDefault();
+      }
+    }
+
+    // Agregar evento a todos los campos de entrada de tipo número
+    var numberFields = document.querySelectorAll("input[type='number']");
+    numberFields.forEach(function (input) {
+      input.addEventListener("keydown", preventInvalidChars);
+    });
+  });
+</script>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     var phoneInputs = document.querySelectorAll("input[type='tel']");
@@ -745,7 +595,7 @@ endblock %} {% block content %}
   document.addEventListener("DOMContentLoaded", function () {
     var form = document.getElementById("createCompanyForm");
     var saveButton = document.getElementById("submitProductSave");
-    var intermediaryPhone = document.getElementById("intermediaryPhone");
+   
 
     var tooltip = new bootstrap.Tooltip(saveButton, {
       placement: "bottom",
@@ -764,9 +614,7 @@ endblock %} {% block content %}
         }
       });
 
-      var isPhoneValid = intermediaryPhone.value.trim().length >= 10;
-
-      if (isEmpty || !isPhoneValid) {
+      if (isEmpty) {
         saveButton.disabled = true;
         saveButton.classList.remove("btn-success");
         saveButton.classList.add("btn-danger");
@@ -815,7 +663,7 @@ endblock %} {% block content %}
 
     var tooltip = new bootstrap.Tooltip(saveButton, {
       placement: "bottom",
-      title: "Please fill in all fields and ensure the phone number has at least 10 digits.",
+      title: "Please fill in all fields",
       trigger: "manual",
       customClass: "custom-tooltip", // Aquí se aplica la clase personalizada
     });
@@ -830,9 +678,7 @@ endblock %} {% block content %}
         }
       });
 
-      var isPhoneValid = intermediaryPhone.value.trim().length >= 10;
-
-      if (isEmpty || !isPhoneValid) {
+      if (isEmpty) {
         saveButton.disabled = true;
         saveButton.classList.remove("btn-success");
         saveButton.classList.add("btn-danger");

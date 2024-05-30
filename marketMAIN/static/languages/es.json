@@ -38,7 +38,8 @@
         "Name Company": "Nombre de la compañia",
         "Actions": "Acciones",
         "Manage Companies": "Administrar intermediarios",
-        "Create Company": "Crear compañia"
+        "Create Company": "Crear compañia",
+        "Create Intermedary": "Crear intermediarios"
         
     },
     "Sale":{

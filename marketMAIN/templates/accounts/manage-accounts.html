@@ -58,19 +58,6 @@ endblock %} {% block content %}
 
 
 <div class="d-flex flex-wrap mt-3">
-  <!-- Formulario para el primer botón -->
-  <form class="mb-2 mb-md-0">
-    <button
-      type="button"
-      class="btn btn-primary me-5"
-      data-bs-toggle="modal"
-      data-bs-target="#createmodal"
-      data-bs-whatever="@mdo"
-    >
-      <span data-section="manage-intermediary" data-value="Create Intermediary">Create Intermediary</span>
-    </button>
-  </form>  
-
       <div
         class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start"
       >
@@ -88,16 +75,15 @@ endblock %} {% block content %}
                 <th scope="col">
                   <span
                     data-section="manage-intermediary"
-                    data-value="Name Company"
-                    >Name Company</span
+                    data-value=""
+                    >Name user</span
                   >
                 </th>
                 <th scope="col">
-                  <span data-section="werehouse" data-value="Name Intermedary"
-                    >Name Intermedary</span
+                  <span data-section="werehouse" data-value=""
+                    >Mail</span
                   >
                 </th>
-                <th scope="col">Tel.</th>
                 <th scope="col">
                   <span data-section="manage-intermediary" data-value="Actions"
                     >Actions</span
@@ -107,11 +93,10 @@ endblock %} {% block content %}
             </thead>
             <tbody class="table-group-divider">
               {% for relation in relations %}
-              <tr data-relation-id="{{ relation[2] }}">
-                <th scope="row">{{ relation[2] }}</th>
-                <td>{{ relation[1] }}</td>
-                <td>{{ relation[3] ~ relation[4] ~ relation[5] }}</td>
-                <td>{{ relation[6] }}</td>
+              <tr data-relation-id="{{ relation[0] }}">
+                <th scope="row">{{ relation[0] }}</th>
+                <td>{{ relation[1] ~ relation[2] ~ relation[3] }}</td>
+                <td>{{ relation[4] }}</td>
                 <td
                   class="text-center d-flex justify-content-center align-items-center"
                 >
@@ -147,123 +132,6 @@ endblock %} {% block content %}
     </div>
   </div>
 </div>
-
-<!--CREAR INTERMEDIARIOS MODAL-->
-<div
-  class="modal fade"
-  id="createmodal"
-  data-bs-backdrop="static"
-  tabindex="-1"
-  aria-labelledby="createmodallabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="createmodallabel">Create New Company</h5>
-        <button
-          type="button"
-          class="btn-close custom-btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <form
-          id="createCompanyForm"
-          action="{{ url_for('products.manage_intermediary') }}"
-          method="post"
-          class="needs-validation"
-          novalidate
-        >
-        <input type="hidden" name="action" value="create">
-          <div class="mb-3">
-            <label for="company-select">Select Company:</label>
-            <select
-              class="form-select"
-              id="company-select"
-              name="company_id"
-              required
-            >
-              <option value="" disabled selected>Select Company</option>
-              {% for company in companies %}
-              <option value="{{ company[0] }}">{{ company[1] }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >Intermediary Names:</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="intermediaryName"
-              name="intermediaryName"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label">Last name:</label>
-            <input
-              type="text"
-              class="form-control"
-              id="AP_PAT"
-              name="AP_PAT"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >Mother's last name:</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="AP_MAT"
-              name="AP_MAT"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="intermediaryPhone" class="form-label"
-              >Intermediary Phone:</label
-            >
-            <input
-              type="tel"
-              class="form-control Telefono"
-              id="intermediaryPhone"
-              name="intermediaryPhone"
-              required
-            />
-          </div>
-
-          <div class="text-end">
-            <button
-              type="button"
-              class="btn btn-warning me-2"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button
-              id="submitProductSave"
-              type="submit"
-              class="btn btn-success"
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <!--EDITAR INTERMEDIARIOS MODAL-->
 <div

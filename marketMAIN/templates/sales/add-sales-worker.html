@@ -249,7 +249,7 @@ endblock %} {% block content %}
 <!-- CUERPO -->
 <div class="container-fluid mt-5">
   <!-- Agregamos la clase mt-5 para añadir margen superior -->
-  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
+  <div class="row mx-2 mt-5">
     <h6 class="mt-1 d-none d-sm-flex">Manage Sales</h6>
 
     {% include 'top navbar/top-width-navbar.html' %}
@@ -272,7 +272,9 @@ endblock %} {% block content %}
                 type="button"
                 class="btn btn-outline-primary btn-sm ms-2"
               >
-              <span data-section="Sale" data-value="Add Product">Add Product</span>
+                <span data-section="Sale" data-value="Add Product"
+                  >Add Product</span
+                >
               </button>
             </div>
             <div id="searchResults" class="dropdown-menu"></div>
@@ -322,11 +324,42 @@ endblock %} {% block content %}
         </div>
 
         <div
-          class="col-md-7 mt-3 border border-Tertiary p-3 rounded flex-wrap justify-content-center align-items-start"
+          class="col-md-7 mt-3 flex-wrap justify-content-center align-items-start"
         >
+
+
+        <div class="container mb-1">
+          <div class="row">
+            <div class="col-md-8"> <!-- Columna para los totales -->
+              <div class="total-container d-flex justify-content-start mt-1">
+                <h6 id="totalSum"></h6>
+              </div>
+        
+              <div class="total-container d-flex justify-content-start mt-1">
+                <h6 id="totalSumIVA"></h6>
+              </div>
+        
+              <div class="total-container d-flex justify-content-start mt-1">
+                <h6 id="totalSumALL"></h6>
+              </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-end justify-content-end"> <!-- Columna para el botón -->
+              <div class="total-container d-flex justify-content-end mt-1">
+                <button class="btn btn-outline-secondary w-100" id="updateTotalButton">
+                  <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                  Actualizar total
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+
           <div
             class="table-responsive"
-            style="max-height: 500px; overflow-y: auto"
+            style="max-height: 400px; overflow-y: auto"
           >
             <table
               id="saleTable"
@@ -336,10 +369,22 @@ endblock %} {% block content %}
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">id</th>
-                  <th scope="col"><span data-section="Sale" data-value="Name">Name</span></th>
-                  <th scope="col"><span data-section="Sale" data-value="Quantity">Quantity</span></th>
-                  <th scope="col"><span data-section="Sale" data-value="Price">Price</span></th>
-                  <th scope="col"><span data-section="Sale" data-value="Actions">Actions</span></th>
+                  <th scope="col">
+                    <span data-section="Sale" data-value="Name">Name</span>
+                  </th>
+                  <th scope="col">
+                    <span data-section="Sale" data-value="Quantity"
+                      >Quantity</span
+                    >
+                  </th>
+                  <th scope="col">
+                    <span data-section="Sale" data-value="Price">Price</span>
+                  </th>
+                  <th scope="col">
+                    <span data-section="Sale" data-value="Actions"
+                      >Actions</span
+                    >
+                  </th>
                 </tr>
               </thead>
               <tbody class="table-group-divider">
@@ -370,11 +415,102 @@ endblock %} {% block content %}
 ></div>
 
 <!-- Spinner -->
-<div id="spinner-container" style="display: none;">
-  <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status" id="spinner" >
+<div id="spinner-container" style="display: none">
+  <div
+    class="spinner-border text-light"
+    style="width: 3rem; height: 3rem"
+    role="status"
+    id="spinner"
+  >
     <span class="visually-hidden">Loading...</span>
   </div>
 </div>
+
+<!-- MUESTRA EL TOTAL DE LA COMPRA -->
+<script>
+  function sumTableNumbers() {
+    let table = document.getElementById("saleTable");
+    let rows = table.getElementsByTagName("tr");
+    let total = 0.0;
+
+    // Crear un array para almacenar los subtotales de cada producto
+    let subtotals = [];
+
+    // Iterar sobre las filas y calcular los subtotales de cada producto
+    for (let i = 1; i < rows.length; i++) {
+        let cells = rows[i].getElementsByTagName("td");
+        if (cells.length > 0) {
+            let price = parseFloat(cells[3].innerText);
+            let quantity = parseFloat(cells[2].querySelector("input").value);
+            let subtotal = price * quantity;
+            subtotals.push(subtotal);
+        }
+    }
+
+    // Sumar todos los subtotales para obtener el subtotal total
+    let subtotal = subtotals.reduce((acc, val) => acc + val, 0);
+
+    // Calcular el total con IVA
+    let totalWithIVA = (subtotal * 1.16).toFixed(2);
+    
+    // Calcular el total de la compra
+    let totalTotalWithIVA = (subtotal * 1.16).toFixed(2);
+
+    // Actualizar los elementos HTML con los resultados
+    document.getElementById("totalSum").innerText = "Subtotal: " + subtotal.toFixed(2) + "$";
+    document.getElementById("totalSumIVA").innerText = "Total de la compra con IVA: " + totalWithIVA + "$";
+    document.getElementById("totalSumALL").innerText = "Total de la compra: " + totalTotalWithIVA + "$";
+}
+
+
+  // Crear un MutationObserver para observar cambios en el tbody de la tabla
+  const targetNode = document.querySelector("#saleTable tbody");
+  const config = {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+  };
+
+  const callback = function (mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (
+        mutation.type === "childList" ||
+        mutation.type === "characterData" ||
+        mutation.type === "attributes"
+      ) {
+        sumTableNumbers(); // Llamar a sumTableNumbers en cada mutación observada
+      }
+    }
+  };
+
+  const observer = new MutationObserver(callback);
+  observer.observe(targetNode, config);
+
+  // Observar cambios en los inputs de cantidad específicamente
+  const inputElements = document.querySelectorAll(
+    "#saleTable tbody tr td:nth-child(3) input"
+  );
+  inputElements.forEach((input) => {
+    input.addEventListener("input", sumTableNumbers);
+  });
+
+  document.getElementById("updateTotalButton").addEventListener("click", function() {
+    // Mostrar el spinner
+    document.getElementById("spinner").classList.remove("d-none");
+
+    // Llamar a la función sumTableNumbers después de un pequeño retraso para simular el tiempo de procesamiento
+    setTimeout(function() {
+      sumTableNumbers();
+
+      // Ocultar el spinner después de que se completen los cálculos
+      document.getElementById("spinner").classList.add("d-none");
+    }, 500); // Puedes ajustar este valor según sea necesario
+  });
+
+  // Llamar a la función para calcular la suma cuando se carga la página
+  window.onload = sumTableNumbers;
+</script>
 
 <!-- SCRIPT PARA CARGAR TOOLTIPS -->
 <script>
@@ -416,6 +552,19 @@ endblock %} {% block content %}
       // Actualizar el valor del campo de entrada sin comillas simples y comillas dobles
       event.target.value = cleanedValue;
     });
+  });
+</script>
+
+<!-- MUESTA MENSAJE DE BOTONES Y LISTA VACIOS (AS)-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Verificar si el contenedor de botones está vacío
+    const buttonsContainer = document.querySelector(".buttons");
+    if (!buttonsContainer || buttonsContainer.children.length === 0) {
+      const emptyButtonsMessage = document.createElement("p");
+      emptyButtonsMessage.textContent = "Lista de elementos vacía.";
+      buttonsContainer.appendChild(emptyButtonsMessage);
+    }
   });
 </script>
 
@@ -603,7 +752,7 @@ endblock %} {% block content %}
     document.getElementById("spinner-container").style.display = "flex";
 
     const xhr = new XMLHttpRequest();
-    const url = "/sales/MakeSales";
+    const url = "/sales/addsalesworker";
     const method = "POST";
 
     xhr.open(method, url);

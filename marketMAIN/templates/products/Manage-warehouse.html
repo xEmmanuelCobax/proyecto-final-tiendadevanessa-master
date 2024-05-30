@@ -9,9 +9,43 @@ endblock %} {% block content %}
   href="{{ url_for('static', filename='css/products.css') }}"
 />
 
+<!-- ESTILO PARA LAS TOAST WARNING-->
+<style>
+  /* Estilo personalizado para el toast */
+  .toast {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0.75rem;
+    background-color: #f8f9fa; /* Color de fondo similar al de las alertas de Apple */
+    border: 1px solid rgba(0, 0, 0, 0.125); /* Borde similar al de las alertas de Apple */
+    color: #212529; /* Color del texto */
+    border-radius: 4px;
+  }
+
+  /* Estilo para el título del toast */
+  .toast-header {
+    background-color: #ffc107;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    margin-bottom: -0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  /* Estilo para el cuerpo del toast */
+  .toast-body {
+    padding: 0.5rem 0;
+  }
+
+  /* Estilo para el botón de cerrar el toast */
+  .btn-close {
+    padding: 0.25rem 0.75rem;
+    margin: 0.25rem 0 0.25rem auto;
+  }
+</style>
+
 <div class="container-fluid mt-5">
   <!-- Agregamos la clase mt-5 para añadir margen superior -->
-  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
+  <div class="row mx-2 mt-5">
     <h6 class="mt-1 d-none d-sm-flex">Manage warehouse</h6>
 
     {% include 'top navbar/top-width-navbar.html' %}
@@ -21,7 +55,6 @@ endblock %} {% block content %}
       <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
       <form class="d-flex mt-3">
         <!-- Este div se expandirá para ocupar el espacio disponible -->
-
         <button
           type="button"
           class="btn btn-primary"
@@ -36,7 +69,7 @@ endblock %} {% block content %}
       </form>
 
       <div
-        class="col-md-12 mt-3 border border-Tertiary p-3 rounded flex-wrap justify-content-center align-items-start"
+        class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start"
       >
         <div
           class="table-responsive"
@@ -158,11 +191,12 @@ endblock %} {% block content %}
       <div class="modal-body">
         <form
           id="createproductmodal"
-          action="{{ url_for('products.create_product') }}"
+          action="{{ url_for('products.manage_products') }}"
           method="post"
           class="needs-validation"
           novalidate
         >
+        <input type="hidden" name="form_type" value="create">
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
@@ -334,11 +368,12 @@ endblock %} {% block content %}
       <div class="modal-body">
         <form
           id="editproductform"
-          action="{{ url_for('products.update_product') }}"
+          action="{{ url_for('products.manage_products') }}"
           method="post"
           class="needs-validation"
           novalidate
         >
+          <input type="hidden" name="form_type" value="update">
           <div class="row">
             <div class="col-md-6">
               <!--MARCA-PRODUCTOS-id>newmarca-->
@@ -537,9 +572,10 @@ endblock %} {% block content %}
         </button>
         <form
           id="delete-product-form"
-          action="{{ url_for('products.delete_product') }}"
+          action="{{ url_for('products.manage_products') }}"
           method="post"
         >
+        <input type="hidden" name="form_type" value="delete">
           <input
             id="product-id-input"
             type="hidden"
@@ -571,6 +607,52 @@ endblock %} {% block content %}
 
 <!-- Elemento oculto para almacenar los datos de 'members' -->
 <div id="members-data" data-members="{{ members }}" style="display: none"></div>
+
+
+<!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
+<div id="flash-messages" style="display: none;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }}" role="alert">
+    {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+</div>
+
+<!-- MOTAL PARA MOSTRAR FLASH -->
+<div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="flashModalLabel">Notification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="flashModalBody">
+        <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MOSTRAR EL MODAL PARA MOSTRAR ERRORES Y MENSAJES  -->
+<script>
+  $(document).ready(function () {
+    var flashMessages = $('#flash-messages').html().trim();
+    if (flashMessages) {
+      $('#flashModalBody').html(flashMessages);
+      $('#flashModal').modal('show');
+    }
+  });
+</script>
+
 
 <!-- <script src="{{ url_for('static', filename='js/qrScan.js') }}"></script>-->
 
@@ -613,11 +695,11 @@ endblock %} {% block content %}
       //NOMBRE DEL PRODUCTO (FUNCIONA)
       var nombreProducto = rowData[1].replace(/_/g, " "); // Reemplazar "_" con espacio
       nombreProducto = nombreProducto.replace(/\s\d+.*/, "");
-      console.log(nombreProducto);
+      console.log("el nombre del producto seleccionado es: " + nombreProducto);
       document.getElementById("newmarca").value = nombreProducto;
       //FIN
 
-      //NOMBRE DEL PRODUCTO (FUNCIONA)
+      //STOCK (FUNCIONA)
       var stock = rowData[4];
       document.getElementById("newcantidadInput").value = stock;
       //FIN
@@ -1066,6 +1148,21 @@ endblock %} {% block content %}
         $(this).val(""); // Opcional: Limpia el valor del campo de entrada
       });
     });
+  });
+</script>
+
+<!-- MUESTA MENSAJE DE LISTA VACIAS -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Verificar si la tabla está vacía
+    const tableBody = document.querySelector("#product-table tbody");
+    if (!tableBody || tableBody.children.length === 0) {
+      const emptyTableMessage = document.createElement("tr");
+      emptyTableMessage.innerHTML = `
+        <td colspan="6" class="text-center">Lista de elementos vacía.</td>
+      `;
+      tableBody.appendChild(emptyTableMessage);
+    }
   });
 </script>
 
