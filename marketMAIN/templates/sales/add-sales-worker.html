@@ -292,6 +292,17 @@ endblock %} {% block content %}
 
       <div class="row">
         <div class="col-md-5">
+
+
+          <div class="btn-group mt-2 d-none" role="group" aria-label="Basic outlined">
+            <button type="button" class="btn btn-outline-secondary">Left</button>
+            <button type="button" class="btn btn-outline-secondary">Middle</button>
+            <button type="button" class="btn btn-outline-secondary">Right</button>
+            <button type="button" class="btn btn-outline-secondary">Right</button>
+            <button type="button" class="btn btn-outline-secondary">Right</button>
+          </div>
+
+
           <div
             class="buttons mt-3 border border-Tertiary p-3 rounded d-flex flex-wrap justify-content-center align-items-center"
             style="max-height: 500px; overflow-y: auto"
@@ -326,36 +337,41 @@ endblock %} {% block content %}
         <div
           class="col-md-7 mt-3 flex-wrap justify-content-center align-items-start"
         >
+          <div class="container mb-1">
+            <div class="row">
+              <div class="col-md-8">
+                <!-- Columna para los totales -->
+                <div class="total-container d-flex justify-content-start mt-1">
+                  <h6 id="totalSum"></h6>
+                </div>
 
+                <div class="total-container d-flex justify-content-start mt-1">
+                  <h6 id="totalSumIVA"></h6>
+                </div>
 
-        <div class="container mb-1">
-          <div class="row">
-            <div class="col-md-8"> <!-- Columna para los totales -->
-              <div class="total-container d-flex justify-content-start mt-1">
-                <h6 id="totalSum"></h6>
+                <div class="total-container d-flex justify-content-start mt-1">
+                  <h6 id="totalSumALL"></h6>
+                </div>
               </div>
-        
-              <div class="total-container d-flex justify-content-start mt-1">
-                <h6 id="totalSumIVA"></h6>
-              </div>
-        
-              <div class="total-container d-flex justify-content-start mt-1">
-                <h6 id="totalSumALL"></h6>
-              </div>
-            </div>
-            <div class="col-md-4 d-flex align-items-end justify-content-end"> <!-- Columna para el botón -->
-              <div class="total-container d-flex justify-content-end mt-1">
-                <button class="btn btn-outline-secondary w-100" id="updateTotalButton">
-                  <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                  Actualizar total
-                </button>
+              <div class="col-md-4 d-flex align-items-end justify-content-end">
+                <!-- Columna para el botón -->
+                <div class="total-container d-flex justify-content-end mt-1">
+                  <button
+                    class="btn btn-outline-secondary w-100"
+                    id="updateTotalButton"
+                  >
+                    <span
+                      id="spinner-total"
+                      class="spinner-border spinner-border-sm d-none"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Actualizar total
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        
-        
 
           <div
             class="table-responsive"
@@ -438,13 +454,13 @@ endblock %} {% block content %}
 
     // Iterar sobre las filas y calcular los subtotales de cada producto
     for (let i = 1; i < rows.length; i++) {
-        let cells = rows[i].getElementsByTagName("td");
-        if (cells.length > 0) {
-            let price = parseFloat(cells[3].innerText);
-            let quantity = parseFloat(cells[2].querySelector("input").value);
-            let subtotal = price * quantity;
-            subtotals.push(subtotal);
-        }
+      let cells = rows[i].getElementsByTagName("td");
+      if (cells.length > 0) {
+        let price = parseFloat(cells[3].innerText);
+        let quantity = parseFloat(cells[2].querySelector("input").value);
+        let subtotal = price * quantity;
+        subtotals.push(subtotal);
+      }
     }
 
     // Sumar todos los subtotales para obtener el subtotal total
@@ -452,16 +468,18 @@ endblock %} {% block content %}
 
     // Calcular el total con IVA
     let totalWithIVA = (subtotal * 1.16).toFixed(2);
-    
+
     // Calcular el total de la compra
     let totalTotalWithIVA = (subtotal * 1.16).toFixed(2);
 
     // Actualizar los elementos HTML con los resultados
-    document.getElementById("totalSum").innerText = "Subtotal: " + subtotal.toFixed(2) + "$";
-    document.getElementById("totalSumIVA").innerText = "Total de la compra con IVA: " + totalWithIVA + "$";
-    document.getElementById("totalSumALL").innerText = "Total de la compra: " + totalTotalWithIVA + "$";
-}
-
+    document.getElementById("totalSum").innerText =
+      "Subtotal: " + subtotal.toFixed(2) + "$";
+    document.getElementById("totalSumIVA").innerText =
+      "Total de la compra con IVA: " + totalWithIVA + "$";
+    document.getElementById("totalSumALL").innerText =
+      "Total de la compra: " + totalTotalWithIVA + "$";
+  }
 
   // Crear un MutationObserver para observar cambios en el tbody de la tabla
   const targetNode = document.querySelector("#saleTable tbody");
@@ -495,18 +513,28 @@ endblock %} {% block content %}
     input.addEventListener("input", sumTableNumbers);
   });
 
-  document.getElementById("updateTotalButton").addEventListener("click", function() {
+  function updateTotal() {
     // Mostrar el spinner
-    document.getElementById("spinner").classList.remove("d-none");
+    document.getElementById("spinner-total").classList.remove("d-none");
 
     // Llamar a la función sumTableNumbers después de un pequeño retraso para simular el tiempo de procesamiento
-    setTimeout(function() {
+    setTimeout(function () {
       sumTableNumbers();
 
       // Ocultar el spinner después de que se completen los cálculos
-      document.getElementById("spinner").classList.add("d-none");
+      document.getElementById("spinner-total").classList.add("d-none");
     }, 500); // Puedes ajustar este valor según sea necesario
-  });
+  }
+
+  // Ejecutar la función al hacer clic en el botón
+  document
+    .getElementById("updateTotalButton")
+    .addEventListener("click", function () {
+      updateTotal();
+    });
+
+  // Ejecutar la función automáticamente cada 1 segundo
+  setInterval(updateTotal, 5000);
 
   // Llamar a la función para calcular la suma cuando se carga la página
   window.onload = sumTableNumbers;

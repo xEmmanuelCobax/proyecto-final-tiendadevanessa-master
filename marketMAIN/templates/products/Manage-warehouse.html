@@ -285,7 +285,7 @@ endblock %} {% block content %}
                     Select Intermediary
                   </option>
                   {% for relation in relations %}
-                  <option value="{{ relation[2] }}">
+                  <option value="{{ relation[0] }}">
                     {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
                     relation[5] }}
                   </option>
@@ -471,7 +471,7 @@ endblock %} {% block content %}
                     Select Intermediary
                   </option>
                   {% for relation in relations %}
-                  <option value="{{ relation[2] }}">
+                  <option value="{{ relation[0] }}">
                     {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
                     relation[5] }}
                   </option>
@@ -839,20 +839,26 @@ endblock %} {% block content %}
       ];
 
     // Obtener el texto de la opción seleccionada (nombre de la compañía)
-    var selectedCompany = selectedOption.textContent.toLowerCase().trim();
+    var selectedCompany = selectedOption.value;
+    console.log("SelectCompany>"+selectedCompany);
 
     // Obtener todas las opciones de intermediarios
     var intermediaries = document.querySelectorAll(
       "#intermedary-select option"
     );
+   
+    
+
 
     // Recorrer todas las opciones de intermediarios
     intermediaries.forEach(function (option) {
       // Obtener la compañía asociada con el intermediario (formato: "Compañía Nombre Apellido Apellido")
-      var companyAndName = option.textContent.trim().toLowerCase();
+      var companyAndName = option.value;
+      console.log("companyAndName>" + companyAndName);
 
       // Obtener solo el nombre de la compañía del intermediario
       var intermediaryCompany = companyAndName.split(" ")[0];
+      
 
       // Comparar la compañía seleccionada con la compañía del intermediario
       if (intermediaryCompany !== selectedCompany) {
@@ -885,7 +891,7 @@ endblock %} {% block content %}
       ];
 
     // Obtener el texto de la opción seleccionada (nombre de la compañía)
-    var selectedCompany = selectedOption.textContent.toLowerCase().trim();
+    var selectedCompany = selectedOption.value;
 
     // Obtener todas las opciones de intermediarios
     var intermediaries = document.querySelectorAll(
@@ -895,7 +901,7 @@ endblock %} {% block content %}
     // Recorrer todas las opciones de intermediarios
     intermediaries.forEach(function (option) {
       // Obtener la compañía asociada con el intermediario (formato: "Compañía Nombre Apellido Apellido")
-      var companyAndName = option.textContent.trim().toLowerCase();
+      var companyAndName = option.value;
 
       // Obtener solo el nombre de la compañía del intermediario
       var intermediaryCompany = companyAndName.split(" ")[0];
