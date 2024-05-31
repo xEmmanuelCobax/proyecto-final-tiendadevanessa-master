@@ -1701,6 +1701,7 @@ def manage_accounts():
             dbo.usuarios.CORREO 
         FROM dbo.usuarios 
         WHERE dbo.usuarios.ESTATUS = 1 
+        AND dbo.usuarios.ES_ADMIN = 0
         """
     )
     print(

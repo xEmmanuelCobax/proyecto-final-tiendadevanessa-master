@@ -471,7 +471,7 @@ endblock %} {% block content %}
                     Select Intermediary
                   </option>
                   {% for relation in relations %}
-                  <option value="{{ relation[2] }}">
+                  <option value="{{ relation[0] }}">
                     {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
                     relation[5] }}
                   </option>
