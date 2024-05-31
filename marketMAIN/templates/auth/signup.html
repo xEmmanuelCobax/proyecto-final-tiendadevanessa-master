@@ -27,10 +27,10 @@
         <div class="col-xl-5 offset-xl-1">
           <!-- Aquí comienza la sección del formulario -->
           <form method="post" action="" id="signupForm">
-            <h1 class="fw-bold mb-4 signin__titulo text-center">Sign Up</h1>
+            <h1 class="fw-bold mb-4 signin__titulo text-center">Registrarse</h1>
             <!-- NOMBRE || id=name-->
             <div class="form-outline mb-4">
-              <label for="username">Names</label>
+              <label for="username">Nombres</label>
               <div class="col-sm-10">
                 <input
                   type="text"
@@ -44,7 +44,7 @@
                   data-bs-toggle="tooltip-user-found"
                   data-bs-placement="left"
                   data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if user_found %}Names already registered.{% else %}Enter your names.{% endif %}"
+                  data-bs-title="{% if user_found %}Estos nombres ya han sido registrados.{% else %}Ingresa tus nombres.{% endif %}"
                 />
               </div>
               {% if name_error %}
@@ -57,7 +57,7 @@
               <div class="row">
                 <!-- apellido paterno || id=apellidoPaterno-->
                 <div class="col-md-5 mb-3 mb-md-0">
-                  <label for="apellidoPaterno">Paternal Last Name</label>
+                  <label for="apellidoPaterno">Apellido paterno</label>
                   <div>
                     <input
                       type="text"
@@ -69,11 +69,11 @@
                       data-bs-toggle="tooltip"
                       data-bs-placement="left"
                       data-bs-custom-class="custom-tooltip"
-                      data-bs-title="{% if paternal_lastname_error %}Paternal last name error.{% else %}Enter your paternal last name{% endif %}"
+                      data-bs-title="{% if paternal_lastname_error %}Error de apellido paterno.{% else %}Ingrese su apellido paterno.{% endif %}"
                     />
                     {% if paternal_lastname_valid %}
                     <div class="valid-feedback">
-                      <i class="bi bi-check-circle"></i> Paternal last name
+                      <i class="bi bi-check-circle"></i> Apellido paterno
                       provided
                     </div>
                     {% endif %}
@@ -87,7 +87,7 @@
 
                 <!-- apellido materno || id=apellidoMaterno-->
                 <div class="col-md-5">
-                  <label for="apellidoMaterno">Maternal Last Name</label>
+                  <label for="apellidoMaterno">Apellido materno</label>
                   <div>
                     <input
                       type="text"
@@ -98,11 +98,11 @@
                       data-bs-toggle="tooltip"
                       data-bs-placement="left"
                       data-bs-custom-class="custom-tooltip"
-                      data-bs-title="{% if maternal_lastname_error %}Maternal last name error.{% else %}Enter your maternal last name{% endif %}"
+                      data-bs-title="{% if maternal_lastname_error %}Error de apellido paterno{% else %}Ingrese su apellido materno.{% endif %}"
                     />
                     {% if maternal_lastname_valid %}
                     <div class="valid-feedback">
-                      <i class="bi bi-check-circle"></i> Maternal last name
+                      <i class="bi bi-check-circle"></i> Apellido materno
                       provided
                     </div>
                     {% endif %}
@@ -118,7 +118,7 @@
 
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <label for="email">Email Address</label>
+              <label for="email">Correo electrónico</label>
               <div class="col-sm-10">
                 <input
                   type="email"
@@ -129,7 +129,7 @@
                   data-bs-toggle="tooltip"
                   data-bs-placement="left"
                   data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if email_found %}Email already registered.{% else %}Please enter a valid email address with @gmail.com, @hotmail.com, @live.com, or @outlook.com domain.{% endif %}"
+                  data-bs-title="{% if email_found %}Este correo electrónico ya ha sido registrado.{% else %}Por favor, ingresa un correo electronico con un dominio valido como: @gmail.com, @hotmail.com, @live.com, o @outlook.com.{% endif %}"
                 />
               </div>
               {% if email_found %}
@@ -141,7 +141,7 @@
 
             <!-- Password input -->
             <div class="form-outline mb-4">
-              <label for="password">Password</label>
+              <label for="password">Contraseña</label>
               <div class="col-sm-10">
                 <div class="input-group">
                   <input
@@ -153,7 +153,7 @@
                     data-bs-toggle="tooltip"
                     data-bs-placement="left"
                     data-bs-custom-class="custom-tooltip"
-                    data-bs-title="Password must be at least 8 characters long"
+                    data-bs-title="La contraseña debe al menos tener 8 caracteres de largo"
                   />
                   <div class="mt-2">
                     <button
@@ -161,7 +161,7 @@
                       type="button"
                       id="generatePassword"
                     >
-                      Generate
+                      Generar
                     </button>
                   </div>
                 </div>
@@ -174,8 +174,8 @@
               <!-- <p class="informacion__mensaje">*Create your Specify account with your work email to sync 
                           all your design data across your design system</p>  -->
               <div class="">
-                <a>Already have an account?</a>
-                <a href="{{url_for('auth.signin')}}" class="forget">Sign in</a>
+                <a>¿Cuentas con una cuenta?</a>
+                <a href="{{url_for('auth.signin')}}" class="forget">Iniciar sesión</a>
               </div>
             </div>
             <!-- Submit button -->
@@ -184,7 +184,7 @@
               class="btn__form btn btn-primary btn-lg btn-block"
               id="submitButton"
             >
-              Sign Up
+              Registrarse
             </button>
           </form>
           <!-- Fin del formulario -->
@@ -215,14 +215,14 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="flashModalLabel">Notification</h5>
+        <h5 class="modal-title" id="flashModalLabel">Nortificación</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="flashModalBody">
         <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

@@ -46,8 +46,6 @@ endblock %} {% block content %}
     <h6 class="mt-1 d-none d-sm-flex">
       <span
         span
-        data-section="manage-intermediary"
-        data-value="Manage Companies"
         >Manage Intermediaries</span
       >
     </h6>
@@ -67,7 +65,7 @@ endblock %} {% block content %}
       data-bs-target="#createmodal"
       data-bs-whatever="@mdo"
     >
-      <span data-section="manage-intermediary" data-value="Create Intermediary">Create Intermediary</span>
+      <span>Create Intermediary</span>
     </button>
   </form>  
 
@@ -87,19 +85,17 @@ endblock %} {% block content %}
                 <th scope="col">#</th>
                 <th scope="col">
                   <span
-                    data-section="manage-intermediary"
-                    data-value="Name Company"
                     >Name Company</span
                   >
                 </th>
                 <th scope="col">
-                  <span data-section="werehouse" data-value="Name Intermedary"
+                  <span
                     >Name Intermedary</span
                   >
                 </th>
                 <th scope="col">Tel.</th>
                 <th scope="col">
-                  <span data-section="manage-intermediary" data-value="Actions"
+                  <span
                     >Actions</span
                   >
                 </th>
@@ -107,7 +103,10 @@ endblock %} {% block content %}
             </thead>
             <tbody class="table-group-divider">
               {% for relation in relations %}
-              <tr data-relation-id="{{ relation[2] }}">
+              <tr data-relation-id="{{ relation[2] }}" 
+                data-first-name="{{ relation[3] }}" 
+                data-last-name-paternal="{{ relation[4] }}" 
+                data-last-name-maternal="{{ relation[5] }}">
                 <th scope="row">{{ relation[2] }}</th>
                 <td>{{ relation[1] }}</td>
                 <td>{{ relation[3] ~ relation[4] ~ relation[5] }}</td>
@@ -542,9 +541,15 @@ endblock %} {% block content %}
       var rowData = Array.from(foundRow.children).map((cell) =>
         cell.textContent.trim()
       );
-
+      console.log("RowData>" + rowData);
       //var idIntermedary = rowData[0];}
-
+      // Obtener los nombres separados desde los atributos de datos
+      var firstName = foundRow.getAttribute("data-first-name");
+      var lastNamePaternal = foundRow.getAttribute("data-last-name-paternal");
+      var lastNameMaternal = foundRow.getAttribute("data-last-name-maternal");
+      console.log("Nombre:", firstName);
+      console.log("Apellido Paterno:", lastNamePaternal);
+      console.log("Apellido Materno:", lastNameMaternal);
       //SELECCIONA LA COMPAÑIA PARA CARGARLA
       var companyName = rowData[1];
       // Obtener el elemento select
@@ -564,10 +569,9 @@ endblock %} {% block content %}
         }
       }
       //FIN
-
-      var intermedaryName = rowData[2].replace(/\s+/g, " ").trim();
-      console.log(intermedaryName);
-      document.getElementById("editIntermediaryName").value = intermedaryName;
+      document.getElementById("editIntermediaryName").value = firstName;
+      document.getElementById("NEW-AP_PAT").value = lastNamePaternal;
+      document.getElementById("NEW-AP_MAT").value = lastNameMaternal;
 
       var telPhone = rowData[3];
       document.getElementById("editIntermediaryPhone").value = telPhone;

@@ -294,7 +294,7 @@ endblock %} {% block content %}
         <div class="col-md-5">
           <div
             class="buttons mt-3 border border-Tertiary p-3 rounded d-flex flex-wrap justify-content-center align-items-center"
-            style="max-height: 500px; overflow-y: auto"
+            style="max-height: 600px; overflow-y: auto"
           >
             {% for product in products %}
             <div
@@ -326,36 +326,69 @@ endblock %} {% block content %}
         <div
           class="col-md-7 mt-3 flex-wrap justify-content-center align-items-start"
         >
+          <div class="container mb-1">
+            <div class="row">
+              <div class="col-md-8">
+                <!-- Columna para los totales -->
+                <div class="total-container d-flex justify-content-start mt-1">
+                  <h6 id="totalSum"></h6>
+                </div>
+
+                <div class="total-container d-flex justify-content-start mt-1">
+                  <h6 id="totalSumIVA"></h6>
+                </div>
+
+                <div class="total-container d-flex justify-content-start mt-1">
+                  <h6 id="totalSumALL"></h6>
+                </div>
+
+                
+              </div>
+
+              <div class="col-md-4 d-flex align-items-end justify-content-end">
+                <!-- Columna para el botón -->
+                <div class="total-container d-flex justify-content-end mt-1">
+                  <button
+                    class="btn d-none btn-outline-secondary w-100"
+                    id="updateTotalButton"
+                  >
+                    <span
+                      id="spinner-total"
+                      class="spinner-border spinner-border-sm d-none"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Actualizar total
+                  </button>
+                </div>
+              </div>
+
+              <form>
+                <div class="form-group row ">
+                  <label for="paymentInput" class="col-sm-4 col-form-label">Pago en efectivo</label>
+                  <div class="col-sm-8">
+                    <div class="input-group">
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="paymentInput"
+                        min="1"
+                        maxlength="6"
+                        placeholder="Ingrese la cantidad"
+                      />
+                      <span class="input-group-text" id="basic-addon1">$</span>
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+              <div class="total-container d-flex justify-content-start mt-1">
+                <h6 id="cambiocliente"></h6>
+              </div>
 
 
-        <div class="container mb-1">
-          <div class="row">
-            <div class="col-md-8"> <!-- Columna para los totales -->
-              <div class="total-container d-flex justify-content-start mt-1">
-                <h6 id="totalSum"></h6>
-              </div>
-        
-              <div class="total-container d-flex justify-content-start mt-1">
-                <h6 id="totalSumIVA"></h6>
-              </div>
-        
-              <div class="total-container d-flex justify-content-start mt-1">
-                <h6 id="totalSumALL"></h6>
-              </div>
-            </div>
-            <div class="col-md-4 d-flex align-items-end justify-content-end"> <!-- Columna para el botón -->
-              <div class="total-container d-flex justify-content-end mt-1">
-                <button class="btn btn-outline-secondary w-100" id="updateTotalButton">
-                  <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                  Actualizar total
-                </button>
-              </div>
             </div>
           </div>
-        </div>
-        
-        
-        
 
           <div
             class="table-responsive"
@@ -438,30 +471,39 @@ endblock %} {% block content %}
 
     // Iterar sobre las filas y calcular los subtotales de cada producto
     for (let i = 1; i < rows.length; i++) {
-        let cells = rows[i].getElementsByTagName("td");
-        if (cells.length > 0) {
-            let price = parseFloat(cells[3].innerText);
-            let quantity = parseFloat(cells[2].querySelector("input").value);
-            let subtotal = price * quantity;
-            subtotals.push(subtotal);
-        }
+      let cells = rows[i].getElementsByTagName("td");
+      if (cells.length > 0) {
+        let price = parseFloat(cells[3].innerText);
+        let quantity = parseFloat(cells[2].querySelector("input").value);
+        let subtotal = price * quantity;
+        subtotals.push(subtotal);
+      }
     }
+
+    const inputElement = document.getElementById('paymentInput');
+    const inputValue = inputElement.value;
 
     // Sumar todos los subtotales para obtener el subtotal total
     let subtotal = subtotals.reduce((acc, val) => acc + val, 0);
 
     // Calcular el total con IVA
     let totalWithIVA = (subtotal * 1.16).toFixed(2);
-    
+
     // Calcular el total de la compra
     let totalTotalWithIVA = (subtotal * 1.16).toFixed(2);
 
-    // Actualizar los elementos HTML con los resultados
-    document.getElementById("totalSum").innerText = "Subtotal: " + subtotal.toFixed(2) + "$";
-    document.getElementById("totalSumIVA").innerText = "Total de la compra con IVA: " + totalWithIVA + "$";
-    document.getElementById("totalSumALL").innerText = "Total de la compra: " + totalTotalWithIVA + "$";
-}
+    var cambiocliente = (inputValue - totalTotalWithIVA);
 
+    // Actualizar los elementos HTML con los resultados
+    document.getElementById("totalSum").innerText =
+      "Subtotal: " + subtotal.toFixed(2) + "$";
+    document.getElementById("totalSumIVA").innerText =
+      "Total de la compra con IVA: " + totalWithIVA + "$";
+    document.getElementById("totalSumALL").innerText =
+      "Total de la compra: " + totalTotalWithIVA + "$";
+    document.getElementById("cambiocliente").innerText =
+      "Cambio a entregar: " + cambiocliente + "$";
+  }
 
   // Crear un MutationObserver para observar cambios en el tbody de la tabla
   const targetNode = document.querySelector("#saleTable tbody");
@@ -495,18 +537,28 @@ endblock %} {% block content %}
     input.addEventListener("input", sumTableNumbers);
   });
 
-  document.getElementById("updateTotalButton").addEventListener("click", function() {
+  function updateTotal() {
     // Mostrar el spinner
-    document.getElementById("spinner").classList.remove("d-none");
+    document.getElementById("spinner-total").classList.remove("d-none");
 
     // Llamar a la función sumTableNumbers después de un pequeño retraso para simular el tiempo de procesamiento
-    setTimeout(function() {
+    setTimeout(function () {
       sumTableNumbers();
 
       // Ocultar el spinner después de que se completen los cálculos
-      document.getElementById("spinner").classList.add("d-none");
+      document.getElementById("spinner-total").classList.add("d-none");
     }, 500); // Puedes ajustar este valor según sea necesario
-  });
+  }
+
+  // Ejecutar la función al hacer clic en el botón
+  document
+    .getElementById("updateTotalButton")
+    .addEventListener("click", function () {
+      updateTotal();
+    });
+
+  // Ejecutar la función automáticamente cada 1 segundo
+  setInterval(updateTotal, 500);
 
   // Llamar a la función para calcular la suma cuando se carga la página
   window.onload = sumTableNumbers;
@@ -528,6 +580,63 @@ endblock %} {% block content %}
         // Cerrar el tooltip cuando el mouse sale del elemento
         tooltip.hide();
       });
+    });
+  });
+</script>
+
+<!-- LIMITA EL NÚMERO DE CARACTERES DE LAS ENTRADAS-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var maxCharactersText = 35; // Máximo de caracteres para campos de texto
+    var maxCharactersNumber = 6; // Máximo de caracteres para campos de número
+
+    // Función para manejar el evento de entrada y limitar la longitud de los campos de entrada
+    function handleInput(event) {
+      if (
+        event.target.type === "text" &&
+        event.target.value.length > maxCharactersText
+      ) {
+        event.target.value = event.target.value.substring(0, maxCharactersText); // Limita a maxCharactersText para campos de texto
+      } else if (
+        event.target.type === "number" &&
+        event.target.value.length > maxCharactersNumber
+      ) {
+        event.target.value = event.target.value.substring(
+          0,
+          maxCharactersNumber
+        ); // Limita a maxCharactersNumber para campos de número
+      }
+    }
+
+    // Agregar evento de entrada a todos los campos de entrada
+    var inputFields = document.querySelectorAll("input");
+    inputFields.forEach(function (input) {
+      input.addEventListener("input", handleInput);
+    });
+  });
+</script>
+
+<!-- VALIDA EL NULO INGRESO DE OPERADORES EN LOS INPUTS DE TIPO NUMERO-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Función para prevenir caracteres no numéricos y operadores en inputs de tipo number
+    function preventInvalidChars(event) {
+      if (
+        event.target.type === "number" &&
+        (event.key === "e" ||
+          event.key === "E" ||
+          event.key === "-" ||
+          event.key === "+" 
+          )
+      ) {
+        event.preventDefault();
+      }
+    }
+
+    // Agregar evento solo a los campos de entrada de tipo number
+    var numberFields = document.querySelectorAll("input[type='number']");
+    numberFields.forEach(function (input) {
+      input.addEventListener("keydown", preventInvalidChars);
     });
   });
 </script>

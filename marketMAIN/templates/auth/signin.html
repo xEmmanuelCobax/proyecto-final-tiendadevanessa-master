@@ -28,11 +28,11 @@
           <!-- Aquí comienza la sección del formulario -->
           <form method="post" action="">
             <!-- Eliminar la clase text-end del formulario -->
-            <h1 class="fw-bold mb-4 signin__titulo text-center" data-section="singin" data-value="Sign In">Sign In</h1>
+            <h1 class="fw-bold mb-4 signin__titulo text-center" data-section="singin" data-value="Sign In">Iniciar Sesión</h1>
             <!-- Agregar la clase text-center para centrar el título -->
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <label for="email" data-section="singin" data-value="Email Address">Email Address</label>
+              <label for="email" data-section="singin" data-value="Email Address">Correo Electronico</label>
               <!-- Eliminar la clase text-end de la etiqueta -->
               <div class="col-sm-10">
                 <input
@@ -45,7 +45,7 @@
                   data-bs-toggle="tooltip-bademail"
                   data-bs-placement="left"
                   data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if email_not_found %}Email not found.{% else %}Please enter a valid email address with @gmail.com, @hotmail.com, @live.com, or @outlook.com domain.{% endif %}"
+                  data-bs-title="{% if email_not_found %}Correo no encontrado.{% else %}Por favor, ingresa un correo electronico con un dominio valido como: @gmail.com, @hotmail.com, @live.com, o @outlook.com.{% endif %}"
 
                 />
                 <!-- Eliminar la clase text-end del campo de entrada -->
@@ -58,7 +58,7 @@
             </div>
             <!-- Password input -->
             <div class="form-outline mb-4">
-              <label for="password" data-section="singin" data-value="Password" >Password</label>
+              <label for="password" data-section="singin" data-value="Password" >Contraseña</label>
               <!-- Eliminar la clase text-end de la etiqueta -->
               <div class="col-sm-10">
                 <input
@@ -70,7 +70,7 @@
                   data-bs-toggle="tooltip-badpassword"
                   data-bs-placement="left"
                   data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if bad_password %}Invalid password.{% endif %}"
+                  data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}"
                 />
               </div>
               <!-- Eliminar la clase text-end del campo de entrada -->
@@ -93,13 +93,13 @@
                   checked
                 />
                 <label class="form-check-label" for="form1Example3" data-section="singin" data-value="Remember me"
-                  >Remember me</label
+                  >Recuerdame</label
                 >
               </div>
               <!-- Enlace "Forgot password?" -->
               <div class="">
-                <a data-section="singin" data-value="Don’t have an account?">Don’t have an account?</a>
-                <a data-section="singin" data-value="check in" href="{{url_for('auth.signup')}}" class="forget">check in</a>
+                <a data-section="singin" data-value="Don’t have an account?">¿No cuentas con una cuenta?</a>
+                <a data-section="singin" data-value="check in" href="{{url_for('auth.signup')}}" class="forget">Presione aquí</a>
               </div>
             </div>
             <!-- Submit button -->
@@ -108,7 +108,7 @@
               class="btn__form btn btn-primary btn-lg btn-block"
               id="submitButton"
             >
-              <span data-section="singin" data-value="Sign in">Sign in</span>
+              <span data-section="singin" data-value="Sign in">Iniciar sesión</span>
             </button>
             <!-- Eliminar la clase text-end del botón -->
           </form>
@@ -136,7 +136,7 @@
       </div>
       <div class="modal-body">
         <div class="alert alert-success" role="alert">
-          <p>Your registration was successful.</p>
+          <p>¡Te has registrado exitosamente!.</p>
         </div>
       </div>
       <div class="modal-footer">
@@ -148,6 +148,49 @@
   </div>
 </div>
 {% endif %}
+<!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
+<div id="flash-messages" style="display: none;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }}" role="alert">
+    {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+</div>
+
+<!-- MOTAL PARA MOSTRAR FLASH -->
+<div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="flashModalLabel">Notification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="flashModalBody">
+        <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MOSTRAR EL MODAL PARA MOSTRAR ERRORES Y MENSAJES  -->
+<script>
+  $(document).ready(function () {
+    var flashMessages = $('#flash-messages').html().trim();
+    if (flashMessages) {
+      $('#flashModalBody').html(flashMessages);
+      $('#flashModal').modal('show');
+    }
+  });
+</script>
 
 {% if registration_successful %}
 

@@ -98,19 +98,9 @@ def welcomeuser():
 @auth.route("/signin", methods=["GET", "POST"])
 def signin():
     # Errores
-    
     email_not_found = False # El correo electrónico no está registrado
     bad_password = False  # La contreaseña es incorrecta - Enviar True 
-    # Datos a usar: 
-    """
-    1- Email 
-    2- Password
-    3-
-    4-
-    5-
-    """
-    registration_successful = request.args.get('registration_successful', 'False')
-
+    registration_successful = False
     print("<#################### signin ####################")
     if "email" in session:
         print("#################### Email In Session ####################>")
@@ -150,6 +140,7 @@ def signin():
                 print("Correo > ",session["email"])
                 print("Es Admin? >", session["ES_ADMIN"])
                 print("user >", session["name"])
+                registration_successful = True
                 return redirect(
                     url_for("profile.welcomeuser")
                 )
@@ -180,14 +171,6 @@ def signup():
     ErrorAP_MAT = False
     # Otros booleanos
     registration_successful = False
-    # Datos a usar:
-    """
-    1- name>
-    2- apellido_paterno>
-    3- apellido_materno>
-    4- email
-    5- password
-    """
     print("<#################### signup ####################")
     # Verificar si hay una dirección de correo dentro de la sesión
     if "email" in session:
@@ -262,7 +245,7 @@ def signup():
             registration_successful = True
             user = f"{name} {apellido_paterno} {apellido_materno} "
             print("#################### Renderizar auth/signin ####################>")
-            flash(f"Thank you for submitting, {user}!", "success")
+            flash(f"¡Gracias por registrarte, {user}!", "éxito")
             return render_template(
                 "auth/signup.html", registration_successful=registration_successful
             )
@@ -277,6 +260,7 @@ def signout():
     print("<#################### signout ####################")
     if "email" in session:
         session.clear()
+        flash("Se ha cerrado la session correctamente.")
         print("#################### FIN (auth.signin) ####################>")
         return redirect(url_for("index"))
     else:
@@ -432,69 +416,73 @@ def manage_products():
         # Caso 1: Borrar producto
         if form_type == "delete":
             product_id = int(request.form.get("product_id"))
-            flash("The product has been successfully deleted.")
             config.CUD(
                     "UPDATE dbo.Almacen SET ESTATUS = 0 WHERE ID_PRODUCTO = ?",
                     (product_id,),
             )
+            flash("El producto ha sido eliminado exitosamente.")
         # Caso 2: Crear producto
         elif form_type == "create":
             try:
                 # Obtener datos del formulario
                 marca = request.form.get("marca")
                 producto = request.form.get("producto")
-                # Unidad de medida
-                unit_quantity = int(request.form.get("unitquantity"))  # Cantidad
-                seslect_unit_quantity = request.form.get(
-                    "SelectUnitOfMeasure"
-                )  # Unidad de medida
+                unit_quantity = request.form.get("unitquantity")  # Cantidad
+                select_unit_quantity = request.form.get("SelectUnitOfMeasure")  # Unidad de medida
+
                 # Construir la cantidad con la unidad de medida
-                if seslect_unit_quantity == "pieces":
-                    quantity = str(unit_quantity) + "Pzs"
-                elif seslect_unit_quantity == "liters":
-                    quantity = str(unit_quantity) + "l"
-                elif seslect_unit_quantity == "milliliters":
-                    quantity = str(unit_quantity) + "ml"
-                elif seslect_unit_quantity == "kilogram":
-                    quantity = str(unit_quantity) + "kg"
-                elif seslect_unit_quantity == "grams":
-                    quantity = str(unit_quantity) + "gr"
+                if select_unit_quantity == "pieces":
+                    quantity = unit_quantity + "Pzs"
+                elif select_unit_quantity == "liters":
+                    quantity = unit_quantity + "l"
+                elif select_unit_quantity == "milliliters":
+                    quantity = unit_quantity + "ml"
+                elif select_unit_quantity == "kilogram":
+                    quantity = unit_quantity + "kg"
+                elif select_unit_quantity == "grams":
+                    quantity = unit_quantity + "gr"
                 else:
-                    quantity = str(unit_quantity) + "custom"
+                    quantity = unit_quantity + "custom"
+
                 # Errores relacionados a nombre
                 if len(marca) > 35 or len(producto) > 35:
-                    auxiliar = "The following fields have more than 35 characters: "
+                    auxiliar = "Los siguientes campos tienen más de 35 caracteres:"
                     if len(marca) > 35:
-                        auxiliar += "Brand "
+                        auxiliar += " Marca"
                     if len(producto) > 35:
-                        auxiliar += ", Name product"
-                    raise MyException(
-                        "MaxLength",
-                        auxiliar,
-                    )
+                        auxiliar += ", Nombre del producto"
+                    raise MyException("MaxLength", auxiliar)
+
                 # Datos formados
                 nombre = f"{marca}_{producto}_{quantity}"
-                cantidad = int(request.form.get("cantidad"))
-                precio = float(request.form.get("precio"))
-                compania = int(request.form.get("company_id"))
-                intermediario = int(request.form.get("intermedary_id"))
+
+                try:
+                    cantidad = int(request.form.get("cantidad"))
+                except ValueError:
+                    raise MyException("InvalidInput", "La cantidad debe ser un número entero válido.")
+
+                try:
+                    precio = float(request.form.get("precio"))
+                except ValueError:
+                    raise MyException("InvalidInput", "El precio debe ser un número válido.")
+
+                try:
+                    compania = int(request.form.get("company_id"))
+                except ValueError:
+                    raise MyException("InvalidInput", "El ID de la compañía debe ser un número entero válido.")
+
+                try:
+                    intermediario = int(request.form.get("intermedary_id"))
+                except ValueError:
+                    raise MyException("InvalidInput", "El ID del intermediario debe ser un número entero válido.")
+
                 # Errores
                 if cantidad <= 0 or precio <= 0:
-                    if cantidad <= 0 or precio <= 0:
-                        raise MyException(
-                            "NonPositive",
-                            f"The provided values {cantidad,precio} are not positive. They must be greater than zero.",
-                        )
-                    elif cantidad <= 0:
-                        raise MyException(
-                            "NonPositive",
-                            f"The provided value {cantidad} is not positive. It must be greater than zero.",
-                        )
-                    elif precio <= 0:
-                        raise MyException(
-                            "NonPositive",
-                            f"The provided value {precio} is not positive. It must be greater than zero.",
-                        )
+                    raise MyException(
+                        "NonPositive",
+                        f"Los valores proporcionados {cantidad, precio} no son positivos. Deben ser mayores que cero."
+                    )
+
                 # Pruebas
                 print("<==================== DATOS OBTENIDOS ====================")
                 print(f"nombre - {nombre}")
@@ -503,130 +491,117 @@ def manage_products():
                 print(f"compania - {compania}")
                 print(f"intermediario - {intermediario}")
                 print("========================================>")
+
                 # Verificar las condiciones de existencia y relación de la compañía e intermediario
-                print(
-                    "<==================== VERIFICAR RELACION COMPANIA - INTERMEDIARIO ===================="
-                )
+                print("<==================== VERIFICAR RELACION COMPANIA - INTERMEDIARIO ====================")
                 existe = config.Read(
                     """
-                        SELECT 
-                            ID_INTERMEDIARIO, 
-                            Intermediario.NOMBRE, 
-                            Intermediario.AP_PAT, 
-                            Intermediario.AP_MAT, 
-                            Proveedor.ID_COMPANIA, 
-                            Proveedor.NOMBRE 
-                        FROM dbo.Proveedor 
-                        INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
-                        WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1 
-                        AND dbo.Intermediario.ID_INTERMEDIARIO = ? 
-                        AND dbo.Proveedor.ID_COMPANIA = ?
-                        """,
-                    (int(intermediario), int(compania)),
+                    SELECT 
+                        ID_INTERMEDIARIO, 
+                        Intermediario.NOMBRE, 
+                        Intermediario.AP_PAT, 
+                        Intermediario.AP_MAT, 
+                        Proveedor.ID_COMPANIA, 
+                        Proveedor.NOMBRE 
+                    FROM dbo.Proveedor 
+                    INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
+                    WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1 
+                    AND dbo.Intermediario.ID_INTERMEDIARIO = ? 
+                    AND dbo.Proveedor.ID_COMPANIA = ?
+                    """,
+                    (intermediario, compania),
                 )
                 print("========================================>")
+
                 print("<==================== productoinactivo ====================")
                 productoinactivo = config.Read(
                     """
-                        SELECT 
-                            dbo.Almacen.ID_PRODUCTO,
-                            dbo.Almacen.NOMBRE 
-                        FROM dbo.Almacen 
-                        WHERE dbo.Almacen.NOMBRE = ?
-                        AND dbo.Almacen.ESTATUS = 0
-                        """,
+                    SELECT 
+                        dbo.Almacen.ID_PRODUCTO,
+                        dbo.Almacen.NOMBRE 
+                    FROM dbo.Almacen 
+                    WHERE dbo.Almacen.NOMBRE = ?
+                    AND dbo.Almacen.ESTATUS = 0
+                    """,
                     (nombre,),
                 )
                 print("========================================>")
+
                 # Verificar si el producto ya existe
                 print("<==================== productoexiste ====================")
                 productoexiste = config.Read(
                     """
-                        SELECT 
-                            dbo.Almacen.NOMBRE 
-                        FROM dbo.Almacen 
-                        WHERE dbo.Almacen.NOMBRE = ?
-                        AND dbo.Almacen.ESTATUS = 1
-                        """,
+                    SELECT 
+                        dbo.Almacen.NOMBRE 
+                    FROM dbo.Almacen 
+                    WHERE dbo.Almacen.NOMBRE = ?
+                    AND dbo.Almacen.ESTATUS = 1
+                    """,
                     (nombre,),
                 )
                 print("========================================>")
+
                 # Condiciones
                 print("<==================== ACCIONES ====================")
                 if productoexiste:
-                    # Si el producto ya existe, redireccionar con un mensaje de error
-                    print(
-                        "====================! Existing product in the DB.====================>"
-                    )
-                    raise MyException(
-                        "ProductExists",
-                        "The product exists",
-                    )
+                    print("====================! Existing product in the DB.====================>")
+                    raise MyException("ProductExists", "The product exists")
                 elif productoinactivo:
-                    print(
-                        "====================! Producto existente (Oculto) en la BD.====================>"
-                    )
+                    print("====================! Producto existente (Oculto) en la BD.====================>")
                     product_id = productoinactivo[0][0]
                     config.CUD(
                         """
-                            UPDATE dbo.Almacen 
-                            SET 
-                                PRECIO_UNITARIO = ?, 
-                                EXISTENCIAS = ?, 
-                                PRECIO_EXISTENCIA = ?, 
-                                ID_INTERMEDIARIO = ?, 
-                                ESTATUS = 1 
-                            WHERE ID_PRODUCTO = ?
-                            """,
+                        UPDATE dbo.Almacen 
+                        SET 
+                            PRECIO_UNITARIO = ?, 
+                            EXISTENCIAS = ?, 
+                            PRECIO_EXISTENCIA = ?, 
+                            ID_INTERMEDIARIO = ?, 
+                            ESTATUS = 1 
+                        WHERE ID_PRODUCTO = ?
+                        """,
                         (
-                            float(precio),
-                            int(cantidad),
-                            float((precio) * (cantidad)),
-                            int(intermediario),
-                            int(product_id),
+                            precio,
+                            cantidad,
+                            precio * cantidad,
+                            intermediario,
+                            product_id,
                         ),
                     )
                     flash("Successfully created product.")
                 elif existe:
-                    # Insertar el nuevo producto en la base de datos
                     config.CUD(
                         """
-                            INSERT INTO dbo.Almacen (NOMBRE, PRECIO_UNITARIO, EXISTENCIAS, PRECIO_EXISTENCIA, ID_INTERMEDIARIO, ESTATUS)
-                            VALUES (?, ?, ?, ?, ?, 1)
-                            """,
+                        INSERT INTO dbo.Almacen (NOMBRE, PRECIO_UNITARIO, EXISTENCIAS, PRECIO_EXISTENCIA, ID_INTERMEDIARIO, ESTATUS)
+                        VALUES (?, ?, ?, ?, ?, 1)
+                        """,
                         (
                             nombre,
-                            float(precio),
-                            int(cantidad),
-                            float((precio) * (cantidad)),
-                            int(intermediario),
+                            precio,
+                            cantidad,
+                            precio * cantidad,
+                            intermediario,
                         ),
                     )
-                    print(
-                        "====================!Producto creado exitosamente.!====================>"
-                    )
+                    print("====================!Producto creado exitosamente.!====================>")
                     flash("Successfully created product.")
                     print("#################### FIN ####################>")
                 else:
-                    # Si la compañía o el intermediario no cumplen las condiciones, redireccionar con un mensaje de error
-                    print(
-                        "====================!La compañía o el intermediario no cumplen las condiciones necesarias.====================>"
-                    )
-                    raise MyException(
-                        "CIConditions",
-                        "The company or the intermediary does not meet the necessary conditions.",
-                    )
-            except ValueError:
-                print("String does not represent a valid number")
-                flash("String does not represent a valid number")
-                print("#################### FIN ####################>")
+                    print("====================!La compañía o el intermediario no cumplen las condiciones necesarias.====================>")
+                    raise MyException("CIConditions", "The company or the intermediary does not meet the necessary conditions.")
+
             except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
                 print("#################### FIN ####################>")
+            except ValueError as e:
+                print("String does not represent a valid number")
+                flash("String does not represent a valid number")
+                print("#################### FIN ####################>")
             except Exception as err:
                 print(f"Inesperado {err=}, {type(err)=}")
+                flash("Unexpected error occurred")
                 print("#################### FIN ####################>")
         # Caso 3: Actualizar producto
         elif form_type == "update":
@@ -830,6 +805,22 @@ def manage_intermediary():
             try:
                 print("<#################### delete ####################")
                 id_intermediario = int(request.form.get("DeleteIntermediaryId"))
+                NoSePuedeBorrar = config.Read(
+                    """
+                    SELECT 
+                        dbo.Almacen.NOMBRE
+                    FROM dbo.Intermediario,dbo.Almacen
+                    WHERE dbo.Intermediario.ID_INTERMEDIARIO = dbo.Almacen.ID_INTERMEDIARIO
+                    AND dbo.Almacen.EXISTENCIAS != 0
+                    AND dbo.Intermediario.ID_INTERMEDIARIO = ?
+                    """,
+                    (id_intermediario,)
+                )
+                if NoSePuedeBorrar:
+                    raise MyException(
+                        "Error al borrar compañia.",
+                        "Para poder borrar un intermediario primero debe asegurarse que los productos relacionados sean inexistentes.",
+                    )
                 config.CUD(
                     """
                     -- Declarar la variable para ID_INTERMEDIARIO
@@ -848,12 +839,16 @@ def manage_intermediary():
                     """,
                     (int(id_intermediario),),
                 )
+                flash("Se ha borrado correctamente el intermediario.")
+            except MyException as ex:
+                Tipo, Mensaje = ex.args
+                print(f"Type {Tipo} : {Mensaje}")
+                flash(f"{Mensaje}")
+                print("#################### FIN (No se inserto) ####################>")
             except Exception as e:
-                print(f"Type : {e}")
-                flash(f"Type : {e}")
-                print(
-                    "#################### FIN (Error al borrar intermediario) ####################>"
-                )
+                print(f"Type: {Mensaje}")
+                flash(f"{Mensaje}")
+                print("#################### FIN (No se inserto) ####################>")
         elif action == "create":
             try:
                 # Obtener datos del formulario
@@ -953,11 +948,11 @@ def manage_intermediary():
             except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
-                flash(f"Type {Tipo} : {Mensaje}")
+                flash(f"{Mensaje}")
                 print("#################### FIN (No se inserto) ####################>")
             except Exception as e:
                 print(f"Type : {e}")
-                flash(f"Type : {e}")
+                flash(f"{e}")
                 print("#################### FIN (No se inserto) ####################>")
         elif action == "edit":
             try:
@@ -1038,15 +1033,17 @@ def manage_intermediary():
                             int(id_intermediario),
                         ),
                     )
+                    flash("Se ha actualizado correctamente los datos del intermediario.")
+                    print("Se ha actualizado correctamente los datos del intermediario.")
                     print("#################### FIN ####################>")
             except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
-                flash(f"Type {Tipo} : {Mensaje}")
+                flash(f"{Mensaje}")
                 print("#################### FIN (No se inserto) ####################>")
             except Exception as e:
                 print(f"Type : {e}")
-                flash(f"Type : {e}")
+                flash(f"{e}")
                 print("#################### FIN (No se inserto) ####################>")
     # Datos que se envian siempre
     relations = []
@@ -1094,6 +1091,23 @@ def manage_company():
             try:
                 print("<#################### delete ####################")
                 id_intermediario = int(request.form.get("DeleteIntermediaryId"))#cambiar la direccion 
+                NoSePuedeBorrar = config.Read(
+                    """
+                    SELECT 
+                        dbo.Almacen.NOMBRE
+                    FROM dbo.Proveedor,dbo.Intermediario,dbo.Almacen
+                    WHERE dbo.Proveedor.ID_COMPANIA = dbo.Intermediario.ID_COMPANIA
+                    AND dbo.Intermediario.ID_INTERMEDIARIO = dbo.Almacen.ID_INTERMEDIARIO
+                    AND dbo.Almacen.EXISTENCIAS != 0
+                    AND dbo.Proveedor.ID_COMPANIA = ?
+                    """,
+                    (id_intermediario,),
+                )
+                if NoSePuedeBorrar:
+                    raise MyException(
+                        "Error al borrar compañia.",
+                        "Para poder borrar una compañia primero debe asegurarse que los productos relacionados sean inexistentes.",
+                    )
                 config.CUD(
                     """
                     -- Actualizar dbo.Almacen
@@ -1103,7 +1117,8 @@ def manage_company():
                         SELECT dbo.Intermediario.ID_INTERMEDIARIO
                         FROM dbo.Proveedor
                         JOIN dbo.Intermediario ON dbo.Proveedor.ID_COMPANIA = dbo.Intermediario.ID_COMPANIA
-                        WHERE dbo.Proveedor.ID_COMPANIA = ?
+                        WHERE dbo.Almacen.EXISTENCIAS = 0
+                        AND dbo.Proveedor.ID_COMPANIA = ?
                     );
                     -- Actualizar dbo.Intermediario
                     UPDATE dbo.Intermediario
@@ -1122,8 +1137,16 @@ def manage_company():
                         int(id_intermediario),
                     ),
                 )
+                flash("Se ha borrado correctamente la compañia.")
+            except MyException as ex:
+                Tipo, Mensaje = ex.args
+                print(f"Type {Tipo} : {Mensaje}")
+                flash(f"{Mensaje}")
+                print("#################### FIN (No se inserto) ####################>")
             except Exception as e:
-                print
+                print(f"{e}")
+                flash(f"{e}")
+                print("#################### FIN (No se inserto) ####################>")
         elif action == "create":
             try:
                 # Obtener datos del formulario
@@ -1221,7 +1244,6 @@ def manage_company():
                 # Cualquier error
                 if existe:
                     if existe:
-
                         raise MyException(
                             "ErrorCompany",
                             "The Company already exists in the DB.",
@@ -1579,21 +1601,17 @@ def manage_accounts():
             try:
                 print("<#################### delete ####################")
                 id_intermediario = int(request.form.get("DeleteIntermediaryId"))
+                print(f"id para eliminar usuarios - {id_intermediario}")
                 config.CUD(
                     """
                     -- Declarar la variable para ID_INTERMEDIARIO
                     DECLARE @ID_INTERMEDIARIO INT;
                     SET @ID_INTERMEDIARIO = ?;
 
-                    -- Actualizar dbo.Almacen
-                    UPDATE dbo.Almacen
+                    -- Actualizar dbo.usuarios
+                    UPDATE dbo.usuarios
                     SET ESTATUS = 0
-                    WHERE ID_INTERMEDIARIO = @ID_INTERMEDIARIO;
-
-                    -- Actualizar dbo.Intermediario
-                    UPDATE dbo.Intermediario
-                    SET ESTATUS = 0
-                    WHERE ID_INTERMEDIARIO = @ID_INTERMEDIARIO;
+                    WHERE ID_USUARIO = @ID_INTERMEDIARIO;
                     """,
                     (int(id_intermediario),),
                 )
@@ -1609,7 +1627,7 @@ def manage_accounts():
                 nombre = request.form.get("editIntermediaryName")
                 apellido_paterno = request.form.get("NEW-AP_PAT")
                 apellido_materno = request.form.get("NEW-AP_MAT")
-                company_id = int(request.form.get("Edit-company_id"))
+                correo = request.form.get("NEW-Correo")
                 id_intermediario = int(request.form.get(
                     "EditIntermediary_id"
                 ) ) # Se obtiene de un dato oculto
@@ -1618,45 +1636,46 @@ def manage_accounts():
                 print(f"nombre - {nombre}")
                 print(f"AP_PAT - {apellido_paterno}")
                 print(f"AP_MAT - {apellido_materno}")
-                print(f"company_id - {company_id}")
-                print(f"id_intermediario - {id_intermediario}")
+                print(f"id_intermediario - {correo}")
                 print("========================================>")
-                # Verificar si el intermediario ya existe
+                # Verificar si el usuario ya existe
                 existe = config.Read(
                     """
                     SELECT 
-                        dbo.Intermediario.NOMBRE,
-                        dbo.Intermediario.AP_PAT,
-                        dbo.Intermediario.AP_MAT
-                    FROM dbo.Intermediario 
-                    WHERE dbo.Intermediario.NOMBRE = ?
-                    AND dbo.Intermediario.AP_PAT = ?
-                    AND dbo.Intermediario.AP_MAT = ?
-                    AND dbo.Intermediario.ID_INTERMEDIARIO != ?
+                        dbo.usuarios.NOMBRE,
+                        dbo.usuarios.AP_PAT,
+                        dbo.usuarios.AP_MAT,
+                        dbo.usuarios.CORREO 
+                    FROM dbo.usuarios 
+                    WHERE dbo.usuarios.NOMBRE = ?
+                    AND dbo.usuarios.AP_PAT = ?
+                    AND dbo.usuarios.AP_MAT = ?
+                    AND dbo.usuarios.CORREO = ?
+                    AND dbo.usuarios.ID_USUARIO != ?
                     """,
-                    (nombre, apellido_paterno, apellido_materno, int(id_intermediario)),
+                    (nombre, apellido_paterno, apellido_materno, correo, int(id_intermediario)),
                 )
-    
+
                 # Cualquier error
                 if existe:
                     if existe:
                         raise MyException(
-                            "ErrorIntermediary",
-                            "The intermediary already exists in the DB.",
+                            "ErrorAccounts",
+                            "The account already exists in the DB.",
                         )
                 else:
                     # Actualizar en la base de datos
                     config.CUD(
                         """
-                        UPDATE dbo.Intermediario 
-                        SET NOMBRE=?, AP_PAT=?, AP_MAT=?, ID_COMPANIA=?
-                        WHERE ID_INTERMEDIARIO = ?
+                        UPDATE dbo.usuarios 
+                        SET NOMBRE=?, AP_PAT=?, AP_MAT=?, CORREO=?
+                        WHERE ID_USUARIO = ?
                         """,
                         (
                             nombre,
                             apellido_paterno,
                             apellido_materno,
-                            int(company_id),
+                            correo,
                             int(id_intermediario),
                         ),
                     )
@@ -1665,11 +1684,11 @@ def manage_accounts():
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"Type {Tipo} : {Mensaje}")
-                print("#################### FIN (No se inserto) ####################>")
+                print("#################### FIN (No se inserto F) ####################>")
             except Exception as e:
                 print(f"Type : {e}")
                 flash(f"Type : {e}")
-                print("#################### FIN (No se inserto) ####################>")
+                print("#################### FIN (No se inserto FX2) ####################>")
     # Datos que se envian siempre
     relations = []
     relations = config.Read(

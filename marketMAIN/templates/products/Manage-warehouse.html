@@ -285,7 +285,7 @@ endblock %} {% block content %}
                     Select Intermediary
                   </option>
                   {% for relation in relations %}
-                  <option value="{{ relation[2] }}">
+                  <option value="{{ relation[2] }}" data-company-id="{{ relation[0] }}">
                     {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
                     relation[5] }}
                   </option>
@@ -310,7 +310,7 @@ endblock %} {% block content %}
                     <span class="input-group-text">$</span>
                     <input
                       type="number"
-                      class="form-control"
+                      class="form-control input-float"
                       id="precio"
                       name="precio"
                       min="1"
@@ -502,7 +502,7 @@ endblock %} {% block content %}
                     <span class="input-group-text">$</span>
                     <input
                       type="number"
-                      class="form-control"
+                      class="form-control input-float"
                       id="newprecio2"
                       name="newprecio"
                       step="0.01"
@@ -654,6 +654,7 @@ endblock %} {% block content %}
 </script>
 
 
+
 <!-- <script src="{{ url_for('static', filename='js/qrScan.js') }}"></script>-->
 
 <!--               FUNCIONALIDADES COMPARTIDAS POR MODAL                   -->
@@ -693,10 +694,11 @@ endblock %} {% block content %}
       //var id = rowData[0];
 
       //NOMBRE DEL PRODUCTO (FUNCIONA)
-      var nombreProducto = rowData[1].replace(/_/g, " "); // Reemplazar "_" con espacio
-      nombreProducto = nombreProducto.replace(/\s\d+.*/, "");
-      console.log("el nombre del producto seleccionado es: " + nombreProducto);
-      document.getElementById("newmarca").value = nombreProducto;
+      console.log("rowdata> "+rowData[1]);
+      var separatedData = rowData[1].split('_');
+      console.log("el nombre del producto seleccionado es: " + separatedData);
+      document.getElementById("newmarca").value = separatedData[0];
+      document.getElementById("newproducto").value = separatedData[1];
       //FIN
 
       //STOCK (FUNCIONA)
@@ -828,52 +830,58 @@ endblock %} {% block content %}
   }
 </script>
 
+
+
+
+
+
+
 <!--CREATE MODAL SCRIPT PARA MANEJO DE COMPAÑIAS E INTERMEDIARIOS DINAMICOS-->
 <script>
-  // Función para filtrar intermediarios basados en la compañía seleccionada
   function filterIntermediaries() {
-    // Obtener la opción seleccionada de la compañía
-    var selectedOption =
-      document.getElementById("company-select").options[
-        document.getElementById("company-select").selectedIndex
-      ];
-
-    // Obtener el texto de la opción seleccionada (nombre de la compañía)
-    var selectedCompany = selectedOption.textContent.toLowerCase().trim();
+    // Obtener el valor de la compañía seleccionada
+    var selectedCompanyId = document.getElementById("company-select").value;
+    console.log(selectedCompanyId);
 
     // Obtener todas las opciones de intermediarios
-    var intermediaries = document.querySelectorAll(
-      "#intermedary-select option"
-    );
+    var intermediaries = document.querySelectorAll("#intermedary-select option");
 
     // Recorrer todas las opciones de intermediarios
-    intermediaries.forEach(function (option) {
-      // Obtener la compañía asociada con el intermediario (formato: "Compañía Nombre Apellido Apellido")
-      var companyAndName = option.textContent.trim().toLowerCase();
-
-      // Obtener solo el nombre de la compañía del intermediario
-      var intermediaryCompany = companyAndName.split(" ")[0];
-
-      // Comparar la compañía seleccionada con la compañía del intermediario
-      if (intermediaryCompany !== selectedCompany) {
-        // Ocultar el intermediario si no coincide con la compañía seleccionada
-        option.style.display = "none";
-      } else {
-        // Mostrar el intermediario si coincide con la compañía seleccionada
-        option.style.display = "block";
-      }
+    intermediaries.forEach(function(option) {
+        // Obtener el valor del atributo data-company-id asociado con el intermediario
+        var intermediaryCompanyId = option.getAttribute('data-company-id');
+        console.log(intermediaryCompanyId);
+        // Comparar la compañía seleccionada con la compañía del intermediario
+        if (intermediaryCompanyId !== selectedCompanyId) {
+            // Ocultar el intermediario si no coincide con la compañía seleccionada
+            option.style.display = "none";
+        } else {
+            // Mostrar el intermediario si coincide con la compañía seleccionada
+            option.style.display = "block";
+        }
     });
-  }
+}
 
-  // Agregar un event listener para el cambio en la selección de compañía
-  document
-    .getElementById("company-select")
-    .addEventListener("change", filterIntermediaries);
+// Agregar un evento de cambio al campo de selección de compañía
+document.getElementById("company-select").addEventListener("change", filterIntermediaries);
 
-  // Filtrar las opciones de intermediarios al cargar la página
-  filterIntermediaries();
+// Filtrar las opciones de intermediarios al cargar la página
+filterIntermediaries();
+
 </script>
 
+
+
+
+
+
+
+
+
+
+
+
+<!--No eliminar-->
 <!--EDIT MODAL SCRIPT PARA MANEJO DE COMPAÑIAS E INTERMEDIARIOS DINAMICOS-->
 <script>
   // Función para filtrar intermediarios basados en la compañía seleccionada
@@ -886,6 +894,7 @@ endblock %} {% block content %}
 
     // Obtener el texto de la opción seleccionada (nombre de la compañía)
     var selectedCompany = selectedOption.textContent.toLowerCase().trim();
+    console.log(selectedCompany);
 
     // Obtener todas las opciones de intermediarios
     var intermediaries = document.querySelectorAll(
@@ -896,10 +905,10 @@ endblock %} {% block content %}
     intermediaries.forEach(function (option) {
       // Obtener la compañía asociada con el intermediario (formato: "Compañía Nombre Apellido Apellido")
       var companyAndName = option.textContent.trim().toLowerCase();
-
+     
       // Obtener solo el nombre de la compañía del intermediario
       var intermediaryCompany = companyAndName.split(" ")[0];
-
+      
       // Comparar la compañía seleccionada con la compañía del intermediario
       if (intermediaryCompany !== selectedCompany) {
         // Ocultar el intermediario si no coincide con la compañía seleccionada
@@ -1060,7 +1069,7 @@ endblock %} {% block content %}
 
   // Seleccionar todos los campos de entrada de texto y textarea
   var inputspace = document.querySelectorAll(
-    'input[type="text"], input[type="password"], input[type="email"], input[type="number"], textarea'
+    'input[type="text"], input[type="password"], input[type="email"], textarea'
   );
 
   // Agregar evento de escucha para cada campo de entrada
@@ -1069,16 +1078,16 @@ endblock %} {% block content %}
   });
 </script>
 
-<!-- EVITA EL USO DE COMILLAS EN TODOS LOS CAMPOS-->
+<!-- EVITA EL USO DE COMILLAS EN TODOS LOS CAMPOS -->
 <script>
-  // Función para eliminar comillas simples y dobles de todos los campos de entrada
+  // Función para eliminar comillas simples, comillas dobles y el carácter de subrayado de todos los campos de entrada
   document.querySelectorAll("input").forEach(function (input) {
     input.addEventListener("input", function (event) {
       // Obtener el valor actual del campo de entrada
       var inputValue = event.target.value;
-      // Eliminar comillas simples y comillas dobles del valor actual
-      var cleanedValue = inputValue.replace(/['"]+/g, "");
-      // Actualizar el valor del campo de entrada sin comillas simples y comillas dobles
+      // Eliminar comillas simples, comillas dobles y subrayados del valor actual
+      var cleanedValue = inputValue.replace(/['"_]+/g, "");
+      // Actualizar el valor del campo de entrada sin comillas simples, comillas dobles y subrayados
       event.target.value = cleanedValue;
     });
   });
@@ -1417,6 +1426,32 @@ endblock %} {% block content %}
           unitLabel.textContent = "custom";
       }
     }
+  });
+</script>
+
+<script>
+  document.querySelectorAll('input[type="number"].input-float').forEach(function (input) {
+    input.addEventListener('input', function (e) {
+      var value = e.target.value;
+
+      // Verificar si hay más de dos decimales
+      if (value.includes('.')) {
+        var parts = value.split('.');
+        if (parts[1].length > 2) {
+          // Limitar a dos decimales
+          e.target.value = parts[0] + '.' + parts[1].substring(0, 2);
+        }
+      }
+    });
+
+    // Opcional: Redondear a dos decimales al perder el foco
+    input.addEventListener('blur', function (e) {
+      if (e.target.value === "") return; // Evita errores si el campo está vacío
+      var value = parseFloat(e.target.value).toFixed(2);
+      if (!isNaN(value)) {
+        e.target.value = value;
+      }
+    });
   });
 </script>
 

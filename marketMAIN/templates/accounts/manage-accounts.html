@@ -105,8 +105,12 @@ endblock %} {% block content %}
                     class="btn btn-warning mx-2"
                     data-bs-toggle="modal"
                     data-bs-target="#editCompany"
-                    data-Intermediary-id="{{ relation[2] }}"
-                    onclick="setEditProductId('{{ relation[2] }}')"
+                    data-Intermediary-id="{{ relation[0] }}"
+                    data-account-name="{{ relation[1] }}"
+                    data-account-PAT="{{ relation[2] }}"
+                    data-account-MAT="{{ relation[3] }}"
+                    data-account-CORREO="{{ relation[4] }}"
+                    onclick="setEditProductId('{{ relation[0] }}', '{{ relation[1] }}', '{{ relation[2] }}', '{{ relation[3] }}', '{{ relation[4] }}')"
                   >
                     <span class="material-symbols-outlined">edit_square</span>
                   </button>
@@ -115,8 +119,8 @@ endblock %} {% block content %}
                     class="btn btn-danger mx-2"
                     data-bs-toggle="modal"
                     data-bs-target="#deleteCompany"
-                    data-Intermediary-id="{{ relation[2] }}"
-                    onclick="setIntermediaryId('{{ relation[2] }}')"
+                    data-Intermediary-id="{{ relation[0] }}"
+                    onclick="setIntermediaryId('{{ relation[0] }}')"
                   >
                     <span class="material-symbols-outlined"
                       >delete_forever</span
@@ -145,7 +149,7 @@ endblock %} {% block content %}
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editCompanyLabel">Edit Company</h5>
+        <h5 class="modal-title" id="editCompanyLabel">Editar correo electrónico</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -156,32 +160,16 @@ endblock %} {% block content %}
       <div class="modal-body">
         <form
           id="editCompanyForm"
-          action="{{ url_for('products.manage_intermediary') }}"
+          action="{{ url_for('accounts.manage_accounts') }}"
           method="post"
           class="needs-validation"
           novalidate
         >
         <input type="hidden" name="action" value="edit">
-          <div class="mb-3">
-            <label for="editCompanyName" class="form-label"
-              >New Company Name:</label
-            >
-            <select
-              class="form-select"
-              id="company-select2"
-              name="Edit-company_id"
-              required
-            >
-              <option value="" disabled selected>Select Company</option>
-              {% for company in companies %}
-              <option value="{{ company[0] }}">{{ company[1] }}</option>
-              {% endfor %}
-            </select>
-          </div>
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >New Intermediary Names:</label
+              >Nombre del usuario:</label
             >
             <input
               type="text"
@@ -194,7 +182,7 @@ endblock %} {% block content %}
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >Paternal Last name:</label
+              >Apellido paterno:</label
             >
             <input
               type="text"
@@ -207,7 +195,7 @@ endblock %} {% block content %}
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >Maternal last name:</label
+              >Apellido materno:</label
             >
             <input
               type="text"
@@ -219,15 +207,14 @@ endblock %} {% block content %}
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label"
-              >New Intermediary Phone:</label
+            <label for="NEW-Correo" class="form-label"
+              >Correo electrónico:</label
             >
             <input
-              type="tel"
-              class="form-control Telefono
-              "
-              id="editIntermediaryPhone"
-              name="editIntermediaryPhone"
+              type="text"
+              class="form-control"
+              id="NEW-Correo"
+              name="NEW-Correo"
               required
             />
           </div>
@@ -238,7 +225,7 @@ endblock %} {% block content %}
               class="btn btn-warning me-2"
               data-bs-dismiss="modal"
             >
-              Close
+              Cerrar
             </button>
             <input
               id="EditValueIntermediary_id"
@@ -251,7 +238,7 @@ endblock %} {% block content %}
               type="submit"
               class="btn btn-success"
             >
-              Save Changes
+              Guardar cambios
             </button>
           </div>
         </form>
@@ -291,7 +278,7 @@ endblock %} {% block content %}
         </button>
         <form
           id="delete-product-form"
-          action="{{ url_for('products.manage_intermediary') }}"
+          action="{{ url_for('accounts.manage_accounts') }}"
           method="post"
         >
         <input type="hidden" name="action" value="delete">
@@ -385,13 +372,18 @@ endblock %} {% block content %}
 <script>
   function setIntermediaryId(IntermediaryId) {
     document.getElementById("ValueIntermediaryId").value = IntermediaryId;
+    
     console.log("IntermediaryId BORRAR>" + IntermediaryId);
   }
 
-  function setEditProductId(IntermediaryId) {
+  function setEditProductId(IntermediaryId, accountname, PAT, MAT, CORREO) {
     document.getElementById("EditValueIntermediary_id").value = IntermediaryId;
+    document.getElementById("editIntermediaryName").value = accountname;
+    document.getElementById("NEW-AP_PAT").value = PAT;
+    document.getElementById("NEW-AP_MAT").value = MAT;
+    document.getElementById("NEW-Correo").value = CORREO;
     console.log("EditIntermediary_id EDITAR>" + IntermediaryId);
-
+  
     // Encuentra la fila con el data-relation-id correspondiente
     var table = document.getElementById("intermedaries-table");
     var rows = table.getElementsByTagName("tr");

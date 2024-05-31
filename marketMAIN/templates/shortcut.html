@@ -88,14 +88,14 @@ endblock %} {% block content %}
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"
                   data-bs-custom-class="custom-tooltip"
-                  data-bs-title="Agregar un trabajador de ventas"
+                  data-bs-title="Ir a realiza ventas."
                   href="{{url_for('sales.addsalesworker')}}"
                 >
                   <div class="d-flex flex-column align-items-center">
                     <span class="material-symbols-outlined">
                       point_of_sale
                     </span>
-                    <span data-section="shortcut" data-value="Sales" class="d-none d-md-block">Sales</span>
+                    <span data-section="shortcut" data-value="Sales" class="d-none d-md-block">Ventas</span>
                   </div>
                 </a>
                 {% if IsAdmin %}
@@ -109,7 +109,7 @@ endblock %} {% block content %}
                   >
                     <div class="d-flex flex-column align-items-center">
                       <span class="material-symbols-outlined"> view_list </span>
-                      <span data-section="shortcut" data-value="Warehouse" class="d-none d-md-block">Warehouse</span>
+                      <span data-section="shortcut" data-value="Warehouse" class="d-none d-md-block">Almacén</span>
                     </div>
                   </a>
                 
@@ -118,14 +118,14 @@ endblock %} {% block content %}
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"
                   data-bs-custom-class="custom-tooltip"
-                  data-bs-title="Gestionar cuentas"
+                  data-bs-title="ir al gestor de cuentas"
                   href="{{url_for('accounts.manage_accounts')}}"
                 >
                   <div class="d-flex flex-column align-items-center">
                     <span class="material-symbols-outlined">
                       manage_accounts
                     </span>
-                    <span data-section="shortcut" data-value="Accounts"  class="d-none d-md-block">Accounts</span>
+                    <span data-section="shortcut" data-value="Accounts"  class="d-none d-md-block">Cuentas</span>
                   </div>
                 </a>
                 {% endif %}
