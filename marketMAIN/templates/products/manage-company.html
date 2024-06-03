@@ -67,7 +67,7 @@ endblock %} {% block content %}
       data-bs-target="#createmodal"
       data-bs-whatever="@mdo"
     >
-      <span>Create company</span>
+      <span>Crear compañia</span>
     </button>
   </form>  
 
@@ -89,13 +89,13 @@ endblock %} {% block content %}
                   <span
                     data-section="manage-intermediary"
                     data-value="Name Company"
-                    >Name Company</span
+                    >Nombre de la compañia</span
                   >
                 </th>
                 
                 <th scope="col">
                   <span
-                   >Actions</span
+                   >Acciones</span
                   >
                 </th>
               </tr>
@@ -156,7 +156,7 @@ endblock %} {% block content %}
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="createmodallabel">Create New Company</h5>
+        <h5 class="modal-title" id="createmodallabel">Crear Nueva compañia</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -176,7 +176,7 @@ endblock %} {% block content %}
       
           <div class="mb-3">
             <label for="company" class="form-label"
-              >Company Names:</label
+              >Nombres de la compañia:</label
             >
             <input
               type="text"
@@ -193,14 +193,14 @@ endblock %} {% block content %}
               class="btn btn-warning me-2"
               data-bs-dismiss="modal"
             >
-              Close
+              Cerrar
             </button>
             <button
               id="submitProductSave"
               type="submit"
               class="btn btn-success"
             >
-              Save
+              Guardar
             </button>
           </div>
         </form>
@@ -222,7 +222,7 @@ endblock %} {% block content %}
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editCompanyLabel">Edit Company</h5>
+        <h5 class="modal-title" id="editCompanyLabel">Editar compañia</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -242,7 +242,7 @@ endblock %} {% block content %}
     
           <div class="mb-3">
             <label for="editcompanyName" class="form-label"
-              >New Company Name:</label
+              >Nuevo nombre de la compañia:</label
             >
             <input
               type="text"
@@ -259,7 +259,7 @@ endblock %} {% block content %}
               class="btn btn-warning me-2"
               data-bs-dismiss="modal"
             >
-              Close
+              Cerrar
             </button>
             <input
               id="EditValueIntermediary_id"
@@ -272,7 +272,7 @@ endblock %} {% block content %}
               type="submit"
               class="btn btn-success"
             >
-              Save Changes
+              Guardar cambios
             </button>
           </div>
         </form>
@@ -293,7 +293,7 @@ endblock %} {% block content %}
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete Company</h5>
+        <h5 class="modal-title">Eliminar compañia</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -303,12 +303,12 @@ endblock %} {% block content %}
       </div>
       <div class="modal-body">
         <div class="alert alert-warning" role="alert">
-          Are you sure you want to delete this company?
+          ¿Estas seguro de eliminar esta compañia?
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
-          Close
+          Cerrar
         </button>
         <form
           id="delete-product-form"
@@ -323,7 +323,7 @@ endblock %} {% block content %}
             value=""
           />
           <button id="delete-company-btn" type="submit" class="btn btn-danger">
-            Delete Company
+            Eliminar compañia
           </button>
         </form>
       </div>
@@ -375,14 +375,14 @@ endblock %} {% block content %}
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="flashModalLabel">Notification</h5>
+        <h5 class="modal-title" id="flashModalLabel">Nortification</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="flashModalBody">
         <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

@@ -46,7 +46,7 @@ endblock %} {% block content %}
     <h6 class="mt-1 d-none d-sm-flex">
       <span
         span
-        >Manage Intermediaries</span
+        >Gestionar intermediarios</span
       >
     </h6>
 
@@ -65,7 +65,7 @@ endblock %} {% block content %}
       data-bs-target="#createmodal"
       data-bs-whatever="@mdo"
     >
-      <span>Create Intermediary</span>
+      <span>Crear intermediario</span>
     </button>
   </form>  
 
@@ -85,18 +85,18 @@ endblock %} {% block content %}
                 <th scope="col">#</th>
                 <th scope="col">
                   <span
-                    >Name Company</span
+                    >Nueva compañia</span
                   >
                 </th>
                 <th scope="col">
                   <span
-                    >Name Intermedary</span
+                    >Nombre del intermediario</span
                   >
                 </th>
                 <th scope="col">Tel.</th>
                 <th scope="col">
                   <span
-                    >Actions</span
+                    >Acciones</span
                   >
                 </th>
               </tr>
@@ -159,7 +159,7 @@ endblock %} {% block content %}
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="createmodallabel">Create New Company</h5>
+        <h5 class="modal-title" id="createmodallabel">Crear nueva compañia</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -177,14 +177,14 @@ endblock %} {% block content %}
         >
         <input type="hidden" name="action" value="create">
           <div class="mb-3">
-            <label for="company-select">Select Company:</label>
+            <label for="company-select">Seleciona una compañia:</label>
             <select
               class="form-select"
               id="company-select"
               name="company_id"
               required
             >
-              <option value="" disabled selected>Select Company</option>
+              <option value="" disabled selected>Selecciona una compañia</option>
               {% for company in companies %}
               <option value="{{ company[0] }}">{{ company[1] }}</option>
               {% endfor %}
@@ -193,7 +193,7 @@ endblock %} {% block content %}
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >Intermediary Names:</label
+              >Nombres del intermediario:</label
             >
             <input
               type="text"
@@ -205,7 +205,7 @@ endblock %} {% block content %}
           </div>
 
           <div class="mb-3">
-            <label for="intermediary" class="form-label">Last name:</label>
+            <label for="intermediary" class="form-label">Apellido paterno:</label>
             <input
               type="text"
               class="form-control"
@@ -217,7 +217,7 @@ endblock %} {% block content %}
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >Mother's last name:</label
+              >Apellido materno:</label
             >
             <input
               type="text"
@@ -230,7 +230,7 @@ endblock %} {% block content %}
 
           <div class="mb-3">
             <label for="intermediaryPhone" class="form-label"
-              >Intermediary Phone:</label
+              >tel. Intermediario:</label
             >
             <input
               type="tel"
@@ -247,14 +247,14 @@ endblock %} {% block content %}
               class="btn btn-warning me-2"
               data-bs-dismiss="modal"
             >
-              Close
+              Cerrar
             </button>
             <button
               id="submitProductSave"
               type="submit"
               class="btn btn-success"
             >
-              Save
+              Guardar
             </button>
           </div>
         </form>
@@ -276,7 +276,7 @@ endblock %} {% block content %}
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editCompanyLabel">Edit Company</h5>
+        <h5 class="modal-title" id="editCompanyLabel">Editar compañia</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -295,7 +295,7 @@ endblock %} {% block content %}
         <input type="hidden" name="action" value="edit">
           <div class="mb-3">
             <label for="editCompanyName" class="form-label"
-              >New Company Name:</label
+              >Nuevo nombre de la compañia:</label
             >
             <select
               class="form-select"
@@ -303,7 +303,7 @@ endblock %} {% block content %}
               name="Edit-company_id"
               required
             >
-              <option value="" disabled selected>Select Company</option>
+              <option value="" disabled selected>Seleccionar compañia</option>
               {% for company in companies %}
               <option value="{{ company[0] }}">{{ company[1] }}</option>
               {% endfor %}
@@ -312,7 +312,7 @@ endblock %} {% block content %}
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >New Intermediary Names:</label
+              >Nuevos nombres del intermediario:</label
             >
             <input
               type="text"
@@ -325,7 +325,7 @@ endblock %} {% block content %}
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >Paternal Last name:</label
+              >Nuevo Apellido paterno:</label
             >
             <input
               type="text"
@@ -338,7 +338,7 @@ endblock %} {% block content %}
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >Maternal last name:</label
+              >Nuevo Apellido materno:</label
             >
             <input
               type="text"
@@ -351,7 +351,7 @@ endblock %} {% block content %}
 
           <div class="mb-3">
             <label for="intermediary" class="form-label"
-              >New Intermediary Phone:</label
+              >Nuevo tel. Intermediario:</label
             >
             <input
               type="tel"
@@ -369,7 +369,7 @@ endblock %} {% block content %}
               class="btn btn-warning me-2"
               data-bs-dismiss="modal"
             >
-              Close
+              Cerrar
             </button>
             <input
               id="EditValueIntermediary_id"
@@ -382,7 +382,7 @@ endblock %} {% block content %}
               type="submit"
               class="btn btn-success"
             >
-              Save Changes
+             Guardar cambios
             </button>
           </div>
         </form>
@@ -403,7 +403,7 @@ endblock %} {% block content %}
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete Company</h5>
+        <h5 class="modal-title">Eliminar compañia</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -413,7 +413,7 @@ endblock %} {% block content %}
       </div>
       <div class="modal-body">
         <div class="alert alert-warning" role="alert">
-          Are you sure you want to delete this company?
+          ¿Estas seguro de eliminar esta compañia?
         </div>
       </div>
       <div class="modal-footer">
@@ -485,14 +485,14 @@ endblock %} {% block content %}
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="flashModalLabel">Notification</h5>
+        <h5 class="modal-title" id="flashModalLabel">Notifircation</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="flashModalBody">
         <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Closeerrartton>
       </div>
     </div>
   </div>

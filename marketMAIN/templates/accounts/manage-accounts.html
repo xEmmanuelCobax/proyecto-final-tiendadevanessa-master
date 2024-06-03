@@ -100,6 +100,7 @@ endblock %} {% block content %}
                 <td
                   class="text-center d-flex justify-content-center align-items-center"
                 >
+                <!--
                   <button
                     type="button"
                     class="btn btn-warning mx-2"
@@ -113,7 +114,7 @@ endblock %} {% block content %}
                     onclick="setEditProductId('{{ relation[0] }}', '{{ relation[1] }}', '{{ relation[2] }}', '{{ relation[3] }}', '{{ relation[4] }}')"
                   >
                     <span class="material-symbols-outlined">edit_square</span>
-                  </button>
+                  </button>-->
                   <button
                     type="button"
                     class="btn btn-danger mx-2"
@@ -151,7 +152,7 @@ endblock %} {% block content %}
       <div class="modal-header">
         <h5 class="modal-title" id="editCompanyLabel">Editar correo electrónico</h5>
         <button
-          type="button"
+          type="botton"
           class="btn-close custom-btn-close"
           data-bs-dismiss="modal"
           aria-label="Close"
@@ -211,7 +212,7 @@ endblock %} {% block content %}
               >Correo electrónico:</label
             >
             <input
-              type="text"
+              type="email"
               class="form-control"
               id="NEW-Correo"
               name="NEW-Correo"
@@ -443,7 +444,7 @@ endblock %} {% block content %}
 <!-- EVITA EL USO DE COMILLAS EN TODOS LOS CAMPOS-->
 <script>
   // Función para eliminar caracteres no permitidos de todos los campos de entrada, excepto los especificados
-  document.querySelectorAll("input").forEach(function (input) {
+  document.querySelectorAll("input[type='text']").forEach(function (input) {
     // Verifica si el campo de entrada no tiene la clase "Telefono"
     if (!input.classList.contains("Telefono")) {
       input.addEventListener("input", function (event) {
@@ -451,6 +452,23 @@ endblock %} {% block content %}
         var inputValue = event.target.value;
         // Eliminar caracteres no permitidos (excepto letras con acentos y espacios)
         var cleanedValue = inputValue.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]+/g, "");
+        // Actualizar el valor del campo de entrada
+        event.target.value = cleanedValue;
+      });
+    }
+  });
+</script>
+<!-- EVITA EL USO DE COMILLAS EN TODOS LOS CAMPOS-->
+<script>
+  // Función para eliminar caracteres no permitidos de todos los campos de entrada, excepto los especificados
+  document.querySelectorAll("input[type='email']").forEach(function (input) {
+    // Verifica si el campo de entrada no tiene la clase "Telefono"
+    if (!input.classList.contains("Telefono")) {
+      input.addEventListener("input", function (event) {
+        // Obtener el valor actual del campo de entrada
+        var inputValue = event.target.value;
+        // Eliminar caracteres no permitidos (excepto letras con acentos y espacios)
+        var cleanedValue = inputValue.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ0-9@.,_\s-]+/g, "");
         // Actualizar el valor del campo de entrada
         event.target.value = cleanedValue;
       });
@@ -491,7 +509,7 @@ endblock %} {% block content %}
 
   // Seleccionar todos los campos de entrada de texto y textarea
   var inputspace = document.querySelectorAll(
-    'input[type="text"], input[type="password"], input[type="email"], input[type="number"], textarea'
+    'input[type="text"], input[type="password"], input[type="number"], textarea'
   );
 
   // Agregar evento de escucha para cada campo de entrada
@@ -724,8 +742,55 @@ endblock %} {% block content %}
       tooltip.hide();
     });
   });
+
+
+
+  // Función para eliminar espacios, comillas simples y dobles del campo de correo electrónico
+  document.getElementById("NEW-Correo").addEventListener("input", function (event) {
+    // Obtener el valor actual del campo de correo electrónico
+    var emailInput = event.target.value;
+    // Eliminar los espacios, comillas simples y dobles del valor actual
+    var emailCleaned = emailInput.replace(/[^\w\s@.]/g, "");
+    // Actualizar el valor del campo de correo electrónico sin espacios, comillas simples y dobles
+    event.target.value = emailCleaned;
+  });  
 </script>
 
+<!-- TOOLTIP PARA MOSTRAR RECOMENDACION DEL EMAIL -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var tooltipTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 
+    document.getElementById("NEW-Correo").addEventListener("input", function () {
+      var emailInput = this.value;
+      var emailIsValid =
+        /^[\w-\.]+@(?:(?:[\w]+\.)+)?(?:gmail\.com|hotmail\.com|live\.com|outlook\.com)$/.test(
+          emailInput
+        );
+      var tooltip = bootstrap.Tooltip.getInstance(this);
+
+      if (!emailIsValid) {
+        this.classList.add("is-invalid");
+        this.classList.remove("is-valid");
+        if (!tooltip) {
+          tooltip = new bootstrap.Tooltip(this);
+        }
+        tooltip.show();
+      } else {
+        this.classList.remove("is-invalid");
+        this.classList.add("is-valid");
+        if (tooltip) {
+          tooltip.hide();
+          tooltip.dispose(); // Destruir la instancia del tooltip
+        }
+      }
+    });
+  });
+</script>
 <!--                                 FIN EDIT MODAL VALIDACIONES                                  -->
 {% endblock %}

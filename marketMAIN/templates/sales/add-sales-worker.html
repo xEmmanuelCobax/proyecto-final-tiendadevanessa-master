@@ -264,7 +264,7 @@ endblock %} {% block content %}
                 id="searchInput"
                 class="form-control"
                 type="search"
-                placeholder="Search Product"
+                placeholder="Buscar producto"
                 aria-label="Search Product"
               />
               <button
@@ -273,7 +273,7 @@ endblock %} {% block content %}
                 class="btn btn-outline-primary btn-sm ms-2"
               >
                 <span data-section="Sale" data-value="Add Product"
-                  >Add Product</span
+                  >Agregar producto</span
                 >
               </button>
             </div>
@@ -282,7 +282,7 @@ endblock %} {% block content %}
           <div class="col-md col-lg-6 my-2">
             <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
             <button id="addSale" type="button" class="btn btn-success w-100">
-              <span data-section="Sale" data-value="Make sale">Make sale</span>
+              <span data-section="Sale" data-value="Make sale">Realizar Venta</span>
             </button>
           </div>
         </div>
@@ -322,7 +322,7 @@ endblock %} {% block content %}
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
                 data-bs-custom-class="custom-tooltip"
-                title="ID: {{ product[0] }} &#10;Name: {{ product[1] }} &#10;Price: {{ product[2] }}$ &#10;Stock: {{ product[3] }} &#10;Status: {{ product[4] }}"
+                title="ID: {{ product[0] }} &#10;Nombre: {{ product[1] }} &#10;Precio: {{ product[2] }}$ &#10;Stock: {{ product[3] }} &#10;Estado: {{ product[4] }}"
               >
                 <div class="d-flex flex-column align-items-center">
                   <span class="material-symbols-outlined"> inventory_2 </span>
@@ -414,19 +414,19 @@ endblock %} {% block content %}
                   <th scope="col">#</th>
                   <th scope="col">id</th>
                   <th scope="col">
-                    <span data-section="Sale" data-value="Name">Name</span>
+                    <span data-section="Sale" data-value="Name">nombre</span>
                   </th>
                   <th scope="col">
                     <span data-section="Sale" data-value="Quantity"
-                      >Quantity</span
+                      >Cantidad</span
                     >
                   </th>
                   <th scope="col">
-                    <span data-section="Sale" data-value="Price">Price</span>
+                    <span data-section="Sale" data-value="Price">Precio</span>
                   </th>
                   <th scope="col">
                     <span data-section="Sale" data-value="Actions"
-                      >Actions</span
+                      >Acciones</span
                     >
                   </th>
                 </tr>
@@ -503,7 +503,11 @@ endblock %} {% block content %}
     // Calcular el total de la compra
     let totalTotalWithIVA = (subtotal * 1.16).toFixed(2);
 
-    var cambiocliente = (inputValue - totalTotalWithIVA);
+    if (inputValue==="") {
+      var cambiocliente = 0.0;
+    } else {
+      var cambiocliente = (inputValue - totalTotalWithIVA);
+    }
 
     // Actualizar los elementos HTML con los resultados
     document.getElementById("totalSum").innerText =
@@ -769,9 +773,9 @@ endblock %} {% block content %}
         listItem.innerHTML = `
           <div class="product-info border-bottom border-2 border-dark">
             <div class="divider">ID: ${product.dataset.id}</div>
-            <div>Name: ${product.dataset.name}</div>
-            <div>Price: ${product.dataset.price}$</div>
-            <div>Amount: ${product.dataset.amount}</div>
+            <div>Nombre: ${product.dataset.name}</div>
+            <div>Precio: ${product.dataset.price}$</div>
+            <div>Stock: ${product.dataset.amount}</div>
           </div>
         `;
         listItem.addEventListener("click", function () {

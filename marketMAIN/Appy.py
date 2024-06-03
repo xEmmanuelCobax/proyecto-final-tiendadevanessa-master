@@ -545,7 +545,7 @@ def manage_products():
                 print("<==================== ACCIONES ====================")
                 if productoexiste:
                     print("====================! Existing product in the DB.====================>")
-                    raise MyException("ProductExists", "The product exists")
+                    raise MyException("ProductExists", "El producto existe")
                 elif productoinactivo:
                     print("====================! Producto existente (Oculto) en la BD.====================>")
                     product_id = productoinactivo[0][0]
@@ -568,7 +568,7 @@ def manage_products():
                             product_id,
                         ),
                     )
-                    flash("Successfully created product.")
+                    flash("Producto creado exitosamente.")
                 elif existe:
                     config.CUD(
                         """
@@ -584,11 +584,14 @@ def manage_products():
                         ),
                     )
                     print("====================!Producto creado exitosamente.!====================>")
-                    flash("Successfully created product.")
+                    flash("Producto creado exitosamente.")
                     print("#################### FIN ####################>")
                 else:
                     print("====================!La compañía o el intermediario no cumplen las condiciones necesarias.====================>")
-                    raise MyException("CIConditions", "The company or the intermediary does not meet the necessary conditions.")
+                    raise MyException(
+                        "CIConditions",
+                        "La empresa o el intermediario no cumple con las condiciones necesarias.",
+                    )
 
             except MyException as ex:
                 Tipo, Mensaje = ex.args
@@ -596,12 +599,12 @@ def manage_products():
                 flash(f"{Mensaje}")
                 print("#################### FIN ####################>")
             except ValueError as e:
-                print("String does not represent a valid number")
-                flash("String does not represent a valid number")
+                print("La cadena no representa un número válido")
+                flash("La cadena no representa un número válido")
                 print("#################### FIN ####################>")
             except Exception as err:
                 print(f"Inesperado {err=}, {type(err)=}")
-                flash("Unexpected error occurred")
+                flash("Ocurrió un error inesperado")
                 print("#################### FIN ####################>")
         # Caso 3: Actualizar producto
         elif form_type == "update":
@@ -635,11 +638,11 @@ def manage_products():
                     quantity = str(unit_quantity) + "custom"
                 # Errores relacionados a nombre
                 if len(marca) > 35 or len(producto) > 35:
-                    auxiliar = "The following fields have more than 35 characters: "
+                    auxiliar = "Los siguientes campos tienen más de 35 caracteres:"
                     if len(marca) > 35:
-                        auxiliar += "Brand "
+                        auxiliar += "Marca "
                     if len(producto) > 35:
-                        auxiliar += ", Name product"
+                        auxiliar += ", Nombre del producto"
                     raise MyException(
                         "MaxLength",
                         auxiliar,
@@ -655,17 +658,17 @@ def manage_products():
                     if cantidad <= 0 or precio <= 0:
                         raise MyException(
                             "NonPositive",
-                            f"The provided values {cantidad,precio} are not positive. They must be greater than zero.",
+                            f"Los valores proporcionados {cantidad,precio} no son positivos. Deben ser mayores que cero.",
                         )
                     elif cantidad <= 0:
                         raise MyException(
                             "NonPositive",
-                            f"The provided value {cantidad} is not positive. It must be greater than zero.",
+                            f"El valor proporcionado {cantidad} no es positivo. Debe ser mayor que cero.",
                         )
                     elif precio <= 0:
                         raise MyException(
                             "NonPositive",
-                            f"The provided value {precio} is not positive. It must be greater than zero.",
+                            f"El valor proporcionado {precio} no es positivo. Debe ser mayor que cero.",
                         )
                 # Pruebas
                 print("<==================== DATOS OBTENIDOS ====================")
@@ -727,7 +730,7 @@ def manage_products():
                     )
                     raise MyException(
                         "ProductExists",
-                        "The product exists",
+                        "El producto existe",
                     )
                 elif not existe:
                     # Si la compañía o el intermediario no cumplen las condiciones, redireccionar con un mensaje de error
@@ -736,7 +739,7 @@ def manage_products():
                     )
                     raise MyException(
                         "CIConditions",
-                        "The company or the intermediary does not meet the necessary conditions.",
+                        "La empresa o el intermediario no cumple con las condiciones necesarias.",
                     )
                 else:
                     # Actualizar el producto en la base de datos
@@ -764,10 +767,10 @@ def manage_products():
                     print(
                         "====================! Producto actualizado exitosamente. !====================>"
                     )
-                    flash("Product updated successfully.")
+                    flash("Producto actualizado exitosamente.")
             except ValueError:
-                print("String does not represent a valid number")
-                flash("String does not represent a valid number")
+                print("La cadena no representa un número válido")
+                flash("La cadena no representa un número válido")
                 print("#################### FIN ####################>")
             except MyException as ex:
                 Tipo, Mensaje = ex.args
@@ -868,7 +871,7 @@ def manage_intermediary():
                 # Error telefono
                 if len(str(telefono)) != 10:
                     raise MyException(
-                        "ErrorTel", "The phone number does not have 10 numbers."
+                        "ErrorTel", "El número de teléfono no tiene 10 números."
                     )
                 # Existe pero esta inactivo
                 VerificarInactivo = config.Read(
@@ -915,13 +918,13 @@ def manage_intermediary():
                 if existe or tel_existe:
                     if existe:
                         raise MyException(
-                                "ErrorIntermediary",
-                                "The intermediary already exists in the DB.",
-                            )
+                            "ErrorIntermediary",
+                            "El intermediario ya existe en el DB.",
+                        )
                     if tel_existe:
                         raise MyException(
-                                "ErrorTel", "The phone number is already registered"
-                            )
+                            "ErrorTel", "El número de teléfono ya está registrado."
+                        )
                 if VerificarInactivo:
                     config.CUD(
                             """
@@ -977,7 +980,7 @@ def manage_intermediary():
                 # Error telefono
                 if len(str(telefono)) != 10:
                     raise MyException(
-                        "ErrorTel", "The phone number does not have 10 numbers."
+                        "ErrorTel", "El número de teléfono no tiene 10 números."
                     )
                 # Verificar si el intermediario ya existe
                 existe = config.Read(
@@ -1010,11 +1013,11 @@ def manage_intermediary():
                     if existe:
                         raise MyException(
                             "ErrorIntermediary",
-                            "The intermediary already exists in the DB.",
+                            "El intermediario ya existe en el DB.",
                         )
                     if tel_existe:
                         raise MyException(
-                            "ErrorTel", "The phone number is already registered"
+                            "ErrorTel", "El número de teléfono ya está registrado."
                         )
                 else:
                     # Actualizar en la base de datos
@@ -1183,7 +1186,7 @@ def manage_company():
                     if existe:
                         raise MyException(
                                 "Errorcompany",
-                                "The company already exists in the DB.",
+                                "La empresa ya existe en la base de datos.",
                             )
                 if VerificarInactivo:
                     config.CUD(
@@ -1228,13 +1231,24 @@ def manage_company():
                 print(f"nombre - {nombre}")
                 print(f"id-company - {id_intermediario}")
                 print("========================================>")
+                # Verificar si es inactivo
+                ExisteInactivo = config.Read(
+                    """
+                    SELECT 
+                        dbo.Proveedor.NOMBRE,
+                        dbo.Proveedor.ID_COMPANIA
+                    FROM dbo.Proveedor 
+                    WHERE dbo.Proveedor.NOMBRE = ?
+                    AND dbo.Proveedor.ESTATUS = 0
+                    """,
+                    (nombre, int(id_intermediario)),
+                )
                 # Verificar si la campañia ya existe
                 existe = config.Read(
                     """
                     SELECT 
                         dbo.Proveedor.NOMBRE,
                         dbo.Proveedor.ID_COMPANIA
-                        
                     FROM dbo.Proveedor 
                     WHERE dbo.Proveedor.NOMBRE = ?
                     AND dbo.Proveedor.ID_COMPANIA != ?
@@ -1243,11 +1257,10 @@ def manage_company():
                 )
                 # Cualquier error
                 if existe:
-                    if existe:
-                        raise MyException(
-                            "ErrorCompany",
-                            "The Company already exists in the DB.",
-                        )
+                    raise MyException(
+                        "ErrorCompany",
+                        "La empresa ya existe en la base de datos.",
+                    )
                 else:
                     # Actualizar en la base de datos
                     config.CUD(
@@ -1340,13 +1353,17 @@ def addsalesworker():
                 # Si un producto no existe, entonces terminamos el ciclo y el booleano ValidarExistencia es falso
                 if not ExisteProducto:
                     ValidarExistencia = False
-                    ExisteProducto
                     break
                 # Si no hay errores entonces el booleano ValidarExistencia es verdadero
                 ValidarExistencia = True
             for producto in tabla:
                 print(producto)
             # Si los productos existen(Estan activos) y estan en la BD entonces>
+            if ValidarExistencia == False:
+                raise MyException(
+                    "ErrorEntrada",
+                    "Se intentaron cambiar los datos.",
+                )
             if ValidarExistencia == True:
                 # Obtenemos la fecha actual
                 Auxiliar = datetime.now()
@@ -1359,7 +1376,7 @@ def addsalesworker():
                 # Encontrar ID_DIA en BD DIA
                 Dia = int(
                     config.Read(
-                        """
+                    """
                     SELECT dbo.Dia.ID_DIA 
                     FROM dbo.Dia 
                     WHERE dbo.Dia.DIA = ?
@@ -1370,7 +1387,7 @@ def addsalesworker():
                 # Encontrar ID_MES en BD MES
                 Mes = int(
                     config.Read(
-                        """
+                    """
                     SELECT dbo.Mes.ID_MES 
                     FROM dbo.Mes 
                     WHERE dbo.Mes.MES = ?
@@ -1381,7 +1398,7 @@ def addsalesworker():
                 # Encontrar ID_ANIO en BD ANIO
                 Anio = int(
                     config.Read(
-                        """
+                    """
                     SELECT dbo.Anio.ID_ANIO 
                     FROM dbo.Anio 
                     WHERE dbo.Anio.ANIO = ?
@@ -1424,6 +1441,11 @@ def addsalesworker():
                         TablaDetalles[i].append(Cost)  # IMPORTE
                         TablaDetalles[i].append(round(IvaValue))  # IVA
                         TablaDetalles[i].append(tabla[i][0])  # ID_PRODUCTO
+                if ErrorVenta:
+                    raise MyException(
+                        "ErrorVenta",
+                        "No hay existencias para reaelizar la venta.",
+                    )
                 if not ErrorVenta:
                     # Datos
                     Total = SumaCosto + SumaIva  # Costo de la venta
@@ -1487,8 +1509,6 @@ def addsalesworker():
                                 int(tabla[z][0]),
                             ),
                         )
-            else:
-                print("No existe producto")
         except Exception as e:
             print(e)
     # Siempre se envia estos datos
@@ -1628,40 +1648,55 @@ def manage_accounts():
                 apellido_paterno = request.form.get("NEW-AP_PAT")
                 apellido_materno = request.form.get("NEW-AP_MAT")
                 correo = request.form.get("NEW-Correo")
-                id_intermediario = int(request.form.get(
-                    "EditIntermediary_id"
-                ) ) # Se obtiene de un dato oculto
+                id_usuario = int(
+                    request.form.get("EditIntermediary_id")
+                )  # Se obtiene de un dato oculto
                 # Pruebas
                 print("<==================== DATOS OBTENIDOS ====================")
                 print(f"nombre - {nombre}")
-                print(f"AP_PAT - {apellido_paterno}")
-                print(f"AP_MAT - {apellido_materno}")
-                print(f"id_intermediario - {correo}")
+                print(f"apellido_paterno - {apellido_paterno}")
+                print(f"apellido_materno - {apellido_materno}")
+                print(f"correo - {correo}")
+                print(f"id_usuario - {id_usuario}")
                 print("========================================>")
-                # Verificar si el usuario ya existe
-                existe = config.Read(
+                # Consulta para verificar si existe el correo en la BD
+                existing_email = config.Read(
                     """
-                    SELECT 
-                        dbo.usuarios.NOMBRE,
-                        dbo.usuarios.AP_PAT,
-                        dbo.usuarios.AP_MAT,
-                        dbo.usuarios.CORREO 
-                    FROM dbo.usuarios 
+                    SELECT * 
+                    FROM dbo.Usuarios 
+                    WHERE dbo.Usuarios.CORREO = ?
+                    AND dbo.Usuarios.ID_USUARIO != ?
+                    """,
+                    (correo, int(id_usuario)),
+                )
+                # Consulta para verificar si existe el usuario en la BD
+                existing_user = config.Read(
+                    """
+                    SELECT * 
+                    FROM dbo.Usuarios 
                     WHERE dbo.usuarios.NOMBRE = ?
                     AND dbo.usuarios.AP_PAT = ?
-                    AND dbo.usuarios.AP_MAT = ?
-                    AND dbo.usuarios.CORREO = ?
-                    AND dbo.usuarios.ID_USUARIO != ?
+                    AND dbo.usuarios.AP_MAT= ?
+                    AND dbo.Usuarios.ID_USUARIO != ?
                     """,
-                    (nombre, apellido_paterno, apellido_materno, correo, int(id_intermediario)),
+                    (nombre, apellido_paterno, apellido_materno,int(id_usuario)),
                 )
-
                 # Cualquier error
-                if existe:
-                    if existe:
+                if existing_email or existing_user:
+                    if existing_email and existing_user:
                         raise MyException(
-                            "ErrorAccounts",
-                            "The account already exists in the DB.",
+                            "ErrorEditAccounts",
+                            "El correo electronico y usuario ya existe en la base de datos.",
+                        )
+                    elif existing_email:
+                        raise MyException(
+                            "ErrorEditAccounts",
+                            "El correo electronico ya existe en la base de datos.",
+                        )
+                    elif existing_user:
+                        raise MyException(
+                            "ErrorEditAccounts",
+                            "El usuario ya existe en la base de datos.",
                         )
                 else:
                     # Actualizar en la base de datos
@@ -1676,18 +1711,20 @@ def manage_accounts():
                             apellido_paterno,
                             apellido_materno,
                             correo,
-                            int(id_intermediario),
+                            int(id_usuario),
                         ),
                     )
+                    flash("Se ha actualizado correctamente los datos.")
+                    print("Se ha actualizado correctamente los datos.")
                     print("#################### FIN ####################>")
             except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
-                flash(f"Type {Tipo} : {Mensaje}")
+                flash(f"{Mensaje}")
                 print("#################### FIN (No se inserto F) ####################>")
             except Exception as e:
                 print(f"Type : {e}")
-                flash(f"Type : {e}")
+                flash(f"{e}")
                 print("#################### FIN (No se inserto FX2) ####################>")
     # Datos que se envian siempre
     relations = []

@@ -46,7 +46,7 @@ endblock %} {% block content %}
 <div class="container-fluid mt-5">
   <!-- Agregamos la clase mt-5 para añadir margen superior -->
   <div class="row mx-2 mt-5">
-    <h6 class="mt-1 d-none d-sm-flex">Manage warehouse</h6>
+    <h6 class="mt-1 d-none d-sm-flex">Gestionar almacén</h6>
 
     {% include 'top navbar/top-width-navbar.html' %}
 
@@ -63,7 +63,7 @@ endblock %} {% block content %}
           data-bs-whatever="@mdo"
         >
           <span data-section="manage-werehouse" data-value="Create"
-            >Create</span
+            >Crear producto</span
           >
         </button>
       </form>
@@ -85,19 +85,19 @@ endblock %} {% block content %}
 
                 <th scope="col">
                   <span data-section="werehouse" data-value="Name Product"
-                    >Name Product</span
+                    >Nombre del producto</span
                   >
                 </th>
 
                 <th scope="col">
                   <span data-section="werehouse" data-value="Company"
-                    >Company</span
+                    >Compañia</span
                   >
                 </th>
 
                 <th scope="col">
                   <span data-section="werehouse" data-value="Name Intermedary"
-                    >Name Intermedary</span
+                    >Nombre del intermediario</span
                   >
                 </th>
 
@@ -107,13 +107,13 @@ endblock %} {% block content %}
 
                 <th scope="col">
                   <span data-section="werehouse" data-value="Unit Price"
-                    >Unit Price</span
+                    >Precio unitario</span
                   >
                 </th>
 
                 <th scope="col">
                   <span data-section="manage-company" data-value="Actions"
-                    >Actions</span
+                    >Acciones</span
                   >
                 </th>
               </tr>
@@ -180,7 +180,7 @@ endblock %} {% block content %}
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create New Product</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Crear nuevo producto</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -200,7 +200,7 @@ endblock %} {% block content %}
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="marca" class="form-label">Brand:</label>
+                <label for="marca" class="form-label">Marca:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -210,7 +210,7 @@ endblock %} {% block content %}
                 />
               </div>
               <div class="mb-3">
-                <label for="producto" class="form-label">Name Product:</label>
+                <label for="producto" class="form-label">Nombre del producto:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -221,7 +221,7 @@ endblock %} {% block content %}
               </div>
               <div class="mb-3">
                 <label for="SelectUnitOfMeasure" class="form-label"
-                  >Select Unit of Measure:</label
+                  >Secciona una unidad de medida:</label
                 >
                 <select
                   class="form-select"
@@ -230,19 +230,19 @@ endblock %} {% block content %}
                   required
                 >
                   <option value="" disabled selected>
-                    Select Unit Of Measure
+                    Selecciona una uniadad de medida
                   </option>
-                  <option value="pieces">Pieces</option>
-                  <option value="liters">Liters</option>
-                  <option value="milliliters">Milliliters</option>
-                  <option value="kilogram">Kilogram</option>
-                  <option value="grams">Grams</option>
-                  <option value="customize">Customized</option>
+                  <option value="pieces">Piezas</option>
+                  <option value="liters">Litros</option>
+                  <option value="milliliters">Milililitros</option>
+                  <option value="kilogram">Kilogramo</option>
+                  <option value="grams">Gramos</option>
+                  <option value="customize">Personalizado</option>
                 </select>
               </div>
               <div class="mb-3">
                 <label for="unitquantity" class="form-label"
-                  >Unit Quantity:</label
+                  >Unidad de medida:</label
                 >
                 <div class="input-group">
                   <input
@@ -260,21 +260,21 @@ endblock %} {% block content %}
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="company-select">Select Company:</label>
+                <label for="company-select">Seleccionar compañia:</label>
                 <select
                   class="form-select"
                   id="company-select"
                   name="company_id"
                   required
                 >
-                  <option value="" disabled selected>Select Company</option>
+                  <option value="" disabled selected>Seleccionar compañia</option>
                   {% for company in companies %}
                   <option value="{{ company[0] }}">{{ company[1] }}</option>
                   {% endfor %}
                 </select>
               </div>
               <div class="mb-3">
-                <label for="intermedary-select">Select Intermediary:</label>
+                <label for="intermedary-select">Seleccionar intermediario:</label>
                 <select
                   class="form-select"
                   id="intermedary-select"
@@ -282,7 +282,7 @@ endblock %} {% block content %}
                   required
                 >
                   <option value="" disabled selected>
-                    Select Intermediary
+                    Seleccionar intermediario
                   </option>
                   {% for relation in relations %}
                   <option value="{{ relation[2] }}" data-company-id="{{ relation[0] }}">
@@ -305,7 +305,7 @@ endblock %} {% block content %}
               </div>
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label for="newprecio" class="form-label">Unit Price:</label>
+                  <label for="newprecio" class="form-label">Precio unitario:</label>
                   <div class="input-group">
                     <span class="input-group-text">$</span>
                     <input
@@ -329,14 +329,14 @@ endblock %} {% block content %}
               data-bs-dismiss="modal"
               onclick="limpiarModal()"
             >
-              Close
+              Cerrar
             </button>
             <button
               id="submitProductSave"
               type="submit"
               class="btn btn-success"
             >
-              Save Products
+              Guardar productos
             </button>
           </div>
         </form>
@@ -357,7 +357,7 @@ endblock %} {% block content %}
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editproductlabel">Edit Product</h5>
+        <h5 class="modal-title" id="editproductlabel">Editar productos</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -378,7 +378,7 @@ endblock %} {% block content %}
             <div class="col-md-6">
               <!--MARCA-PRODUCTOS-id>newmarca-->
               <div class="mb-3">
-                <label for="newmarca" class="form-label">New Brand:</label>
+                <label for="newmarca" class="form-label">Nueva marca:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -390,7 +390,7 @@ endblock %} {% block content %}
               <!--NEW-NAME-PRODUCTOS-id>newproducto-->
               <div class="mb-3">
                 <label for="newproducto" class="form-label"
-                  >New Name Product:</label
+                  >Nuevo nombre del producto:</label
                 >
                 <input
                   type="text"
@@ -403,7 +403,7 @@ endblock %} {% block content %}
               <!--SLECT-NEW-UNIT-id>EditSelectUnitOfMeasure-->
               <div class="mb-3">
                 <label for="EditSelectUnitOfMeasure" class="form-label"
-                  >Select Unit of Measure:</label
+                  >Seccionar unidad de medida:</label
                 >
                 <select
                   class="form-select"
@@ -412,20 +412,20 @@ endblock %} {% block content %}
                   required
                 >
                   <option value="" disabled selected>
-                    Select Unit Of Measure
+                    Seleccionar unidad de medida
                   </option>
-                  <option value="pieces">Pieces</option>
-                  <option value="liters">Liters</option>
-                  <option value="milliliters">Milliliters</option>
-                  <option value="kilogram">Kilogram</option>
-                  <option value="grams">Grams</option>
-                  <option value="custom">Customized</option>
+                  <option value="pieces">Piezas</option>
+                  <option value="liters">Litros</option>
+                  <option value="milliliters">Mililitros</option>
+                  <option value="kilogram">Kilogramo</option>
+                  <option value="grams">Gramos</option>
+                  <option value="custom">Personalizado</option>
                 </select>
               </div>
               <!--NEW-UNIT-QUANTITY-id>editunitquantity-->
               <div class="mb-3">
                 <label for="editunitquantity" class="form-label"
-                  >New Unit Quantity:</label
+                  >Nuevo unidad de medida:</label
                 >
                 <div class="input-group">
                   <input
@@ -444,14 +444,14 @@ endblock %} {% block content %}
             <div class="col-md-6">
               <!--EDITAR-COMPANIA-SELECCIONADO-id>company-new-select-->
               <div class="mb-3">
-                <option value="" disabled selected>Select Company</option>
+                <option value="" disabled selected>Seleccionar Compañia</option>
                 <select
                   class="form-select"
                   id="company-new-select"
                   name="company-new-select"
                   required
                 >
-                  <option value="" disabled selected>Select Company</option>
+                  <option value="" disabled selected>Seleccionar compañia</option>
                   {% for company in companies %}
                   <option value="{{ company[0] }}">{{ company[1] }}</option>
                   {% endfor %}
@@ -460,7 +460,7 @@ endblock %} {% block content %}
 
               <!--EDITAR-INTERMEDIARIO-SELECCIONADO-id>intermedary-new-select-->
               <div class="mb-3">
-                <label for="intermedary-new-select">Select Intermediary:</label>
+                <label for="intermedary-new-select">Seleccionar intermediario:</label>
                 <select
                   class="form-select"
                   id="intermedary-new-select"
@@ -468,10 +468,10 @@ endblock %} {% block content %}
                   required
                 >
                   <option value="" disabled selected>
-                    Select Intermediary
+                    Seleccionar intermediario
                   </option>
                   {% for relation in relations %}
-                  <option value="{{ relation[0] }}">
+                  <option value="{{ relation[2] }}" data-new-company-id="{{ relation[0] }}">
                     {{ relation[1] }} {{ relation[3] }} {{ relation[4] }} {{
                     relation[5] }}
                   </option>
@@ -481,7 +481,7 @@ endblock %} {% block content %}
               <!--NUEVA-CANTIDAD-id>newcantidad-->
               <div class="mb-3">
                 <label for="newcantidadInput" class="form-label"
-                  >New Stock:</label
+                  >Nuevo Stock:</label
                 >
                 <input
                   type="number"
@@ -496,7 +496,7 @@ endblock %} {% block content %}
               <div class="col-md-6">
                 <div class="mb-3">
                   <label for="newprecio2" class="form-label"
-                    >New Unit Price:</label
+                    >Nuevo precio unitario:</label
                   >
                   <div class="input-group">
                     <span class="input-group-text">$</span>
@@ -520,7 +520,7 @@ endblock %} {% block content %}
               class="btn btn-warning me-2"
               data-bs-dismiss="modal"
             >
-              Close
+              Cerrar
             </button>
             <input
               id="editproduct_id"
@@ -533,7 +533,7 @@ endblock %} {% block content %}
               type="submit"
               class="btn btn-success"
             >
-              Save Changes
+              Guardar cambios
             </button>
           </div>
         </form>
@@ -553,7 +553,7 @@ endblock %} {% block content %}
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete Product</h5>
+        <h5 class="modal-title">Eliminar productos</h5>
         <button
           type="button"
           class="btn-close custom-btn-close"
@@ -563,12 +563,12 @@ endblock %} {% block content %}
       </div>
       <div class="modal-body">
         <div class="alert alert-warning" role="alert">
-          Are you sure you want to delete this product?
+          ¿Estas seguro de eliminar este producto?
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
-          Close
+          Cerrar
         </button>
         <form
           id="delete-product-form"
@@ -583,7 +583,7 @@ endblock %} {% block content %}
             value=""
           />
           <button id="delete-product-btn" type="submit" class="btn btn-danger">
-            Delete Product
+            Eliminar producto
           </button>
         </form>
       </div>
@@ -600,7 +600,7 @@ endblock %} {% block content %}
       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Cerrar"></button>
     </div>
     <div class="toast-body mx-1 mt-1">
-      Ajusta nuevamente el nombre deL 
+      Ajusta nuevamente el nombre del intermediario
     </div>
   </div>
 </div>
@@ -628,14 +628,14 @@ endblock %} {% block content %}
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="flashModalLabel">Notification</h5>
+        <h5 class="modal-title" id="flashModalLabel">Nortification</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="flashModalBody">
         <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -871,6 +871,38 @@ filterIntermediaries();
 </script>
 
 
+<script>
+  function filterIntermediaries() {
+    // Obtener el valor de la compañía seleccionada
+    var selectedCompanyId = document.getElementById("company-new-select").value;
+    console.log(selectedCompanyId);
+
+    // Obtener todas las opciones de intermediarios
+    var intermediaries = document.querySelectorAll("#intermedary-new-select option");
+
+    // Recorrer todas las opciones de intermediarios
+    intermediaries.forEach(function(option) {
+        // Obtener el valor del atributo data-company-id asociado con el intermediario
+        var intermediaryCompanyId = option.getAttribute('data-new-company-id');
+        console.log(intermediaryCompanyId);
+        // Comparar la compañía seleccionada con la compañía del intermediario
+        if (intermediaryCompanyId !== selectedCompanyId) {
+            // Ocultar el intermediario si no coincide con la compañía seleccionada
+            option.style.display = "none";
+        } else {
+            // Mostrar el intermediario si coincide con la compañía seleccionada
+            option.style.display = "block";
+        }
+    });
+}
+
+// Agregar un evento de cambio al campo de selección de compañía
+document.getElementById("company-new-select").addEventListener("change", filterIntermediaries);
+
+// Filtrar las opciones de intermediarios al cargar la página
+filterIntermediaries();
+
+</script>
 
 
 
@@ -883,7 +915,7 @@ filterIntermediaries();
 
 <!--No eliminar-->
 <!--EDIT MODAL SCRIPT PARA MANEJO DE COMPAÑIAS E INTERMEDIARIOS DINAMICOS-->
-<script>
+<!-- <script>
   // Función para filtrar intermediarios basados en la compañía seleccionada
   function filterIntermediaries() {
     // Obtener la opción seleccionada de la compañía
@@ -927,7 +959,7 @@ filterIntermediaries();
 
   // Filtrar las opciones de intermediarios al cargar la página
   filterIntermediaries();
-</script>
+</script> -->
 
 <!-- EVITA COPIAR, PEGAR, CORTAR EN TODOS LOS INPUTS MENOS EN LOS DE NOMBRE-->
 <script>
@@ -1428,7 +1460,7 @@ filterIntermediaries();
     }
   });
 </script>
-
+<!-- FUNCIONALIDAD PARA AJUSTAR A DOS DECIMALES CLASE(input-float)-->
 <script>
   document.querySelectorAll('input[type="number"].input-float').forEach(function (input) {
     input.addEventListener('input', function (e) {
