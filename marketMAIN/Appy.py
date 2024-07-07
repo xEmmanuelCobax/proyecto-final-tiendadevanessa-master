@@ -698,7 +698,7 @@ def manage_products():
                         AND dbo.Intermediario.ESTATUS = 1 
                         AND dbo.Intermediario.ID_INTERMEDIARIO = ?
                         AND dbo.Proveedor.ID_COMPANIA = ?
-                        """,
+                    """,
                     (
                         int(intermediario),
                         int(compania),

@@ -470,6 +470,33 @@ endblock %} {% block content %}
   </div>
 </div>
 
+<!-- Modal HTML -->
+<div class="modal fade" id="deleteConfirmationModal"  data-bs-backdrop="static"
+tabindex="-1"
+aria-labelledby="deleteproductlabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmar eliminación</h5>
+        <button
+          type="button"
+          class="btn-close custom-btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="alert alert-warning" role="alert">
+        ¿Estas seguro de eliminar este producto?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
+          Cerrar
+        </button>        <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MUESTRA EL TOTAL DE LA COMPRA -->
 <script>
   function sumTableNumbers() {
@@ -736,9 +763,9 @@ endblock %} {% block content %}
         </td>
         <td style="text-align: center; margin: auto;">${productInfo[3]}$</td>
         <td class="text-center d-flex justify-content-center align-items-center">
-          <button type="button" class="btn btn-danger mx-2" onclick="deleteProduct(this)">
-            <span class="material-symbols-outlined"> delete_forever </span>
-          </button>
+          <button id="deletebotton" type="button" class="btn btn-danger mx-2" onclick="confirmDelete(this)">
+  <span class="material-symbols-outlined"> delete_forever </span>
+</button>
         </td>
       `;
 
@@ -819,10 +846,27 @@ endblock %} {% block content %}
     });
   });
 
-  function deleteProduct(button) {
-    const row = button.closest("tr");
-    row.remove();
-  }
+// Variable para almacenar el botón que fue presionado
+let buttonToDelete;
+
+function confirmDelete(button) {
+  // Almacenar el botón que fue presionado
+  buttonToDelete = button;
+  // Mostrar el modal de confirmación
+  $('#deleteConfirmationModal').modal('show');
+}
+
+document.getElementById('confirmDelete').addEventListener('click', function() {
+  // Si se confirma, eliminar el producto
+  deleteProduct(buttonToDelete);
+  // Cerrar el modal
+  $('#deleteConfirmationModal').modal('hide');
+});
+
+function deleteProduct(button) {
+  const row = button.closest("tr");
+  row.remove();
+}
 
   // Función para mostrar toasts personalizados
   function showToast(message, type) {
