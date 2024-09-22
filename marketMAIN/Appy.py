@@ -115,9 +115,9 @@ def signin():
         existing_email = config.Read(
             """
             SELECT * 
-            FROM dbo.Usuarios 
+            FROM proyecto.usuarios 
             WHERE CORREO = ?
-            AND dbo.Usuarios.ESTATUS = 1
+            AND proyecto.usuarios.ESTATUS = 1
             """,
             (email,),
         )
@@ -198,26 +198,30 @@ def signup():
         print(f"Email - {email}")
         print(f"Password - {password}")
         print("========================================>")
+        print("<==================== VERIFICAR CORREO/USUARIO ====================")
+        print("CONSULTA CORREO")
         # Consulta para verificar si existe el correo en la BD
         existing_email = config.Read(
             """
             SELECT * 
-            FROM dbo.Usuarios 
+            FROM proyecto.usuarios 
             WHERE CORREO = ?
             """,
-            email,
+            (email,)
         )
+        print("CONSULTA USUARIO")
         # Consulta para verificar si existe el usuario en la BD
         existing_user = config.Read(
             """
             SELECT * 
-            FROM dbo.Usuarios 
+            FROM proyecto.usuarios 
             WHERE NOMBRE = ? 
             AND AP_PAT = ? 
             AND AP_MAT = ?
             """,
             (name, apellido_paterno, apellido_materno)
         )
+        print("========================================>")
         # Existe el correo en la base de datos
         if existing_email:
             email_found = True
@@ -233,14 +237,22 @@ def signup():
             )
         # No hay ningún error
         else:
+            print("<==================== REGISTRO EN BD ====================")
             # Registrar en base de datos
             config.CUD(
                 """
-                INSERT INTO dbo.Usuarios (NOMBRE, AP_PAT, AP_MAT, CORREO, CONTRASENA, ESTATUS, ES_ADMIN) 
+                INSERT INTO proyecto.usuarios (NOMBRE, AP_PAT, AP_MAT, CORREO, CONTRASENA, ESTATUS, ES_ADMIN) 
                 VALUES (?, ?, ?, ?, ?, 1, 0)
                 """,
-                (name, apellido_paterno, apellido_materno, email, password),
+                (
+                    name,
+                    apellido_paterno,
+                    apellido_materno,
+                    email,
+                    password,
+                ),  # Tupla correctamente definida
             )
+            print("========================================>")
             # Salio todo bien entonces
             registration_successful = True
             user = f"{name} {apellido_paterno} {apellido_materno} "
@@ -283,8 +295,8 @@ def ConsultaProductos():
             NOMBRE, 
             PRECIO_UNITARIO, 
             EXISTENCIAS 
-        FROM dbo.Almacen 
-        WHERE dbo.Almacen.ESTATUS = 1
+        FROM proyecto.almacen 
+        WHERE proyecto.almacen.ESTATUS = 1
         """
     )
     return productos
@@ -295,20 +307,20 @@ def ConsultaPIA():
     Cpia = config.Read(
         """
     SELECT 
-        dbo.Almacen.ID_PRODUCTO,
-        dbo.Almacen.NOMBRE, 
-        dbo.Almacen.PRECIO_UNITARIO, 
-        dbo.Almacen.EXISTENCIAS,
-        dbo.Almacen.PRECIO_EXISTENCIA, 
-        dbo.Intermediario.NOMBRE,
-        dbo.Intermediario.AP_PAT,
-        dbo.Intermediario.AP_MAT,
-        dbo.Intermediario.TEL,
-        dbo.Proveedor.NOMBRE
-    FROM dbo.Proveedor, dbo.Intermediario, dbo.Almacen
-    WHERE dbo.Proveedor.ID_COMPANIA = dbo.Intermediario.ID_COMPANIA
-    AND dbo.Intermediario.ID_INTERMEDIARIO = dbo.Almacen.ID_INTERMEDIARIO
-    AND dbo.Almacen.ESTATUS = 1
+        proyecto.almacen.ID_PRODUCTO,
+        proyecto.almacen.NOMBRE, 
+        proyecto.almacen.PRECIO_UNITARIO, 
+        proyecto.almacen.EXISTENCIAS,
+        proyecto.almacen.PRECIO_EXISTENCIA, 
+        proyecto.intermediario.NOMBRE,
+        proyecto.intermediario.AP_PAT,
+        proyecto.intermediario.AP_MAT,
+        proyecto.intermediario.TEL,
+        proyecto.proveedor.NOMBRE
+    FROM proyecto.proveedor, proyecto.intermediario, proyecto.almacen
+    WHERE proyecto.proveedor.ID_COMPANIA = proyecto.intermediario.ID_COMPANIA
+    AND proyecto.intermediario.ID_INTERMEDIARIO = proyecto.almacen.ID_INTERMEDIARIO
+    AND proyecto.almacen.ESTATUS = 1
         """
     )
     return Cpia
@@ -319,16 +331,16 @@ def ConsultaIntermediarios():
     Intermediarios = config.Read(
         """
         SELECT 
-            dbo.Proveedor.ID_COMPANIA,
-            dbo.Proveedor.NOMBRE,
-            dbo.Intermediario.ID_INTERMEDIARIO,
-            dbo.Intermediario.NOMBRE, 
-            dbo.Intermediario.AP_PAT, 
-            dbo.Intermediario.AP_MAT 
-        FROM dbo.Proveedor 
-        INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
-        WHERE dbo.Proveedor.ESTATUS = 1 
-        AND dbo.Intermediario.ESTATUS = 1;
+            proyecto.proveedor.ID_COMPANIA,
+            proyecto.proveedor.NOMBRE,
+            proyecto.intermediario.ID_INTERMEDIARIO,
+            proyecto.intermediario.NOMBRE, 
+            proyecto.intermediario.AP_PAT, 
+            proyecto.intermediario.AP_MAT 
+        FROM proyecto.proveedor 
+        INNER JOIN proyecto.intermediario ON proyecto.intermediario.ID_COMPANIA = proyecto.proveedor.ID_COMPANIA 
+        WHERE proyecto.proveedor.ESTATUS = 1 
+        AND proyecto.intermediario.ESTATUS = 1;
         """
     )
     return Intermediarios
@@ -339,10 +351,10 @@ def ConsultaCompanias():
     companias = config.Read(
         """
         SELECT 
-            dbo.Proveedor.ID_COMPANIA, 
-            dbo.Proveedor.NOMBRE  
-        FROM dbo.Proveedor  
-        WHERE dbo.Proveedor.ESTATUS = 1 ;
+            proyecto.proveedor.ID_COMPANIA, 
+            proyecto.proveedor.NOMBRE  
+        FROM proyecto.proveedor  
+        WHERE proyecto.proveedor.ESTATUS = 1 ;
         """
     )
     return companias
@@ -370,13 +382,13 @@ def warehouse():
         products = config.Read(
             """
             SELECT 
-                dbo.Almacen.ID_PRODUCTO,
-                dbo.Almacen.NOMBRE, 
-                dbo.Almacen.PRECIO_UNITARIO, 
-                dbo.Almacen.EXISTENCIAS 
-            FROM  dbo.Almacen 
+                proyecto.almacen.ID_PRODUCTO,
+                proyecto.almacen.NOMBRE, 
+                proyecto.almacen.PRECIO_UNITARIO, 
+                proyecto.almacen.EXISTENCIAS 
+            FROM  proyecto.almacen 
             WHERE NOMBRE LIKE ?
-            AND dbo.Almacen.ESTATUS = 1;
+            AND proyecto.almacen.ESTATUS = 1;
             """,
             ("%" + search_term + "%",),
         )
@@ -417,7 +429,7 @@ def manage_products():
         if form_type == "delete":
             product_id = int(request.form.get("product_id"))
             config.CUD(
-                    "UPDATE dbo.Almacen SET ESTATUS = 0 WHERE ID_PRODUCTO = ?",
+                    "UPDATE proyecto.almacen  SET ESTATUS = 0 WHERE ID_PRODUCTO = ?",
                     (product_id,),
             )
             flash("El producto ha sido eliminado exitosamente.")
@@ -497,17 +509,17 @@ def manage_products():
                 existe = config.Read(
                     """
                     SELECT 
-                        ID_INTERMEDIARIO, 
-                        Intermediario.NOMBRE, 
-                        Intermediario.AP_PAT, 
-                        Intermediario.AP_MAT, 
-                        Proveedor.ID_COMPANIA, 
-                        Proveedor.NOMBRE 
-                    FROM dbo.Proveedor 
-                    INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
-                    WHERE dbo.Proveedor.ESTATUS = 1 AND dbo.Intermediario.ESTATUS = 1 
-                    AND dbo.Intermediario.ID_INTERMEDIARIO = ? 
-                    AND dbo.Proveedor.ID_COMPANIA = ?
+                        proyecto.interdediario.ID_INTERMEDIARIO, 
+                        proyecto.intermediario.NOMBRE, 
+                        proyecto.intermediario.AP_PAT, 
+                        proyecto.intermediario.AP_MAT, 
+                        proyecto.proveedor.ID_COMPANIA, 
+                        proyecto.proveedor.NOMBRE 
+                    FROM proyecto.proveedor 
+                    INNER JOIN proyecto.intermediario ON proyecto.intermediario.ID_COMPANIA = proyecto.proveedor.ID_COMPANIA 
+                    WHERE proyecto.proveedor.ESTATUS = 1 AND proyecto.intermediario.ESTATUS = 1 
+                    AND proyecto.intermediario.ID_INTERMEDIARIO = ? 
+                    AND proyecto.proveedor.ID_COMPANIA = ?
                     """,
                     (intermediario, compania),
                 )
@@ -517,11 +529,11 @@ def manage_products():
                 productoinactivo = config.Read(
                     """
                     SELECT 
-                        dbo.Almacen.ID_PRODUCTO,
-                        dbo.Almacen.NOMBRE 
-                    FROM dbo.Almacen 
-                    WHERE dbo.Almacen.NOMBRE = ?
-                    AND dbo.Almacen.ESTATUS = 0
+                        proyecto.almacen.ID_PRODUCTO,
+                        proyecto.almacen.NOMBRE 
+                    FROM proyecto.almacen 
+                    WHERE proyecto.almacen.NOMBRE = ?
+                    AND proyecto.almacen.ESTATUS = 0
                     """,
                     (nombre,),
                 )
@@ -532,10 +544,10 @@ def manage_products():
                 productoexiste = config.Read(
                     """
                     SELECT 
-                        dbo.Almacen.NOMBRE 
-                    FROM dbo.Almacen 
-                    WHERE dbo.Almacen.NOMBRE = ?
-                    AND dbo.Almacen.ESTATUS = 1
+                        proyecto.almacen.NOMBRE 
+                    FROM proyecto.almacen 
+                    WHERE proyecto.almacen.NOMBRE = ?
+                    AND proyecto.almacen.ESTATUS = 1
                     """,
                     (nombre,),
                 )
@@ -551,7 +563,7 @@ def manage_products():
                     product_id = productoinactivo[0][0]
                     config.CUD(
                         """
-                        UPDATE dbo.Almacen 
+                        UPDATE proyecto.almacen  
                         SET 
                             PRECIO_UNITARIO = ?, 
                             EXISTENCIAS = ?, 
@@ -572,7 +584,7 @@ def manage_products():
                 elif existe:
                     config.CUD(
                         """
-                        INSERT INTO dbo.Almacen (NOMBRE, PRECIO_UNITARIO, EXISTENCIAS, PRECIO_EXISTENCIA, ID_INTERMEDIARIO, ESTATUS)
+                        INSERT INTO proyecto.almacen (NOMBRE, PRECIO_UNITARIO, EXISTENCIAS, PRECIO_EXISTENCIA, ID_INTERMEDIARIO, ESTATUS)
                         VALUES (?, ?, ?, ?, ?, 1)
                         """,
                         (
@@ -686,18 +698,18 @@ def manage_products():
                 existe = config.Read(
                     """
                         SELECT 
-                            ID_INTERMEDIARIO,
-                            Intermediario.NOMBRE,   
-                            Intermediario.AP_PAT, 
-                            Intermediario.AP_MAT, 
-                            Proveedor.ID_COMPANIA, 
-                            Proveedor.NOMBRE
-                        FROM dbo.Proveedor
-                        INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
-                        WHERE dbo.Proveedor.ESTATUS = 1 
-                        AND dbo.Intermediario.ESTATUS = 1 
-                        AND dbo.Intermediario.ID_INTERMEDIARIO = ?
-                        AND dbo.Proveedor.ID_COMPANIA = ?
+                            proyecto.intermediario.ID_INTERMEDIARIO,
+                            proyecto.intermediario.NOMBRE,   
+                            proyecto.intermediario.AP_PAT, 
+                            proyecto.intermediario.AP_MAT, 
+                            proyecto.proveedor.ID_COMPANIA, 
+                            proyecto.proveedor.NOMBRE
+                        FROM proyecto.proveedor
+                        INNER JOIN proyecto.intermediario ON proyecto.intermediario.ID_COMPANIA = proyecto.proveedor.ID_COMPANIA 
+                        WHERE proyecto.proveedor.ESTATUS = 1 
+                        AND proyecto.intermediario.ESTATUS = 1 
+                        AND proyecto.intermediario.ID_INTERMEDIARIO = ?
+                        AND proyecto.proveedor.ID_COMPANIA = ?
                     """,
                     (
                         int(intermediario),
@@ -712,11 +724,11 @@ def manage_products():
                 productoexiste = config.Read(
                     """
                         SELECT 
-                            dbo.Almacen.NOMBRE 
-                        FROM dbo.Almacen 
-                        WHERE dbo.Almacen.NOMBRE = ?
-                        AND dbo.Almacen.ID_PRODUCTO != ?
-                        AND dbo.Almacen.ESTATUS = 1
+                            proyecto.almacen.NOMBRE 
+                        FROM proyecto.almacen 
+                        WHERE proyecto.almacen.NOMBRE = ?
+                        AND proyecto.almacen.ID_PRODUCTO != ?
+                        AND proyecto.almacen.ESTATUS = 1
                         """,
                     (nombre, int(product_id)),
                 )
@@ -745,7 +757,7 @@ def manage_products():
                     # Actualizar el producto en la base de datos
                     config.CUD(
                         """
-                            UPDATE dbo.Almacen 
+                            UPDATE proyecto.almacen 
                             SET 
                                 NOMBRE = ?, 
                                 PRECIO_UNITARIO = ?, 
@@ -811,11 +823,11 @@ def manage_intermediary():
                 NoSePuedeBorrar = config.Read(
                     """
                     SELECT 
-                        dbo.Almacen.NOMBRE
-                    FROM dbo.Intermediario,dbo.Almacen
-                    WHERE dbo.Intermediario.ID_INTERMEDIARIO = dbo.Almacen.ID_INTERMEDIARIO
-                    AND dbo.Almacen.EXISTENCIAS != 0
-                    AND dbo.Intermediario.ID_INTERMEDIARIO = ?
+                        proyecto.almacen.NOMBRE
+                    FROM proyecto.intermediario,dbo.Almacen
+                    WHERE proyecto.intermediario.ID_INTERMEDIARIO = dbo.Almacen.ID_INTERMEDIARIO
+                    AND proyecto.almacen.EXISTENCIAS != 0
+                    AND proyecto.intermediario.ID_INTERMEDIARIO = ?
                     """,
                     (id_intermediario,)
                 )
@@ -831,12 +843,12 @@ def manage_intermediary():
                     SET @ID_INTERMEDIARIO = ?;
 
                     -- Actualizar dbo.Almacen
-                    UPDATE dbo.Almacen
+                    UPDATE proyecto.almacen
                     SET ESTATUS = 0
                     WHERE ID_INTERMEDIARIO = @ID_INTERMEDIARIO;
 
-                    -- Actualizar dbo.Intermediario
-                    UPDATE dbo.Intermediario
+                    -- Actualizar proyecto.intermediario
+                    UPDATE proyecto.intermediario
                     SET ESTATUS = 0
                     WHERE ID_INTERMEDIARIO = @ID_INTERMEDIARIO;
                     """,
@@ -877,15 +889,15 @@ def manage_intermediary():
                 VerificarInactivo = config.Read(
                         """
                         SELECT 
-                            dbo.Intermediario.ID_INTERMEDIARIO,
-                            dbo.Intermediario.NOMBRE,
-                            dbo.Intermediario.AP_PAT,
-                            dbo.Intermediario.AP_MAT
-                        FROM dbo.Intermediario 
-                        WHERE dbo.Intermediario.NOMBRE = ?
-                        AND dbo.Intermediario.AP_PAT = ?
-                        AND dbo.Intermediario.AP_MAT = ?
-                        AND dbo.Intermediario.ESTATUS = 0
+                            proyecto.intermediario.ID_INTERMEDIARIO,
+                            proyecto.intermediario.NOMBRE,
+                            proyecto.intermediario.AP_PAT,
+                            proyecto.intermediario.AP_MAT
+                        FROM proyecto.intermediario 
+                        WHERE proyecto.intermediario.NOMBRE = ?
+                        AND proyecto.intermediario.AP_PAT = ?
+                        AND proyecto.intermediario.AP_MAT = ?
+                        AND proyecto.intermediario.ESTATUS = 0
                         """,
                         (nombre, apellido_paterno, apellido_materno),
                     )
@@ -893,14 +905,14 @@ def manage_intermediary():
                 existe = config.Read(
                         """
                         SELECT 
-                            dbo.Intermediario.NOMBRE,
-                            dbo.Intermediario.AP_PAT,
-                            dbo.Intermediario.AP_MAT
-                        FROM dbo.Intermediario 
-                        WHERE dbo.Intermediario.NOMBRE = ?
-                        AND dbo.Intermediario.AP_PAT = ?
-                        AND dbo.Intermediario.AP_MAT = ?
-                        AND dbo.Intermediario.ESTATUS = 1
+                            proyecto.intermediario.NOMBRE,
+                            proyecto.intermediario.AP_PAT,
+                            proyecto.intermediario.AP_MAT
+                        FROM proyecto.intermediario 
+                        WHERE proyecto.intermediario.NOMBRE = ?
+                        AND proyecto.intermediario.AP_PAT = ?
+                        AND proyecto.intermediario.AP_MAT = ?
+                        AND proyecto.intermediario.ESTATUS = 1
                         """,
                         (nombre, apellido_paterno, apellido_materno),
                     )
@@ -908,9 +920,9 @@ def manage_intermediary():
                 tel_existe = config.Read(
                         """
                         SELECT 
-                            dbo.Intermediario.TEL
-                        FROM dbo.Intermediario 
-                        WHERE dbo.Intermediario.TEL = ?
+                            proyecto.intermediario.TEL
+                        FROM proyecto.intermediario 
+                        WHERE proyecto.intermediario.TEL = ?
                         """,
                         (int(telefono),),
                     )
@@ -928,7 +940,7 @@ def manage_intermediary():
                 if VerificarInactivo:
                     config.CUD(
                             """
-                            UPDATE dbo.Intermediario 
+                            UPDATE proyecto.intermediario 
                             SET TEL=?, ID_COMPANIA=?, ESTATUS=1
                             WHERE ID_INTERMEDIARIO = ?
                             """,
@@ -942,7 +954,7 @@ def manage_intermediary():
                     # Insertar en la base de datos si no hay errores
                     config.CUD(
                             """
-                            INSERT INTO dbo.Intermediario (NOMBRE, AP_PAT, AP_MAT, TEL, ESTATUS, ID_COMPANIA) 
+                            INSERT INTO proyecto.intermediario (NOMBRE, AP_PAT, AP_MAT, TEL, ESTATUS, ID_COMPANIA) 
                             VALUES (?, ?, ?, ?, 1, ?)
                             """,
                             (nombre, apellido_paterno, apellido_materno, int(telefono), int(company_id)),
@@ -986,14 +998,14 @@ def manage_intermediary():
                 existe = config.Read(
                     """
                     SELECT 
-                        dbo.Intermediario.NOMBRE,
-                        dbo.Intermediario.AP_PAT,
-                        dbo.Intermediario.AP_MAT
-                    FROM dbo.Intermediario 
-                    WHERE dbo.Intermediario.NOMBRE = ?
-                    AND dbo.Intermediario.AP_PAT = ?
-                    AND dbo.Intermediario.AP_MAT = ?
-                    AND dbo.Intermediario.ID_INTERMEDIARIO != ?
+                        proyecto.intermediario.NOMBRE,
+                        proyecto.intermediario.AP_PAT,
+                        proyecto.intermediario.AP_MAT
+                    FROM proyecto.intermediario 
+                    WHERE proyecto.intermediario.NOMBRE = ?
+                    AND proyecto.intermediario.AP_PAT = ?
+                    AND proyecto.intermediario.AP_MAT = ?
+                    AND proyecto.intermediario.ID_INTERMEDIARIO != ?
                     """,
                     (nombre, apellido_paterno, apellido_materno, int(id_intermediario)),
                 )
@@ -1001,10 +1013,10 @@ def manage_intermediary():
                 tel_existe = config.Read(
                     """
                     SELECT 
-                        dbo.Intermediario.TEL
-                    FROM dbo.Intermediario 
-                    WHERE dbo.Intermediario.TEL = ?
-                    AND dbo.Intermediario.ID_INTERMEDIARIO != ?
+                        proyecto.intermediario.TEL
+                    FROM proyecto.intermediario 
+                    WHERE proyecto.intermediario.TEL = ?
+                    AND proyecto.intermediario.ID_INTERMEDIARIO != ?
                     """,
                     (telefono, int(id_intermediario)),
                 )
@@ -1023,7 +1035,7 @@ def manage_intermediary():
                     # Actualizar en la base de datos
                     config.CUD(
                         """
-                        UPDATE dbo.Intermediario 
+                        UPDATE proyecto.intermediario 
                         SET NOMBRE=?, AP_PAT=?, AP_MAT=?, TEL=?, ID_COMPANIA=?
                         WHERE ID_INTERMEDIARIO = ?
                         """,
@@ -1053,17 +1065,17 @@ def manage_intermediary():
     relations = config.Read(
         """
         SELECT 
-            dbo.Proveedor.ID_COMPANIA,
-            dbo.Proveedor.NOMBRE,
-            dbo.Intermediario.ID_INTERMEDIARIO,
-            dbo.Intermediario.NOMBRE, 
-            dbo.Intermediario.AP_PAT,
-            dbo.Intermediario.AP_MAT, 
-            dbo.Intermediario.TEL 
-        FROM dbo.Proveedor 
-        INNER JOIN dbo.Intermediario ON Intermediario.ID_COMPANIA = Proveedor.ID_COMPANIA 
-        WHERE dbo.Proveedor.ESTATUS = 1 
-        AND dbo.Intermediario.ESTATUS = 1
+            proyecto.proveedor.ID_COMPANIA,
+            proyecto.proveedor.NOMBRE,
+            proyecto.intermediario.ID_INTERMEDIARIO,
+            proyecto.intermediario.NOMBRE, 
+            proyecto.intermediario.AP_PAT,
+            proyecto.intermediario.AP_MAT, 
+            proyecto.intermediario.TEL 
+        FROM proyecto.proveedor 
+        INNER JOIN proyecto.intermediario ON proyecto.intermediario.ID_COMPANIA = proyecto.proveedor.ID_COMPANIA 
+        WHERE proyecto.proveedor.ESTATUS = 1 
+        AND proyecto.intermediario.ESTATUS = 1
         """
     )
     print(
@@ -1097,12 +1109,12 @@ def manage_company():
                 NoSePuedeBorrar = config.Read(
                     """
                     SELECT 
-                        dbo.Almacen.NOMBRE
-                    FROM dbo.Proveedor,dbo.Intermediario,dbo.Almacen
-                    WHERE dbo.Proveedor.ID_COMPANIA = dbo.Intermediario.ID_COMPANIA
-                    AND dbo.Intermediario.ID_INTERMEDIARIO = dbo.Almacen.ID_INTERMEDIARIO
-                    AND dbo.Almacen.EXISTENCIAS != 0
-                    AND dbo.Proveedor.ID_COMPANIA = ?
+                        proyecto.almacen.NOMBRE
+                    FROM proyecto.proveedor,proyecto.intermediario,proyecto.almacen
+                    WHERE proyecto.proveedor.ID_COMPANIA = proyecto.intermediario.ID_COMPANIA
+                    AND proyecto.intermediario.ID_INTERMEDIARIO = proyecto.almacen.ID_INTERMEDIARIO
+                    AND proyecto.almacen.EXISTENCIAS != 0
+                    AND proyecto.proveedor.ID_COMPANIA = ?
                     """,
                     (id_intermediario,),
                 )
@@ -1114,25 +1126,25 @@ def manage_company():
                 config.CUD(
                     """
                     -- Actualizar dbo.Almacen
-                    UPDATE dbo.Almacen
+                    UPDATE proyecto.almacen
                     SET ESTATUS = 0
                     WHERE ID_INTERMEDIARIO IN (
-                        SELECT dbo.Intermediario.ID_INTERMEDIARIO
-                        FROM dbo.Proveedor
-                        JOIN dbo.Intermediario ON dbo.Proveedor.ID_COMPANIA = dbo.Intermediario.ID_COMPANIA
-                        WHERE dbo.Almacen.EXISTENCIAS = 0
-                        AND dbo.Proveedor.ID_COMPANIA = ?
+                        SELECT proyecto.intermediario.ID_INTERMEDIARIO
+                        FROM proyecto.proveedor
+                        JOIN proyecto.intermediario ON proyecto.proveedor.ID_COMPANIA = proyecto.intermediario.ID_COMPANIA
+                        WHERE proyecto.almacen.EXISTENCIAS = 0
+                        AND proyecto.proveedor.ID_COMPANIA = ?
                     );
                     -- Actualizar dbo.Intermediario
-                    UPDATE dbo.Intermediario
+                    UPDATE proyecto.intermediario
                     SET ESTATUS = 0
                     WHERE ID_COMPANIA IN (
-                        SELECT dbo.Proveedor.ID_COMPANIA
-                        FROM dbo.Proveedor
-                        WHERE dbo.Proveedor.ID_COMPANIA = ?
+                        SELECT proyecto.proveedor.ID_COMPANIA
+                        FROM proyecto.proveedor
+                        WHERE proyecto.proveedor.ID_COMPANIA = ?
                     );
                     -- Actualizar dbo.Proveedor
-                    UPDATE dbo.Proveedor SET ESTATUS = 0 WHERE ID_COMPANIA = ?;
+                    UPDATE proyecto.proveedor SET ESTATUS = 0 WHERE ID_COMPANIA = ?;
                     """,
                     (
                         int(id_intermediario),
@@ -1162,11 +1174,11 @@ def manage_company():
                 VerificarInactivo = config.Read(
                         """
                         SELECT 
-                            dbo.Proveedor.ID_COMPANIA,
-                            dbo.Proveedor.NOMBRE 
-                        FROM dbo.Proveedor 
-                        WHERE dbo.Proveedor.NOMBRE = ?
-                        AND dbo.Proveedor.ESTATUS = 0
+                            proyecto.proveedor.ID_COMPANIA,
+                            proyecto.proveedor.NOMBRE 
+                        FROM proyecto.proveedor 
+                        WHERE proyecto.proveedor.NOMBRE = ?
+                        AND proyecto.proveedor.ESTATUS = 0
                         """,
                         (nombre),
                     )
@@ -1174,10 +1186,10 @@ def manage_company():
                 existe = config.Read(
                         """
                         SELECT 
-                            dbo.Proveedor.NOMBRE
-                        FROM dbo.Proveedor 
-                        WHERE dbo.Proveedor.NOMBRE = ?
-                        AND dbo.Proveedor.ESTATUS = 1
+                            proyecto.proveedor.NOMBRE
+                        FROM proyecto.proveedor 
+                        WHERE proyecto.proveedor.NOMBRE = ?
+                        AND proyecto.proveedor.ESTATUS = 1
                         """,
                         (nombre),
                     )
@@ -1191,7 +1203,7 @@ def manage_company():
                 if VerificarInactivo:
                     config.CUD(
                             """
-                            UPDATE Proveedor
+                            UPDATE proyecto.proveedor
                             SET ESTATUS=1
                             WHERE ID_COMPANIA = ?
                             """,
@@ -1204,7 +1216,7 @@ def manage_company():
                     # Insertar en la base de datos si no hay errores
                     config.CUD(
                             """
-                            INSERT INTO dbo.Proveedor (NOMBRE,  ESTATUS) 
+                            INSERT INTO proyecto.proveedor (NOMBRE,  ESTATUS) 
                             VALUES (?, 1)
                             """,
                             (nombre),
@@ -1235,11 +1247,11 @@ def manage_company():
                 ExisteInactivo = config.Read(
                     """
                     SELECT 
-                        dbo.Proveedor.NOMBRE,
-                        dbo.Proveedor.ID_COMPANIA
-                    FROM dbo.Proveedor 
-                    WHERE dbo.Proveedor.NOMBRE = ?
-                    AND dbo.Proveedor.ESTATUS = 0
+                        proyecto.proveedor.NOMBRE,
+                        proyecto.proveedor.ID_COMPANIA
+                    FROM proyecto.proveedor 
+                    WHERE proyecto.proveedor.NOMBRE = ?
+                    AND proyecto.proveedor.ESTATUS = 0
                     """,
                     (nombre, int(id_intermediario)),
                 )
@@ -1247,11 +1259,11 @@ def manage_company():
                 existe = config.Read(
                     """
                     SELECT 
-                        dbo.Proveedor.NOMBRE,
-                        dbo.Proveedor.ID_COMPANIA
-                    FROM dbo.Proveedor 
-                    WHERE dbo.Proveedor.NOMBRE = ?
-                    AND dbo.Proveedor.ID_COMPANIA != ?
+                        proyecto.proveedor.NOMBRE,
+                        proyecto.proveedor.ID_COMPANIA
+                    FROM proyecto.proveedor 
+                    WHERE proyecto.proveedor.NOMBRE = ?
+                    AND proyecto.proveedor.ID_COMPANIA != ?
                     """,
                     (nombre, int(id_intermediario)),
                 )
@@ -1265,7 +1277,7 @@ def manage_company():
                     # Actualizar en la base de datos
                     config.CUD(
                         """
-                        UPDATE dbo.Proveedor  
+                        UPDATE proyecto.proveedor  
                         SET NOMBRE=?
                         WHERE  ID_COMPANIA= ?
                         """,
@@ -1289,10 +1301,10 @@ def manage_company():
     relations = config.Read(
         """
         SELECT 
-            dbo.Proveedor.ID_COMPANIA,
-            dbo.Proveedor.NOMBRE
-        FROM dbo.Proveedor 
-        WHERE dbo.Proveedor.ESTATUS = 1 
+            proyecto.proveedor.ID_COMPANIA,
+            proyecto.proveedor.NOMBRE
+        FROM proyecto.proveedor 
+        WHERE proyecto.proveedor.ESTATUS = 1 
         """
     )
     return render_template(
@@ -1338,12 +1350,12 @@ def addsalesworker():
                 ExisteProducto = config.Read(
                     """
                     SELECT 
-                        dbo.Almacen.ID_PRODUCTO,
-                        dbo.Almacen.PRECIO_UNITARIO,
-                        dbo.Almacen.EXISTENCIAS
-                    FROM dbo.Almacen 
-                    WHERE dbo.Almacen.ESTATUS = 1 
-                    AND dbo.Almacen.ID_PRODUCTO = ?
+                        proyecto.almacen.ID_PRODUCTO,
+                        proyecto.almacen.PRECIO_UNITARIO,
+                        proyecto.almacen.EXISTENCIAS
+                    FROM proyecto.almacen 
+                    WHERE proyecto.almacen.ESTATUS = 1 
+                    AND proyecto.almacen.ID_PRODUCTO = ?
                     """,
                     (Entrada[i][0],),
                 )
@@ -1377,9 +1389,9 @@ def addsalesworker():
                 Dia = int(
                     config.Read(
                     """
-                    SELECT dbo.Dia.ID_DIA 
-                    FROM dbo.Dia 
-                    WHERE dbo.Dia.DIA = ?
+                    SELECT proyecto.dia.ID_DIA 
+                    FROM proyecto.dia 
+                    WHERE proyecto.dia.DIA = ?
                     """,
                         (DiaA),
                     )[0][0]
@@ -1388,9 +1400,9 @@ def addsalesworker():
                 Mes = int(
                     config.Read(
                     """
-                    SELECT dbo.Mes.ID_MES 
-                    FROM dbo.Mes 
-                    WHERE dbo.Mes.MES = ?
+                    SELECT proyecto.mes.ID_MES 
+                    FROM proyecto.mes 
+                    WHERE proyecto.mes.MES = ?
                     """,
                         (MesA),
                     )[0][0]
@@ -1399,9 +1411,9 @@ def addsalesworker():
                 Anio = int(
                     config.Read(
                     """
-                    SELECT dbo.Anio.ID_ANIO 
-                    FROM dbo.Anio 
-                    WHERE dbo.Anio.ANIO = ?
+                    SELECT proyecto.anio.ID_ANIO 
+                    FROM proyecto.anio 
+                    WHERE proyecto.anio.ANIO = ?
                     """,
                         (AnioA),
                     )[0][0]
@@ -1457,7 +1469,7 @@ def addsalesworker():
                     #
                     config.CUD(
                         """
-                        INSERT INTO dbo.Ventas (CANTIDAD_VENTA, TOTAL, ESTATUS, ID_DIA, ID_MES, ID_ANIO) 
+                        INSERT INTO proyecto.ventas (CANTIDAD_VENTA, TOTAL, ESTATUS, ID_DIA, ID_MES, ID_ANIO) 
                         VALUES (?,?,1,?,?,?)
                         """,
                         (
@@ -1469,14 +1481,14 @@ def addsalesworker():
                         ),
                     )
                     id = int(
-                        config.Read("SELECT IDENT_CURRENT('dbo.Ventas') AS NewID")[0][0]
+                        config.Read("SELECT IDENT_CURRENT('proyecto.ventas') AS NewID")[0][0]
                     )
                     #
                     print("ID-VENTA>", id)
                     for y in range(len(TablaDetalles)):
                         config.CUD(
                             """
-                            INSERT INTO dbo.Detalles(CANTIDAD,IMPORTE,IVA,ESTATUS,ID_PRODUCTO,ID_VENTA) 
+                            INSERT INTO proyecto.detalles(CANTIDAD,IMPORTE,IVA,ESTATUS,ID_PRODUCTO,ID_VENTA) 
                             VALUES (?,?,?,1,?,?);
                             """,
                             (
@@ -1495,7 +1507,7 @@ def addsalesworker():
                             ESTATUS = 1
                         config.CUD(
                             """
-                            UPDATE dbo.Almacen 
+                            UPDATE proyecto.almacen 
                             SET 
                                 EXISTENCIAS = ?, 
                                 PRECIO_EXISTENCIA = ?,
@@ -1513,17 +1525,17 @@ def addsalesworker():
             print(e)
     # Siempre se envia estos datos
     products = config.Read(
-                """
+        """
                 SELECT 
                     ID_PRODUCTO, 
                     NOMBRE, 
                     PRECIO_UNITARIO, 
                     EXISTENCIAS,
                     ESTATUS
-                FROM dbo.Almacen 
-                WHERE dbo.Almacen.ESTATUS = 1
+                FROM proyecto.almacen 
+                WHERE proyecto.almacen.ESTATUS = 1
                 """
-            )
+    )
     print(
         "#################### FIN (sales/add-sales-worker.html) ####################>"
     )
@@ -1553,26 +1565,26 @@ def reportsales():
         sale_id = request.form.get("sale_id")
         details = config.Read(
             """
-            SELECT dbo.Detalles.ID_PRODUCTO, dbo.Almacen.NOMBRE, dbo.Detalles.CANTIDAD, dbo.Detalles.IMPORTE, dbo.Detalles.IVA
-            FROM dbo.Almacen, dbo.Detalles
-            WHERE dbo.Almacen.ID_PRODUCTO = dbo.Detalles.ID_PRODUCTO
-            AND dbo.Detalles.ID_VENTA = ?
+            SELECT proyecto.detalles.ID_PRODUCTO, proyecto.almacen.NOMBRE, proyecto.detalles.CANTIDAD, proyecto.detalles.IMPORTE, proyecto.detalles.IVA
+            FROM proyecto.almacen, proyecto.detalles
+            WHERE proyecto.almacen.ID_PRODUCTO = proyecto.detalles.ID_PRODUCTO
+            AND proyecto.detalles.ID_VENTA = ?
             """,
             (sale_id,),
         )
         sales = config.Read(
             """
             SELECT 
-                dbo.Ventas.ID_VENTA, 
-                dbo.Dia.DIA, 
-                dbo.Mes.MES, 
-                dbo.Anio.ANIO, 
-                dbo.Ventas.CANTIDAD_VENTA, 
-                dbo.Ventas.TOTAL
-            FROM dbo.Ventas, dbo.Dia, dbo.Mes, dbo.Anio
-            WHERE dbo.Ventas.ID_DIA = dbo.Dia.ID_DIA
-            AND dbo.Ventas.ID_MES = dbo.Mes.ID_MES
-            AND dbo.Ventas.ID_ANIO = dbo.Anio.ID_ANIO
+                proyecto.ventas.ID_VENTA, 
+                proyecto.dia.DIA, 
+                proyecto.mes.MES, 
+                proyecto.anio.ANIO, 
+                proyecto.ventas.CANTIDAD_VENTA, 
+                proyecto.ventas.TOTAL
+            FROM proyecto.ventas, proyecto.dia, proyecto.mes, proyecto.anio
+            WHERE proyecto.ventas.ID_DIA = proyecto.dia.ID_DIA
+            AND proyecto.ventas.ID_MES = proyecto.mes.ID_MES
+            AND proyecto.ventas.ID_ANIO = proyecto.anio.ID_ANIO
             """
         )
         return render_template("sales/report-sales.html", sales=sales, details=details,IsAdmin=session["ES_ADMIN"])
@@ -1582,16 +1594,16 @@ def reportsales():
     sales = config.Read(
         """
         SELECT 
-            dbo.Ventas.ID_VENTA, 
-            dbo.Dia.DIA, 
-            dbo.Mes.MES, 
-            dbo.Anio.ANIO, 
-            dbo.Ventas.CANTIDAD_VENTA, 
-            dbo.Ventas.TOTAL
-        FROM dbo.Ventas, dbo.Dia, dbo.Mes, dbo.Anio
-        WHERE dbo.Ventas.ID_DIA = dbo.Dia.ID_DIA
-        AND dbo.Ventas.ID_MES = dbo.Mes.ID_MES
-        AND dbo.Ventas.ID_ANIO = dbo.Anio.ID_ANIO
+            proyecto.ventas.ID_VENTA, 
+            proyecto.dia.DIA, 
+            proyecto.mes.MES, 
+            proyecto.anio.ANIO, 
+            proyecto.ventas.CANTIDAD_VENTA, 
+            proyecto.ventas.TOTAL
+        FROM proyecto.ventas, proyecto.dia, proyecto.mes, proyecto.anio
+        WHERE proyecto.ventas.ID_DIA = proyecto.dia.ID_DIA
+        AND proyecto.ventas.ID_MES = proyecto.mes.ID_MES
+        AND proyecto.ventas.ID_ANIO = proyecto.anio.ID_ANIO
         """
     )
     print(f"products > {sales}")
@@ -1629,7 +1641,7 @@ def manage_accounts():
                     SET @ID_INTERMEDIARIO = ?;
 
                     -- Actualizar dbo.usuarios
-                    UPDATE dbo.usuarios
+                    UPDATE proyecto.usuarios
                     SET ESTATUS = 0
                     WHERE ID_USUARIO = @ID_INTERMEDIARIO;
                     """,
@@ -1663,9 +1675,9 @@ def manage_accounts():
                 existing_email = config.Read(
                     """
                     SELECT * 
-                    FROM dbo.Usuarios 
-                    WHERE dbo.Usuarios.CORREO = ?
-                    AND dbo.Usuarios.ID_USUARIO != ?
+                    FROM proyecto.usuarios 
+                    WHERE proyecto.usuarios.CORREO = ?
+                    AND proyecto.usuarios.ID_USUARIO != ?
                     """,
                     (correo, int(id_usuario)),
                 )
@@ -1673,13 +1685,13 @@ def manage_accounts():
                 existing_user = config.Read(
                     """
                     SELECT * 
-                    FROM dbo.Usuarios 
-                    WHERE dbo.usuarios.NOMBRE = ?
-                    AND dbo.usuarios.AP_PAT = ?
-                    AND dbo.usuarios.AP_MAT= ?
-                    AND dbo.Usuarios.ID_USUARIO != ?
+                    FROM proyecto.usuarios 
+                    WHERE proyecto.usuarios.NOMBRE = ?
+                    AND proyecto.usuarios.AP_PAT = ?
+                    AND proyecto.usuarios.AP_MAT= ?
+                    AND proyecto.usuarios.ID_USUARIO != ?
                     """,
-                    (nombre, apellido_paterno, apellido_materno,int(id_usuario)),
+                    (nombre, apellido_paterno, apellido_materno, int(id_usuario)),
                 )
                 # Cualquier error
                 if existing_email or existing_user:
@@ -1702,7 +1714,7 @@ def manage_accounts():
                     # Actualizar en la base de datos
                     config.CUD(
                         """
-                        UPDATE dbo.usuarios 
+                        UPDATE proyecto.usuarios 
                         SET NOMBRE=?, AP_PAT=?, AP_MAT=?, CORREO=?
                         WHERE ID_USUARIO = ?
                         """,
@@ -1731,14 +1743,14 @@ def manage_accounts():
     relations = config.Read(
         """
         SELECT 
-            dbo.usuarios.ID_USUARIO,
-            dbo.usuarios.NOMBRE,
-            dbo.usuarios.AP_PAT,
-            dbo.usuarios.AP_MAT,
-            dbo.usuarios.CORREO 
-        FROM dbo.usuarios 
-        WHERE dbo.usuarios.ESTATUS = 1 
-        AND dbo.usuarios.ES_ADMIN = 0
+            proyecto.usuarios.ID_USUARIO,
+            proyecto.usuarios.NOMBRE,
+            proyecto.usuarios.AP_PAT,
+            proyecto.usuarios.AP_MAT,
+            proyecto.usuarios.CORREO 
+        FROM proyecto.usuarios 
+        WHERE proyecto.usuarios.ESTATUS = 1 
+        AND proyecto.usuarios.ES_ADMIN = 0
         """
     )
     print(
