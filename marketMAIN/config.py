@@ -1,36 +1,48 @@
 import mariadb
-HEX_SEC_KEY = "d5fb8c4fa8bd46638dadc4e751e0d68d"
+
+
+# NOTAS:
+
+
+class config:
+    SECRET_KEY = "d5fb8c4fa8bd46638dadc4e751e0d68d"
+
+
+class DevelopmentConfig(config):
+    DEGUB=True
+
+
+config = {'development': DevelopmentConfig}
 
 # Conexiones
-ROOT_CONECTION = {
+ADMIN_CONECTION = {
     "host": "localhost",  # Cambia por tu host si es diferente
-    "user": "root",  # Usuario de MariaDB
+    "user": "admin",  # Usuario de MariaDB
     "password": "123",  # Contraseña de MariaDB
-    "database": "braindamage",  # Nombre de la base de datos
+    "database": "proyecto",  # Nombre de la base de datos
 }
 
 MANAGER_CONECTION = {
     "host": "localhost",  # Cambia por tu host si es diferente
     "user": "Gerente",  # Usuario de MariaDB
     "password": "123",  # Contraseña de MariaDB
-    "database": "braindamage",  # Nombre de la base de datos
+    "database": "proyecto",  # Nombre de la base de datos
 }
 
 CASHIER_CONECTION = {
     "host": "localhost",  # Cambia por tu host si es diferente
     "user": "Cajero",  # Usuario de MariaDB
     "password": "123",  # Contraseña de MariaDB
-    "database": "braindamage",  # Nombre de la base de datos
+    "database": "proyecto",  # Nombre de la base de datos
 }
 
 
-
-# Metodo para poder realizar CUD> CREATE, UPDATE Y DELETE
-def CUD(query, params=None, current_user=None):
+# region CUD
+# CREATE, UPDATE Y DELETE
+def CUD(query, params=None):
     print("<-------------------- Conectando... --------------------")
     try:
         # Conectar a la BD
-        connection = mariadb.connect(current_user.Conection)
         connection = mariadb.connect(
             host="localhost",  # Cambia por tu host si es diferente
             user="root",  # Usuario de MariaDB
@@ -51,8 +63,8 @@ def CUD(query, params=None, current_user=None):
             connection.close()
             print("-------------------- Conexión finalizada -------------------->")
 
-# Metodo para poder leer consultas
-def Read(query, params=None, current_user=None):
+# region Read
+def Read(query, params=None):
     print("<-------------------- Conectando... --------------------")
     connection = None
     try:
