@@ -1,23 +1,25 @@
-{% extends 'top navbar/top-navbar.html' %} {% block title %} profile {% endblock
-  %} {%block content %}
-  <style>
-    ::-webkit-scrollbar {
-      display: none;
-    }
-  </style>
-  
-  <div class="container-fluid mx-4 animate__animated animate__fadeIn">
-    <div class="d-flex justify-content-center align-items-center" style="height: 100vh">
-      <!-- 56px es la altura aproximada del navbar, ajusta este valor según sea necesario -->
-      <div class="col-xl-10">
-        <div class="row">
-          <h1><span data-section="welcome" data-value="Welcome to SaleTrack">Bienvenido a SaleTrack</span> {{ user }}</h1>
-  
-        </div>
-        <a href="{{ url_for('shortcut.shortcut') }}" class="btn__form btn btn-primary btn-lg btn-block mt-4 "><span data-section="welcome" data-value="shortcut">Atajos</span></a>
-        <!-- Fin de la fila -->
+{% extends 'top navbar/top-navbar.html' %}
+{% block title %} profile {% endblock%}
+
+{%block content %}
+<style>
+  /*Desaparecer el scroll*/
+  ::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<div class="container-fluid  animate__animated animate__fadeIn">
+  <div class="d-flex justify-content-center align-items-center" style="height: 90vh">
+    <div class="col-xl-10">
+      <div class="row">
+        <h1 ><span >Bienvenido a SaleTrack</span> {{ user }}</h1>
+        <p class="fs-5 my-2"><span>¡Organiza tu trabajo y mejora tu desempeño con nosotros aquí!</span> </p>
       </div>
+      <a href="{{ url_for('sales.addsalesworker') }}" class="btn btn-primary btn-lg mt-2"><span data-section="welcome"
+          data-value="shortcut">Entrar</span></a>
     </div>
   </div>
-  
-  {% endblock %}
+</div>
+
+{% endblock %}

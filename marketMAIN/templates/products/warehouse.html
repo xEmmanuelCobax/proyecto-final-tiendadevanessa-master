@@ -1,10 +1,6 @@
 {% extends 'top navbar/top-navbar.html' %} {% block title %} Warehouse {%
 endblock %} {% block content %}
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{{ url_for('static', filename='css/products.css') }}"
-/>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}" />
 
 
 <div class="container-fluid mt-5">
@@ -16,32 +12,18 @@ endblock %} {% block content %}
 
     <div class="col-12 col-lg-9 mt-3">
       <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
-      <form
-        class="d-flex mt-3"
-        method="POST"
-        action="{{ url_for('products.warehouse') }}"
-      >
+      <form class="d-flex mt-3" method="POST" action="{{ url_for('products.warehouse') }}">
         <div class="col-sm-4">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Buscar"
-            aria-label="Search"
-            name="search_term"
-          />
+          <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" name="search_term" />
         </div>
         <div class="mx-3"></div>
         <!-- Este div se expandirá para ocupar el espacio disponible -->
-        <button class="btn btn-primary" type="submit"><span data-section="werehouse" data-value="Search">Buscar</span></button>
+        <button class="btn btn-primary" type="submit"><span data-section="werehouse"
+            data-value="Search">Buscar</span></button>
       </form>
 
-      <div
-        class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start"
-      >
-        <div
-          class="table-responsive"
-          style="max-height: 500px; overflow-y: auto"
-        >
+      <div class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start">
+        <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
           <table class="table table-bordered table-striped table-rounded mb-3">
             <!-- Mantenemos las clases existentes y agregamos espaciado -->
             <thead>
@@ -52,16 +34,17 @@ endblock %} {% block content %}
 
                 <th scope="col"><span data-section="werehouse" data-value="Company">Compañia</span></th>
 
-                <th scope="col"><span data-section="werehouse" data-value="Name Intermedary">Nombre del intermediario</span></th>
+                <th scope="col"><span data-section="werehouse" data-value="Name Intermedary">Nombre del
+                    intermediario</span></th>
 
-                <th scope="col"><span >Tel. </span></th>
+                <th scope="col"><span>Tel. </span></th>
 
                 <th scope="col"><span data-section="werehouse" data-value="Stock">Stock</span></th>
 
                 <th scope="col"><span data-section="werehouse" data-value="Unit Price">Precio unitario</span></th>
 
 
-                
+
               </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -78,11 +61,11 @@ endblock %} {% block content %}
                 <td>{{ product[5] }} {{ product[6] }} {{ product[7] }} </td>
 
                 <td>{{ product[8] }}</td>
-                
+
                 <td>{{ product[3] }}</td>
 
                 <td>{{ product[2] }} $</td>
-               
+
               </tr>
               {% endfor %}
             </tbody>

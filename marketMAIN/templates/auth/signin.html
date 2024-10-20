@@ -1,138 +1,103 @@
-{% extends 'top navbar/top-navbar.html' %} {% block title %} Sign In {% endblock
-%} {% block content %}
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{{ url_for('static', filename='css/auth.css') }}"
-/>
+{% extends 'top navbar/top-navbar.html' %}
+{% block title %} Sign In {% endblock%}
 
-<div class="container-fluid mx-4">
-  <div
-    class="d-flex justify-content-center align-items-center"
-    style="height: 100vh"
-  >
-    <!-- 56px es la altura aproximada del navbar, ajusta este valor según sea necesario -->
-    <div class="col-xl-10">
-      <div class="row">
-        <!-- Columnas para la imagen -->
-        <div class="col-xl-4 offset-xl-1 mb-4 mb-xl-0 d-none d-lg-block">
-          <!-- Aquí se coloca la imagen -->
-          <img
-            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
-            class="img-fluid"
-            alt="Phone image"
-          />
-        </div>
-        <!-- Columnas para el formulario -->
-        <div class="col-xl-5 offset-xl-1">
-          <!-- Aquí comienza la sección del formulario -->
-          <form method="post" action="">
-            <!-- Eliminar la clase text-end del formulario -->
-            <h1 class="fw-bold mb-4 signin__titulo text-center" data-section="singin" data-value="Sign In">Iniciar Sesión</h1>
-            <!-- Agregar la clase text-center para centrar el título -->
-            <!-- Email input -->
-            <div class="form-outline mb-4">
-              <label for="email" data-section="singin" data-value="Email Address">Correo Electronico</label>
-              <!-- Eliminar la clase text-end de la etiqueta -->
-              <div class="col-sm-10">
-                <input
-                  type="email"
-                  value="{{ email }}"
-                  class="form-control mt-2 {% if email_not_found %}is-invalid{% endif %}"
-                  id="email"
-                  name="email"
-                  required
-                  data-bs-toggle="tooltip-bademail"
-                  data-bs-placement="left"
-                  data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if email_not_found %}Correo no encontrado.{% else %}Por favor, ingresa un correo electronico con un dominio valido como: @gmail.com, @hotmail.com, @live.com, o @outlook.com.{% endif %}"
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/inicio_sesion.css') }}" />
 
-                />
-                <!-- Eliminar la clase text-end del campo de entrada -->
-              </div>
-              {% if email_not_found %}
-              <div class="invalid-feedback" >Email not found.</div>
-              <!-- Eliminar la clase text-end del mensaje de error -->
-              {% endif %}
-             
-            </div>
-            <!-- Password input -->
-            <div class="form-outline mb-4">
-              <label for="password" data-section="singin" data-value="Password" >Contraseña</label>
-              <!-- Eliminar la clase text-end de la etiqueta -->
-              <div class="col-sm-10">
-                <input
-                  type="password"
-                  class="form-control mt-2 {% if bad_password %}is-invalid{% endif %}"
-                  id="password"
-                  name="password"
-                  required
-                  data-bs-toggle="tooltip-badpassword"
-                  data-bs-placement="left"
-                  data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}"
-                />
-              </div>
-              <!-- Eliminar la clase text-end del campo de entrada -->
-              {% if bad_password %}
-              <div class="invalid-feedback">Invalid password.</div>
-              <!-- Eliminar la clase text-end del mensaje de error -->
-              {% endif %}
-            </div>
+<section class="inicio__sesion">
+  <div class="inicio__container">
 
-            <div
-              class="d-flex flex-column align-items-left mb-4 sigin__remember"
-            >
-              <!-- Checkbox -->
-              <div class="form-check mb-2">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="form1Example3"
-                  checked
-                />
-                <label class="form-check-label" for="form1Example3" data-section="singin" data-value="Remember me"
-                  >Recuerdame</label
-                >
-              </div>
-              <!-- Enlace "Forgot password?" -->
-              <div class="">
-                <a data-section="singin" data-value="Don’t have an account?">¿No cuentas con una cuenta?</a>
-                <a data-section="singin" data-value="check in" href="{{url_for('auth.signup')}}" class="forget">Presione aquí</a>
-              </div>
-            </div>
-            <!-- Submit button -->
-            <button
-              type="submit"
-              class="btn__form btn btn-primary btn-lg btn-block"
-              id="submitButton"
-            >
-              <span data-section="singin" data-value="Sign in">Iniciar sesión</span>
-            </button>
-            <!-- Eliminar la clase text-end del botón -->
-          </form>
-          <!-- Fin del formulario -->
-        </div>
-        <!-- Fin de la columna -->
+    <h1 class="inicio__titulo">Inicia sesion</h1>
+    <p class="inicio__desc">Hey, ingresa tus datos para iniciar sesión en tu cuenta.</p>
+
+    <!-- Formulario-->
+    <form method="post" action="">
+
+      <!-- Formulario de correo -->
+      <div class="input-container">
+        <!-- <label for="email" data-section="singin" data-value="Email Address">Correo Electronico</label> -->
+        <input type="email" value="{{ email }}" class="form__input {% if email_not_found %}is-invalid{% endif %}"
+          id="email" name="email" required placeholder="Correo Electronico" data-bs-toggle="tooltip-bademail"
+          data-bs-custom-class="custom-tooltip" />
+        <!--Logica de python-->
+        {% if email_not_found %}
+        <div class="invalid-feedback">Correo no encontrado.</div>
+        {% endif %}
       </div>
-      <!-- Fin de la fila -->
-    </div>
-  </div>
-</div>
 
-{%  if registration_successful == 'True' %}
+      <!-- Formulario de contraseña -->
+      <div class="input-container">
+        <!-- <label for="password" data-section="singin" data-value="Password">Contraseña</label> -->
+        <input type="password" class="form__input  {% if bad_password %}is-invalid{% endif %}" id="password"
+          name="password" maxlength="30" pattern="[a-zA-Z1-9]+" data-bs-toggle="tooltip-badpassword"
+          data-bs-custom-class="custom-tooltip" data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}"
+          placeholder="Contraseña" required />
+
+        <button type="button" class="toggle-password btn " onclick="togglePassword()">
+          <i id="eye-icon" class="bi bi-eye-slash icon"></i>
+        </button>
+        <!--Logica de python-->
+        {% if bad_password %}
+        <div class="invalid-feedback">Contraseña invalida.</div>
+        {% endif %}
+
+        <!--Para poder ver la contraseña-->
+        <script>
+          function togglePassword() {
+            var passwordField = document.getElementById("password");
+            var eyeIcon = document.getElementById("eye-icon");
+
+            if (passwordField.type === "password") {
+              passwordField.type = "text";
+              eyeIcon.classList.remove("bi-eye-slash");
+              eyeIcon.classList.add("bi-eye");
+            } else {
+              passwordField.type = "password";
+              eyeIcon.classList.remove("bi-eye");
+              eyeIcon.classList.add("bi-eye-slash");
+            }
+          }
+        </script>
+      </div>
+
+      <!--Extras-->
+      <div class="inicio__extras">
+        <a data-section="singin" data-value="check in" data-section="singin" data-value="check in"
+          href="{{url_for('auth.signup')}}" class="no__registrado">¿No tienes una cuenta?</a>
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit" class="btn__submit form__input" id="submitButton">
+        <span data-section="singin" data-value="Sign in">Iniciar sesión</span>
+      </button>
+    </form> <!--Fin formulario-->
+
+    <p class="marca__registrada">Copyright 2024 | Privacy Policy</p>
+  </div>
+
+  <!--Ilustraciones-->
+  <div class="imagen__izq">
+    <figure class="imagen__izq--figure">
+      <img src="/static/img/login1.1.png" class="imagen__izq--img">
+    </figure>
+  </div>
+
+  <div class="imagen__der">
+    <figure class="imagen__der--figure">
+      <img src="/static/img/login2.2.png" class="imagen__der--img">
+    </figure>
+  </div>
+</section>
+
+
+<!--Modal-->
+{% if registration_successful == 'True' %}
 <div class="modal fade show" id="successfulRegistrationModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Successful Account</h5>
-        <button
-          type="button"
-          class="btn-close custom-btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <h5 class="modal-title">Cuenta registrada</h5>
+        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-success" role="alert">
@@ -148,6 +113,7 @@
   </div>
 </div>
 {% endif %}
+
 <!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
 <div id="flash-messages" style="display: none;">
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -202,7 +168,7 @@
     $("#successfulRegistrationModal").modal("show");
   });
 </script>
-{% endif %} 
+{% endif %}
 
 <!-- TOOLTIP PARA MOSTRAR RECOMENDACION DEL EMAIL -->
 <script>
@@ -250,7 +216,7 @@
 
     emailInput.addEventListener("input", function () {
       var emailIsValid = /^[\w-\.]+@(?:(?:[\w]+\.)+)?(?:gmail\.com|hotmail\.com|live\.com|outlook\.com)$/.test(emailInput.value);
-      
+
       if (!emailIsValid) {
         emailInput.classList.add("is-invalid");
         submitButton.classList.remove("btn-primary");
@@ -271,12 +237,12 @@
 <script>
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-bademail"]'));
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
+    return new bootstrap.Tooltip(tooltipTriggerEl);
   });
 
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-badpassword"]'));
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
+    return new bootstrap.Tooltip(tooltipTriggerEl);
   });
 
 </script>

@@ -1,249 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}SaleTrackStar{% endblock %}</title>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}SaleTrackStar{% endblock %}</title>
+
+  <!--Boostrap-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+  <!--Hoja de estilos-->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/navbar.css') }}" />
+
+  <!--Otros-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
 
-    <link rel="icon" href="ruta/al/archivo/icono.ico" type="image/x-icon" />
 
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
-    />
+</head>
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
+<body>
+  <!-- Barra de navegación principal -->
+  <nav class="navbar__principal" id="navbar">
+    <div class="navbar__container">
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
+      <a class="navbar-brand" href="{{ url_for('index') }}">SaleTrackStar</a>
 
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{{ url_for('static', filename='css/top-navbar.css') }}"
-    />
+      <div class="navbar__lista__container" id="navbarText">
+        <ul class="navbar__lista">
+          <!--Mostrar cerrar si ya hay correo-->
+          {% if 'email' in session %}
+          <li class="nav__item">
+            <a class="nav__link" href="holamundo:D">{{ email }}</a>
+          </li>
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
+          <li class="nav__item">
+            <a class="nav__link" href="{{ url_for('signout') }}">Cerrar Sesión</a>
+          </li>
+          {% endif %}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+          <!--Sin correo iniciado-->
+          {% if 'email' not in session %}
+          <li class="nav__item">
+            <a class="nav__link" href="{{ url_for('auth.signin') }}">Iniciar Sesión</a>
+          </li>
+          <li class="nav__item">
+            <a class="nav__link" href="{{ url_for('auth.signup') }}">Registrarse</a>
+          </li>
+          {% endif %}
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    />
-
-    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-   
-
-
-  </head>
-
-  <body class="dark-mode-toggle hidden" >
-    <!-- Barra de navegación principal -->
-    <nav
-      class="navbar navbar-expand-lg bg-body-tertiary fixed-top py-0"
-      data-bs-theme=""
-      id="navbar"
-    >
-    
-      <div class="container-fluid">
-        {% if 'email' in session %}
-        <a class="navbar-brand" href="{{ url_for('shortcut.shortcut') }}"
-          >SaleTrackStar</a
-        >
-        {% endif %} {% if 'email' not in session %}
-        <a class="navbar-brand" href="{{ url_for('index') }}">SaleTrackStar</a>
-        {% endif %}
-
-        <button
-          class="navbar-toggler border-0 bg-transparent focus-outline-none"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarText"
-          aria-controls="navbarText"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-          onclick="handleNavbarToggle()"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div
-          class="collapse navbar-collapse justify-content-end"
-          id="navbarText"
-        >
-          <ul class="navbar-nav ms-auto mb-5 mb-lg-1">
-            <li class="d-none nav-item d-flex align-items-center me-4" id="languageDropdown">
-              <label class="me-2 mb-0" for="languageSelect" >
-                Select Language:
-              </label>
-              <select id="languageSelect" class="form-select form-select-sm">
-                <option value="en">English</option>
-                <option value="es">Español</option>
-              </select>
-            </li>
-            {% if 'email' in session %}
-            <li class="nav-item me-4">
-              <a class="nav-link active" aria-current="page" href="holamundo:D"
-                >{{ email }}</a
-              >
-            </li>
-    
-            
-          
-            <li class="nav-item me-4">
-              <a
-                class="nav-link active"
-                aria-current="page"
-                
-                href="{{ url_for('signout') }}"
-                >Cerrar Sesión</a
-              >
-            </li>
-            {% endif %} {% if 'email' not in session %}
-            
-            <li class="nav-item me-4">
-              <a
-                class="nav-link active"  
-                aria-current="page"
-                href="{{ url_for('auth.signin') }}"
-                >Iniciar Sesión</a
-              >
-            </li>
-            <li class="nav-item me-4">
-              <a
-                class="nav-link active"
-                aria-current="page"
-                href="{{ url_for('auth.signup') }}"
-                >Registrarse</a
-              >
-            </li>
-            {% endif %}
-          </ul>
-        </div>
+        </ul>
       </div>
-      
-    </nav>
-    
-
-    <div
-      class="main-content d-flex justify-content-center align-items-center"
-      id="mainContent"
-     
-    >
-      {% block content %} {% endblock %}
     </div>
+  </nav>
 
-    <script>
-      function handleNavbarToggle() {
-        const mainContent = document.getElementById("mainContent");
-        if (mainContent.classList.contains("navbar-expanded")) {
-          mainContent.classList.remove("navbar-expanded");
-        } else {
-          mainContent.classList.add("navbar-expanded");
-        }
-      }    
-    </script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        window.addEventListener("scroll", function () {
-          const navbarCollapse = document.querySelector(".navbar-collapse");
-          const isNavbarExpanded = navbarCollapse.classList.contains("show");
-          if (isNavbarExpanded) {
-            const navbarToggler = document.querySelector(".navbar-toggler");
-            if (navbarToggler) {
-              navbarToggler.click();
-            }
+  <!--El inicio de sesion, etc-->
+  {% block content %}
+  {% endblock %}
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      window.addEventListener("scroll", function () {
+        const navbarCollapse = document.querySelector(".navbar-collapse");
+        const isNavbarExpanded = navbarCollapse.classList.contains("show");
+        if (isNavbarExpanded) {
+          const navbarToggler = document.querySelector(".navbar-toggler");
+          if (navbarToggler) {
+            navbarToggler.click();
           }
-        });
+        }
       });
+    });
 
-      // Manejar la deshabilitación temporal del botón del toggler al hacer clic
-      const navbarToggler = document.querySelector(".navbar-toggler");
-      navbarToggler.addEventListener("click", function () {
-        navbarToggler.disabled = true;
-        setTimeout(function () {
-          navbarToggler.disabled = false;
-        }, 500); // Tiempo de espera ajustable según la duración de la animación
-      });
+    // Manejar la deshabilitación temporal del botón del toggler al hacer clic
+    const navbarToggler = document.querySelector(".navbar-toggler");
+    navbarToggler.addEventListener("click", function () {
+      navbarToggler.disabled = true;
+      setTimeout(function () {
+        navbarToggler.disabled = false;
+      }, 500); // Tiempo de espera ajustable según la duración de la animación
+    });
+  </script>
 
-
-
-
-    </script>
-    <script>  
-    //que haces w? xD
-    //traducción
-     
-
+  <script>
     document.addEventListener("DOMContentLoaded", async function () {
-    const languageSelect = document.getElementById("languageSelect");
-    const textsToChange = document.querySelectorAll("[data-section]");
+      const languageSelect = document.getElementById("languageSelect");
+      const textsToChange = document.querySelectorAll("[data-section]");
 
-    const changeLanguage = async (language) => {
+      const changeLanguage = async (language) => {
         const requestJson = await fetch(`../static/languages/${language}.json`);
         const texts = await requestJson.json();
 
         textsToChange.forEach(textElement => {
-            const section = textElement.dataset.section;
-            const value = textElement.dataset.value;
-            if (texts[section] && texts[section][value]) {
-              const textNode = document.createTextNode(texts[section][value]);
-                
-                // Limpiar solo el contenido de texto y mantener los hijos (como los iconos)
-                while (textElement.firstChild && textElement.firstChild.nodeType === Node.TEXT_NODE) {
-                    textElement.removeChild(textElement.firstChild);
-                }
+          const section = textElement.dataset.section;
+          const value = textElement.dataset.value;
+          if (texts[section] && texts[section][value]) {
+            const textNode = document.createTextNode(texts[section][value]);
 
-                // Insertar el nuevo texto
-                textElement.insertBefore(textNode, textElement.firstChild);
-                
+            // Limpiar solo el contenido de texto y mantener los hijos (como los iconos)
+            while (textElement.firstChild && textElement.firstChild.nodeType === Node.TEXT_NODE) {
+              textElement.removeChild(textElement.firstChild);
             }
-            
-        });
 
+            // Insertar el nuevo texto
+            textElement.insertBefore(textNode, textElement.firstChild);
+
+          }
+        });
         // Guardar el idioma seleccionado en localStorage
         localStorage.setItem('selectedLanguage', language);
-    };
+      };
 
-    // Cargar el idioma seleccionado desde localStorage al cargar la página
-    const savedLanguage = localStorage.getItem('selectedLanguage');
-    if (savedLanguage) {
+      // Cargar el idioma seleccionado desde localStorage al cargar la página
+      const savedLanguage = localStorage.getItem('selectedLanguage');
+      if (savedLanguage) {
         languageSelect.value = savedLanguage;
         await changeLanguage(savedLanguage);
-    }
+      }
+      document.body.classList.remove('hidden');
 
-    document.body.classList.remove('hidden');
-    
-    // Evento para el cambio de idioma
-    languageSelect.addEventListener("change", function () {
+      // Evento para el cambio de idioma
+      languageSelect.addEventListener("change", function () {
         const selectedLanguage = languageSelect.value;
         changeLanguage(selectedLanguage);
+      });
     });
+  </script>
 
-});
+</body>
 
-  
-    </script>
-  
-  </body>
 </html>

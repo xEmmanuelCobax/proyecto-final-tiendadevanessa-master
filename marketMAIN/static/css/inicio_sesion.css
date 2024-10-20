@@ -1,0 +1,122 @@
+.inicio__sesion {
+  background-color: #f3f1ed;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inicio__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 32px;
+  gap: 8px;
+  width: 29.5%;
+  height: 500px;
+  background-color: #ffffff;
+  border-radius: 32px;
+  box-shadow: 0 3px 3px 0px rgba(186, 185, 185, 0.202);
+
+}
+
+.inicio__titulo {
+  font-size: 2.4rem;
+  text-align: center;
+}
+
+.inicio__desc {
+  text-align: center;
+  font-size: 1.1rem;
+  width: 80%;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: -5px;
+  margin-bottom: 5px;
+}
+
+.form__input {
+  width: 100%;
+  padding: 8px;
+  height: 52px;
+  border-radius: 9px;
+  border: 1.85px solid #f0f2f6;
+  margin: 10px 0;
+  background-color: #f0f2f6;
+  text-indent: 8px;
+}
+
+/*El que lleva a registros*/
+.inicio__extras {
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.no__registrado {
+  color: #656565;
+  padding: 3px;
+  text-decoration: none;
+}
+
+.btn__submit {
+  background-color: #f6ca90;
+  color: black;
+  font-weight: 500;
+  margin-top: 20px;
+}
+
+/*marca*/
+.marca__registrada {
+  font-size: 12.4px;
+  text-align: center;
+  margin-bottom: 0;
+
+}
+
+/*Revelar contraseña*/
+.input-container {
+  position: relative;
+}
+
+/* Estilo del ojo */
+.toggle-password {
+  position: absolute;
+  right: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  /*centrado vertical */
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* Estilo del ícono del ojo */
+#eye-icon {
+  font-size: 18px;
+  color: #aaaaaae3;
+}
+
+/*imagen izq*/
+.imagen__izq {
+  position: absolute;
+  left: 13%;
+  top: 200px;
+  width: 320px;
+}
+
+.imagen__izq--img {
+  width: 100%;
+}
+
+/*imagen derecha*/
+.imagen__der {
+  position: absolute;
+  width: 360px;
+  right: 10%;
+  top: 240px;
+}
+
+.imagen__der--img {
+  width: 100%;
+}

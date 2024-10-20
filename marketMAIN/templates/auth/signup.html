@@ -1,200 +1,175 @@
-{% extends 'top navbar/top-navbar.html' %} {% block title %} Sign Up {% endblock
-%} {% block content %}
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{{ url_for('static', filename='css/auth.css') }}"
-/>
+{% extends 'top navbar/top-navbar.html' %}
+{% block title %} Registro {% endblock%}
 
-<div class="container-fluid mx-4">
-  <div
-    class="d-flex justify-content-center align-items-center"
-    style="height: 120vh"
-  >
-    <div class="col-xl-10">
-      <div class="row">
-        <!-- Columnas para la imagen -->
-        <div class="col-xl-4 offset-xl-1 mb-4 mb-xl-0 d-none d-lg-block">
-          <!-- Aquí se coloca la imagen -->
-          <img
-            src="{{ url_for('send_static', path='img/signup.png') }}"
-            class="img-fluid"
-            alt="Phone image"
-          />
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/registro.css') }}" />
+
+<section class="registro">
+
+  <div class="parte__izquierda">
+
+    <h2 class="izq__titulo">Configuremos su <br> sistema de gestión de inventario
+    </h2>
+    <p class="izq__desc">Solución todo en uno para optimizar su negocio. Administre su inventario desde cero o
+      integre los datos de su
+      empresa
+      existente en nuestro sistema eficiente y fácil de usar.
+    </p>
+
+    <div class="card__reseña">
+      <h4 class="card__titulo">Casi no tuve que hacer nada</h4>
+      <p class="card__desc">Me encantó la experiencia. Pude configurar mi negocio y gestionar todos los detalles
+        necesarios en
+        aproximadamente un
+        mes, ¡y apenas tuve que hacer nada! Definitivamente lo recomiendo.
+      </p>
+
+      <div class="card__flex">
+        <figure class="card__flex--figure">
+          <img src="/static/img/gigachat.jpg" class="card__flex--img">
+        </figure>
+        <p class="card__name">Emmanuel Coba</p>
+
+        <div class="flex__estrellas">
+          <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+            class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
         </div>
 
-        <!-- Columnas para el formulario -->
-        <div class="col-xl-5 offset-xl-1">
-          <!-- Aquí comienza la sección del formulario -->
-          <form method="post" action="" id="signupForm">
-            <h1 class="fw-bold mb-4 signin__titulo text-center">Registrarse</h1>
-            <!-- NOMBRE || id=name-->
-            <div class="form-outline mb-4">
-              <label for="username">Nombres</label>
-              <div class="col-sm-10">
-                <input
-                  type="text"
-                  class="form-control mt-2 {% if user_found %}is-invalid{% endif %}"
-                  id="name"
-                  name="name"
-                  required
-                  pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+"
-                  title="Solo se permiten letras y espacios"
-                  oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                  data-bs-toggle="tooltip-user-found"
-                  data-bs-placement="left"
-                  data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if user_found %}Estos nombres ya han sido registrados.{% else %}Ingresa tus nombres.{% endif %}"
-                />
-              </div>
-              {% if name_error %}
-              <div class="invalid-feedback">Error name.</div>
-              {% endif %}
-            </div>
-
-            <!-- Apellidos input -->
-            <div class="form-outline mb-4">
-              <div class="row">
-                <!-- apellido paterno || id=apellidoPaterno-->
-                <div class="col-md-5 mb-3 mb-md-0">
-                  <label for="apellidoPaterno">Apellido paterno</label>
-                  <div>
-                    <input
-                      type="text"
-                      class="form-control mt-2 {% if paternal_lastname_error %}is-invalid{% endif %} {% if paternal_lastname_valid %}is-valid{% endif %}"
-                      id="apellidoPaterno"
-                      name="paternal_lastname"
-                      required
-                      oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="left"
-                      data-bs-custom-class="custom-tooltip"
-                      data-bs-title="{% if paternal_lastname_error %}Error de apellido paterno.{% else %}Ingrese su apellido paterno.{% endif %}"
-                    />
-                    {% if paternal_lastname_valid %}
-                    <div class="valid-feedback">
-                      <i class="bi bi-check-circle"></i> Apellido paterno
-                      provided
-                    </div>
-                    {% endif %}
-                  </div>
-                  {% if paternal_lastname_error %}
-                  <div class="invalid-feedback">
-                    Error in paternal last name.
-                  </div>
-                  {% endif %}
-                </div>
-
-                <!-- apellido materno || id=apellidoMaterno-->
-                <div class="col-md-5">
-                  <label for="apellidoMaterno">Apellido materno</label>
-                  <div>
-                    <input
-                      type="text"
-                      class="form-control mt-2 {% if maternal_lastname_error %}is-invalid{% endif %} {% if maternal_lastname_valid %}is-valid{% endif %}"
-                      id="apellidoMaterno"
-                      name="maternal_lastname"
-                      oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="left"
-                      data-bs-custom-class="custom-tooltip"
-                      data-bs-title="{% if maternal_lastname_error %}Error de apellido paterno{% else %}Ingrese su apellido materno.{% endif %}"
-                    />
-                    {% if maternal_lastname_valid %}
-                    <div class="valid-feedback">
-                      <i class="bi bi-check-circle"></i> Apellido materno
-                      provided
-                    </div>
-                    {% endif %}
-                  </div>
-                  {% if maternal_lastname_error %}
-                  <div class="invalid-feedback">
-                    Error in maternal last name.
-                  </div>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-
-            <!-- Email input -->
-            <div class="form-outline mb-4">
-              <label for="email">Correo electrónico</label>
-              <div class="col-sm-10">
-                <input
-                  type="email"
-                  class="form-control mt-2 {% if email_found %}is-invalid{% endif %}"
-                  id="email"
-                  name="email"
-                  required
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="left"
-                  data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if email_found %}Este correo electrónico ya ha sido registrado.{% else %}Por favor, ingresa un correo electronico con un dominio valido como: @gmail.com, @hotmail.com, @live.com, o @outlook.com.{% endif %}"
-                />
-              </div>
-              {% if email_found %}
-              <div class="invalid-feedback">
-                The email is already registered.
-              </div>
-              {% endif %}
-            </div>
-
-            <!-- Password input -->
-            <div class="form-outline mb-4">
-              <label for="password">Contraseña</label>
-              <div class="col-sm-10">
-                <div class="input-group">
-                  <input
-                    type="password"
-                    class="form-control mt-2 signup__password"
-                    id="password"
-                    name="password"
-                    required
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="left"
-                    data-bs-custom-class="custom-tooltip"
-                    data-bs-title="La contraseña debe al menos tener 8 caracteres de largo"
-                  />
-                  <div class="mt-2">
-                    <button
-                      class="btn btn-outline-secondary"
-                      type="button"
-                      id="generatePassword"
-                    >
-                      Generar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              class="d-flex flex-column align-items-left mb-4 sigin__remember"
-            >
-              <!-- <p class="informacion__mensaje">*Create your Specify account with your work email to sync 
-                          all your design data across your design system</p>  -->
-              <div class="">
-                <a>¿Cuentas con una cuenta?</a>
-                <a href="{{url_for('auth.signin')}}" class="forget">Iniciar sesión</a>
-              </div>
-            </div>
-            <!-- Submit button -->
-            <button
-              type="submit"
-              class="btn__form btn btn-primary btn-lg btn-block"
-              id="submitButton"
-            >
-              Registrarse
-            </button>
-          </form>
-          <!-- Fin del formulario -->
-        </div>
-        <!-- Fin de la columna -->
       </div>
-      <!-- Fin de la fila -->
+
+
     </div>
+
+    <!--Ilustraciones-->
+    <!-- <div class="imagen__izq">
+      <figure class="imagen__izq--figure">
+        <img src="/static/img/vector3.svg" class="imagen__izq--img">
+      </figure>
+    </div> -->
   </div>
-</div>
+
+  <div class="registro__container">
+
+    <div class="parte__derecha">
+
+      <h1 class="registro__titulo">Empecemos</h1>
+
+      <!--Fomrulario-->
+      <form method="post" action="" id="signupForm">
+        <div class="input-container">
+          <label class="etiqueta" for="username">Nombres</label>
+          <input type="text" class="form__input {% if user_found %}is-invalid{% endif %}" id="name" name="name" required
+            pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"
+            oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
+            data-bs-toggle="tooltip-user-found" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+            data-bs-title="{% if user_found %}Estos nombres ya han sido registrados.{% endif %}" />
+          <!--Logia python-->
+          {% if name_error %}
+          <div class="invalid-feedback">Error name.</div>
+          {% endif %}
+        </div>
+
+
+        <div class="apellidos__flex">
+          <!-- Apellido paterno -->
+          <div class="input-container">
+            <label class="etiqueta" for="apellidoPaterno">Apellido paterno</label>
+            <div>
+              <input type="text"
+                class="form__input form__input--paterno {% if paternal_lastname_error %}is-invalid{% endif %} {% if paternal_lastname_valid %}is-valid{% endif %}"
+                id="apellidoPaterno" name="paternal_lastname" required
+                oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')" data-bs-toggle="tooltip"
+                data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+                data-bs-title="{% if paternal_lastname_error %}Error de apellido paterno.{% endif %}" />
+              {% if paternal_lastname_valid %}
+              <div class="valid-feedback">
+                <i class="bi bi-check-circle"></i> Apellido paterno
+                provided
+              </div>
+              {% endif %}
+            </div>
+            {% if paternal_lastname_error %}
+            <div class="invalid-feedback">
+              Error in paternal last name.
+            </div>
+            {% endif %}
+          </div>
+          <!-- apellido materno-->
+          <div class="input-container">
+            <labe class="etiqueta" for="apellidoMaterno">Apellido materno</label>
+              <div>
+                <input type="text"
+                  class="form__input form__input--materno {% if maternal_lastname_error %}is-invalid{% endif %} {% if maternal_lastname_valid %}is-valid{% endif %}"
+                  id="apellidoMaterno" name="maternal_lastname"
+                  oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')" data-bs-toggle="tooltip"
+                  data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+                  data-bs-title="{% if maternal_lastname_error %}Error de apellido paterno{% endif %}" />
+                {% if maternal_lastname_valid %}
+                <div class="valid-feedback">
+                  <i class="bi bi-check-circle"></i> Apellido materno
+                  provided
+                </div>
+                {% endif %}
+              </div>
+              {% if maternal_lastname_error %}
+              <div class="invalid-feedback">
+                Error in maternal last name.
+              </div>
+              {% endif %}
+          </div>
+        </div>
+
+
+
+        <!-- Correo -->
+        <div class="input-container">
+          <label class="etiqueta" for="email">Correo electrónico</label>
+          <div class="">
+            <input type="email" class="form__input {% if email_found %}is-invalid{% endif %}" id="email" name="email"
+              required data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+              data-bs-title="{% if email_found %}Este correo electrónico ya ha sido registrado.{% endif %}" />
+          </div>
+          {% if email_found %}
+          <div class="invalid-feedback">
+            The email is already registered.
+          </div>
+          {% endif %}
+        </div>
+
+
+        <!-- Contraseña  -->
+        <div class="input-container">
+          <label class="etiqueta" for="password">Contraseña</label>
+          <div class="input-group"> <!--agrupar el boton-->
+            <input type="password" class="form__input--contraseña form__input" id="password" name="password" required
+              data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+              data-bs-title="La contraseña debe al menos tener 8 caracteres de largo" />
+
+            <button class="generate__password" type="button" id="generatePassword">
+              Generar
+            </button>
+          </div>
+        </div>
+
+
+        <!--Extras-->
+        <div class="cuenta__creada">
+          <a>¿Ya tienes una cuenta?</a>
+          <a href="{{url_for('auth.signin')}}" class="cuenta__creada cuenta__creada--enlace">Inicia sesión</a>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="form__input btn__submit" id="submitButton">
+          Registrarse
+        </button>
+      </form>
+
+    </div>
+
+  </div>
+</section>
+
+
 
 <!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
 <div id="flash-messages" style="display: none;">
@@ -229,16 +204,16 @@
 </div>
 
 
-    <!-- MOSTRAR EL MODAL PARA MOSTRAR ERRORES Y MENSAJES  -->
-    <script>
-      $(document).ready(function () {
-        var flashMessages = $('#flash-messages').html().trim();
-        if (flashMessages) {
-          $('#flashModalBody').html(flashMessages);
-          $('#flashModal').modal('show');
-        }
-      });
-    </script>
+<!-- MOSTRAR EL MODAL PARA MOSTRAR ERRORES Y MENSAJES  -->
+<script>
+  $(document).ready(function () {
+    var flashMessages = $('#flash-messages').html().trim();
+    if (flashMessages) {
+      $('#flashModalBody').html(flashMessages);
+      $('#flashModal').modal('show');
+    }
+  });
+</script>
 
 
 <!-- BLOQUEA EL BOTON DE CREAR CUENTA SI EL PASSWORD Y EL EMAIL SON INCORRECTOS -->

@@ -1,0 +1,211 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    /*outline: 1px solid red;*/
+}
+
+.registro {
+    display: flex;
+    align-items: center;
+    width: 100vw;
+    height: 90vh;
+    /* background-color: red; */
+}
+
+.parte__izquierda {
+    background-color: wheat;
+    /* background-color: #275cf6 !important; */
+    width: 45%;
+    height: 90vh;
+    padding: 20px 70px;
+    /* background-image: url(/static/img/fotoside.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center; */
+}
+
+/*Por si cambia los colres*/
+/* .parte__izquierda * {
+    color: white;
+
+}
+
+.btn__submit {
+    background-color: #275cf6 !important;
+    color: white !important;
+} */
+
+/*Seccion izq*/
+.izq__titulo {
+    width: 75%;
+    font-size: 2.5rem;
+    text-align: left;
+    font-weight: 600;
+    line-height: 60px;
+    margin: 30px 0;
+}
+
+.izq__desc {
+    width: 85%;
+    line-height: 27px;
+}
+
+.registro__container {
+    width: 55%;
+    height: 100%;
+    background-color: white;
+}
+
+.parte__derecha {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 90vh;
+    gap: 40px;
+    padding: 10px 125px;
+    /* background-color: red; */
+}
+
+.registro__titulo {
+    font-size: 2.3rem;
+    margin-bottom: 0;
+}
+
+.form__input {
+    width: 100%;
+    padding: 3px;
+    height: 48px;
+    border-radius: 4px;
+    margin: 10px 0;
+    border: 1.85px solid #f0f2f6;
+    text-indent: 6px;
+    background-color: #f0f2f6bb;
+}
+
+.apellidos__flex {
+    display: flex;
+    gap: 15%;
+}
+
+.form__input--paterno,
+.form__input--materno {
+    width: 230px;
+    display: inline-block;
+}
+
+.input-group {
+    width: 100%;
+    /* background-color: yellow; */
+}
+
+.form__input--contraseña {
+    width: 80%;
+}
+
+.generate__password {
+    padding: 5px;
+    height: 48px;
+    width: 20%;
+    border-radius: 4px;
+    margin: 10px 0;
+    border: 1.85px solid #f0f2f6;
+    font-size: 14px;
+}
+
+#signupForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.btn__submit {
+    font-weight: 500;
+    margin-top: 20px;
+    color: black;
+    border: none;
+    background-color: #f6ca90;
+}
+
+.cuenta__creada {
+    color: #656565;
+    padding: 3px;
+    text-decoration: none;
+}
+
+.cuenta__creada--enlace {
+    color: #000;
+}
+
+.etiqueta {
+    color: #606470;
+}
+
+/*imagen izq*/
+/* .imagen__izq {
+    width: 500px;
+}
+
+.imagen__izq--img {
+    width: 100%;
+} */
+
+
+/*Seccion de la reseña*/
+.card__reseña {
+    margin-top: 80px;
+    background-color: #c6b5918d;
+    border-radius: 20px;
+    width: 79%;
+    padding: 35px;
+}
+
+.card__titulo {
+    font-size: 1.1rem;
+}
+
+.card__desc {
+    font-size: 13.2px;
+    /* width: 90%; */
+}
+
+.card__flex {
+    /* background-color: red; */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.card__name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.card__flex--figure {
+    width: 33px;
+    height: 33px;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.card__flex--img {
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+.flex__estrellas {
+    margin-left: 40px;
+    display: flex;
+    gap: 2px;
+}
+
+/*las estrellas*/
+.bi-star-fill {
+    color: #ebfe58;
+}
