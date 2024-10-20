@@ -15,4 +15,6 @@ def index():
         print("#################### NO HAY SESSION ####################>")
         return render_template("index.html")
     print("#################### FIN RenderT(index.html) ####################>")
-    return redirect(url_for("shortcut.shortcuts"))
+    return render_template("index.html")
+
+    # return redirect(url_for("shortcut.shortcuts"))
