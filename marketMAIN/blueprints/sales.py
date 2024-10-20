@@ -1,15 +1,17 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from datetime import datetime
-import config, models
+import config, models, locale
 
 
 # NOTAS:
 
 
+locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
+
 sales = Blueprint("sales", __name__, url_prefix="/sales")
 
 
-# Agregar Ventas
+# region Agregar Ventas
 @sales.route("/addsalesworker", methods=["GET", "POST"])
 def addsalesworker():
     # Errores
@@ -94,7 +96,7 @@ def addsalesworker():
                     )[0][0]
                 )
                 # Encontrar ID_MES en BD MES
-                print("Paso 1: Encontrar ID_MES en BD MES")
+                print("Paso 2: Encontrar ID_MES en BD MES")
                 Mes = int(
                     config.Read(
                         """
@@ -106,7 +108,7 @@ def addsalesworker():
                     )[0][0]
                 )
                 # Encontrar ID_ANIO en BD ANIO
-                print("Paso 1: Encontrar ID_ANIO en BD ANIO")
+                print("Paso 3: Encontrar ID_ANIO en BD ANIO")
                 Anio = int(
                     config.Read(
                         """
@@ -244,7 +246,7 @@ def addsalesworker():
         ErrorProductoInexistente=ErrorProductoInexistente,
         IsAdmin=session["ES_ADMIN"],
     )
-
+# endregion
 
 @sales.route("/reportsales", methods=["POST", "GET"])
 def reportsales():
