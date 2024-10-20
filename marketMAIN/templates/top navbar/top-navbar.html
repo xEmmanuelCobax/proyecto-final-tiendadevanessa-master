@@ -37,7 +37,7 @@
 
       <!--aqui-->
 
-      <a class="navbar-brand" href="{{ url_for('index') }}">SaleTrackStar</a>
+      <a class="navbar-brand" href="{{ url_for('main.index') }}">SaleTrackStar</a>
 
       <div class="navbar__lista__container" id="navbarText">
         <ul class="navbar__lista">
@@ -47,7 +47,7 @@
             <a class="nav__link">{{ email }}</a>
           </li>
           <li class="nav__item">
-            <a class="nav__link" href="{{ url_for('signout') }}">Cerrar Sesión</a>
+            <a class="nav__link" href="{{ url_for('auth.signout') }}">Cerrar Sesión</a>
           </li>
           {% endif %}
 
