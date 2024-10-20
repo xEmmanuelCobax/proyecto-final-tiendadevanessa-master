@@ -37,12 +37,84 @@
   /* background-color: aqua; */
 }
 
-.nav__item{
+.nav__item {
   padding: 10px;
   margin: 0 4px;
 }
 
-.nav__link{
+.nav__link {
   text-decoration: none;
   color: black;
+}
+
+
+/*Para que herede los que lo piden*/
+
+/* Estilo personalizado para el toast */
+.toast {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0.75rem;
+  background-color: #f8f9fa;
+  /* Color de fondo similar al de las alertas de Apple */
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  /* Borde similar al de las alertas de Apple */
+  color: #212529;
+  /* Color del texto */
+  border-radius: 4px;
+}
+
+/* Estilo para el título del toast */
+.toast-header {
+  background-color: #ffc107;
+  display: flex;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  margin-bottom: -0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Estilo para el cuerpo del toast */
+.toast-body {
+  padding: 0.5rem 0;
+}
+
+/* Estilo para el botón de cerrar el toast */
+.btn-close {
+  padding: 0.25rem 0.75rem;
+  margin: 0.25rem 0 0.25rem auto;
+}
+
+
+/* Estilo personalizado para el toast */
+.toast {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0.75rem;
+  background-color: #f8f9fa;
+  /* Color de fondo similar al de las alertas de Apple */
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  /* Borde similar al de las alertas de Apple */
+  color: #212529;
+  /* Color del texto */
+  border-radius: 4px;
+}
+
+/* Estilo para el título del toast */
+.toast-header {
+  background-color: #ffc107;
+  display: flex;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  margin-bottom: -0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Estilo para el cuerpo del toast */
+.toast-body {
+  padding: 0.5rem 0;
+}
+
+/* Estilo para el botón de cerrar el toast */
+.btn-close {
+  padding: 0.25rem 0.75rem;
+  margin: 0.25rem 0 0.25rem auto;
 }

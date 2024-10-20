@@ -1,159 +1,10 @@
 {% extends 'top navbar/top-navbar.html' %} {% block title %} Manage Companies {%
 endblock %} {% block content %}
 
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{{ url_for('static', filename='css/sales.css') }}"
-/>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}" />
 
-<!-- DISEÑO PARA EL DROP MENU-->
-<style>
-  /* Estilos para el buscador */
-  .dropdown-menu {
-    display: none;
-    position: absolute;
-    z-index: 1000;
-    width: 100%;
-    margin: 8px 0 0;
-    max-width: 376px;
-    max-height: 200px;
-    overflow-y: auto;
-    padding: 0.5rem 0;
-    background-color: #f8f9fa; /* Color de fondo */
-    border: 1px solid #dcdcdc; /* Borde */
-    border-radius: 8px; /* Esquinas redondeadas */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
-  }
 
-  .dropdown-item {
-    padding: 0.2rem 1rem;
-    cursor: pointer;
-    white-space: normal;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    transition: background-color 0.3s;
-  }
 
-  .dropdown-item:hover {
-    background-color: #f0f0f0; /* Cambio de color al pasar el ratón */
-  }
-
-  .dropdown-item:focus {
-    background-color: #e6e6e6; /* Cambio de color al hacer foco */
-    outline: none; /* Eliminar el contorno por defecto */
-  }
-
-  .dropdown-item.selected {
-    background-color: #e6e6e6; /* Cambio de color cuando está seleccionado */
-  }
-
-  /* Estilos para el contenedor de información */
-  .product-info {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  /* Estilos para los elementos de información */
-  .product-info > div {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-  }
-
-  /* Estilo para la raya vertical */
-  .product-info > .divider {
-    border-right: 1px solid #dcdcdc;
-    padding-right: 1rem;
-    margin-right: 1rem;
-  }
-
-  /* Media query para hacer el menú desplegable responsivo */
-  @media (max-width: 465px) {
-    .dropdown-menu {
-      width: calc(100% - 20px);
-      max-width: calc(100% - 20px);
-      left: 50%;
-      transform: translateX(-50%);
-      margin: 8px 10px 0;
-      position: relative;
-      overflow-x: auto;
-    }
-  }
-</style>
-
-<!-- DISEÑO PARA TENER TABLAS MAS PRESENTABLES-->
-<style>
-  .table-rounded {
-    border-radius: 10px; /* Redondear las esquinas de la tabla */
-    border: 2px solid #ccc; /* Agregar un borde de 2px sólido con color gris */
-    overflow: hidden; /* Permitir que el contenido desborde los bordes redondeados */
-    background-color: rgba(128, 128, 128, 0.252);
-  }
-</style>
-
-<style>
-  .no-margin {
-    margin: 0;
-  }
-</style>
-
-<!-- ESTILOS PARA EL DISEÑO DE LOS BOTONES AL AGREGAR PRODUCTOS-->
-<style>
-  .transition-effect {
-    transition: all 0.3s ease-in-out;
-  }
-
-  .custom-btn {
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
-    border-radius: 6px; /* Ligero redondeo para las esquinas */
-    padding: 20px; /* Espaciado interno para mantener proporción del contenido */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 6px 8px rgba(0, 0, 0, 0.1); /* Sombra externa para efecto 3D */
-    width: 97px; /* Tamaño cuadrado */
-    height: 97px; /* Tamaño cuadrado */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    overflow: hidden;
-    background-image: linear-gradient(
-      to top,
-      #ffffff,
-      #f1f1f1
-    ); /* Gradiente suave para efecto 3D */
-  }
-
-  .custom-btn:hover {
-    background-color: #e9ecef;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 8px 12px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada al pasar el ratón */
-  }
-
-  .custom-tooltip .tooltip-inner {
-    background-color: #343a40;
-    color: #fff;
-    font-size: 0.9rem;
-    border-radius: 4px;
-    padding: 5px 10px;
-    max-width: 200px;
-    text-align: center;
-  }
-
-  .custom-tooltip .arrow::before {
-    border-top-color: #343a40;
-  }
-
-  .product-name {
-    font-size: 13px;
-    word-wrap: break-word; /* Permite que el texto se divida si no cabe horizontalmente */
-    text-align: center;
-    display: block;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-</style>
 
 <!-- ESTILO PARA LAS TOAST WARNING-->
 <style>
@@ -162,9 +13,12 @@ endblock %} {% block content %}
     position: relative;
     padding: 0.75rem 1.25rem;
     margin-bottom: 0.75rem;
-    background-color: #f8f9fa; /* Color de fondo similar al de las alertas de Apple */
-    border: 1px solid rgba(0, 0, 0, 0.125); /* Borde similar al de las alertas de Apple */
-    color: #212529; /* Color del texto */
+    background-color: #f8f9fa;
+    /* Color de fondo similar al de las alertas de Apple */
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    /* Borde similar al de las alertas de Apple */
+    color: #212529;
+    /* Color del texto */
     border-radius: 4px;
   }
 
@@ -197,9 +51,12 @@ endblock %} {% block content %}
     position: relative;
     padding: 0.75rem 1.25rem;
     margin-bottom: 0.75rem;
-    background-color: #f8f9fa; /* Color de fondo similar al de las alertas de Apple */
-    border: 1px solid rgba(0, 0, 0, 0.125); /* Borde similar al de las alertas de Apple */
-    color: #212529; /* Color del texto */
+    background-color: #f8f9fa;
+    /* Color de fondo similar al de las alertas de Apple */
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    /* Borde similar al de las alertas de Apple */
+    color: #212529;
+    /* Color del texto */
     border-radius: 4px;
   }
 
@@ -234,47 +91,35 @@ endblock %} {% block content %}
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo opaco */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Fondo opaco */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Asegura que el spinner esté por encima de todo */
+    z-index: 1000;
+    /* Asegura que el spinner esté por encima de todo */
   }
 
   #spinner {
-    z-index: 1001; /* Asegura que el spinner esté por encima del fondo opaco */
+    z-index: 1001;
+    /* Asegura que el spinner esté por encima del fondo opaco */
   }
 </style>
 
 <!-- CUERPO -->
-<div class="container-fluid mt-5">
-  <!-- Agregamos la clase mt-5 para añadir margen superior -->
-  <div class="row mx-2 mt-5">
-    <h6 class="mt-1 d-none d-sm-flex">Manage Sales</h6>
-
+<section class="ventas">
     {% include 'top navbar/top-width-navbar.html' %}
 
-    <div class="col-12 col-lg-9 mt-3">
+    <div class="ventas__container">
       <div class="container">
         <div class="row">
           <div class="col-md col-lg-6 my-2">
             <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
             <div class="input-group">
-              <input
-                id="searchInput"
-                class="form-control"
-                type="search"
-                placeholder="Buscar producto"
-                aria-label="Search Product"
-              />
-              <button
-                id="addButton"
-                type="button"
-                class="btn btn-outline-primary btn-sm ms-2"
-              >
-                <span data-section="Sale" data-value="Add Product"
-                  >Agregar producto</span
-                >
+              <input id="searchInput" class="form-control" type="search" placeholder="Buscar producto"
+                aria-label="Search Product" />
+              <button id="addButton" type="button" class="btn btn-outline-primary btn-sm ms-2">
+                <span data-section="Sale" data-value="Add Product">Agregar producto</span>
               </button>
             </div>
             <div id="searchResults" class="dropdown-menu"></div>
@@ -305,25 +150,13 @@ endblock %} {% block content %}
 
           <div
             class="buttons mt-3 border border-Tertiary p-3 rounded d-flex flex-wrap justify-content-center align-items-center"
-            style="max-height: 600px; overflow-y: auto"
-          >
+            style="max-height: 600px; overflow-y: auto">
             {% for product in products %}
-            <div
-              class="col mb-2 d-flex justify-content-center align-items-center"
-              style="display: none"
-            >
-              <a
-                class="btn custom-btn mx-1 product-btn"
-                data-id="{{ product[0] }}"
-                data-name="{{ product[1] }}"
-                data-price="{{ product[2] }}"
-                data-amount="{{ product[3] }}"
-                data-status="{{ product[4] }}"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                data-bs-custom-class="custom-tooltip"
-                title="ID: {{ product[0] }} &#10;Nombre: {{ product[1] }} &#10;Precio: {{ product[2] }}$ &#10;Stock: {{ product[3] }} &#10;Estado: {{ product[4] }}"
-              >
+            <div class="col mb-2 d-flex justify-content-center align-items-center" style="display: none">
+              <a class="btn custom-btn mx-1 product-btn" data-id="{{ product[0] }}" data-name="{{ product[1] }}"
+                data-price="{{ product[2] }}" data-amount="{{ product[3] }}" data-status="{{ product[4] }}"
+                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                title="ID: {{ product[0] }} &#10;Nombre: {{ product[1] }} &#10;Precio: {{ product[2] }}$ &#10;Stock: {{ product[3] }} &#10;Estado: {{ product[4] }}">
                 <div class="d-flex flex-column align-items-center">
                   <span class="material-symbols-outlined"> inventory_2 </span>
                   <span class="product-name"> {{ product[1] }} </span>
@@ -334,9 +167,7 @@ endblock %} {% block content %}
           </div>
         </div>
 
-        <div
-          class="col-md-7 mt-3 flex-wrap justify-content-center align-items-start"
-        >
+        <div class="col-md-7 mt-3 flex-wrap justify-content-center align-items-start">
           <div class="container mb-1">
             <div class="row">
               <div class="col-md-8">
@@ -353,22 +184,15 @@ endblock %} {% block content %}
                   <h6 id="totalSumALL"></h6>
                 </div>
 
-                
+
               </div>
 
               <div class="col-md-4 d-flex align-items-end justify-content-end">
                 <!-- Columna para el botón -->
                 <div class="total-container d-flex justify-content-end mt-1">
-                  <button
-                    class="btn d-none btn-outline-secondary w-100"
-                    id="updateTotalButton"
-                  >
-                    <span
-                      id="spinner-total"
-                      class="spinner-border spinner-border-sm d-none"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
+                  <button class="btn d-none btn-outline-secondary w-100" id="updateTotalButton">
+                    <span id="spinner-total" class="spinner-border spinner-border-sm d-none" role="status"
+                      aria-hidden="true"></span>
                     Actualizar total
                   </button>
                 </div>
@@ -379,14 +203,8 @@ endblock %} {% block content %}
                   <label for="paymentInput" class="col-sm-4 col-form-label">Pago en efectivo</label>
                   <div class="col-sm-8">
                     <div class="input-group">
-                      <input
-                        type="number"
-                        class="form-control"
-                        id="paymentInput"
-                        min="1"
-                        maxlength="6"
-                        placeholder="Ingrese la cantidad"
-                      />
+                      <input type="number" class="form-control" id="paymentInput" min="1" maxlength="6"
+                        placeholder="Ingrese la cantidad" />
                       <span class="input-group-text" id="basic-addon1">$</span>
                     </div>
                   </div>
@@ -401,14 +219,8 @@ endblock %} {% block content %}
             </div>
           </div>
 
-          <div
-            class="table-responsive"
-            style="max-height: 400px; overflow-y: auto"
-          >
-            <table
-              id="saleTable"
-              class="table table-bordered table-striped table-rounded mb-3"
-            >
+          <div class="table-responsive" style="max-height: 400px; overflow-y: auto">
+            <table id="saleTable" class="table table-bordered table-striped table-rounded mb-3">
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -417,17 +229,13 @@ endblock %} {% block content %}
                     <span data-section="Sale" data-value="Name">nombre</span>
                   </th>
                   <th scope="col">
-                    <span data-section="Sale" data-value="Quantity"
-                      >Cantidad</span
-                    >
+                    <span data-section="Sale" data-value="Quantity">Cantidad</span>
                   </th>
                   <th scope="col">
                     <span data-section="Sale" data-value="Price">Precio</span>
                   </th>
                   <th scope="col">
-                    <span data-section="Sale" data-value="Actions"
-                      >Acciones</span
-                    >
+                    <span data-section="Sale" data-value="Actions">Acciones</span>
                   </th>
                 </tr>
               </thead>
@@ -439,51 +247,30 @@ endblock %} {% block content %}
         </div>
       </div>
     </div>
-  </div>
-</div>
+</section>
 
 <!-- TOAST DE ALERTAS-->
-<div
-  id="toastContainer"
-  aria-live="assertive"
-  aria-atomic="true"
-  class="mt-5 position-fixed p-3 end-0 bottom-0"
-></div>
+<div id="toastContainer" aria-live="assertive" aria-atomic="true" class="mt-5 position-fixed p-3 end-0 bottom-0"></div>
 
 <!-- TOAST DE SUCESS-->
-<div
-  id="toastContainerSuccess"
-  aria-live="assertive"
-  aria-atomic="true"
-  class="mt-5 position-fixed p-3 end-0 bottom-0"
-></div>
+<div id="toastContainerSuccess" aria-live="assertive" aria-atomic="true" class="mt-5 position-fixed p-3 end-0 bottom-0">
+</div>
 
 <!-- Spinner -->
 <div id="spinner-container" style="display: none">
-  <div
-    class="spinner-border text-light"
-    style="width: 3rem; height: 3rem"
-    role="status"
-    id="spinner"
-  >
+  <div class="spinner-border text-light" style="width: 3rem; height: 3rem" role="status" id="spinner">
     <span class="visually-hidden">Loading...</span>
   </div>
 </div>
 
 <!-- Modal HTML -->
-<div class="modal fade" id="deleteConfirmationModal"  data-bs-backdrop="static"
-tabindex="-1"
-aria-labelledby="deleteproductlabel">
+<div class="modal fade" id="deleteConfirmationModal" data-bs-backdrop="static" tabindex="-1"
+  aria-labelledby="deleteproductlabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmar eliminación</h5>
-        <button
-          type="button"
-          class="btn-close custom-btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="alert alert-warning" role="alert">
         ¿Estas seguro de eliminar este producto?
@@ -491,7 +278,7 @@ aria-labelledby="deleteproductlabel">
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
           Cerrar
-        </button>        <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
+        </button> <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
       </div>
     </div>
   </div>
@@ -530,7 +317,7 @@ aria-labelledby="deleteproductlabel">
     // Calcular el total de la compra
     let totalTotalWithIVA = (subtotal * 1.16).toFixed(2);
 
-    if (inputValue==="") {
+    if (inputValue === "") {
       var cambiocliente = 0.0;
     } else {
       var cambiocliente = (inputValue - totalTotalWithIVA);
@@ -668,8 +455,8 @@ aria-labelledby="deleteproductlabel">
         (event.key === "e" ||
           event.key === "E" ||
           event.key === "-" ||
-          event.key === "+" 
-          )
+          event.key === "+"
+        )
       ) {
         event.preventDefault();
       }
@@ -751,15 +538,13 @@ aria-labelledby="deleteproductlabel">
       const newRow = document.createElement("tr");
       newRow.dataset.id = productInfo[0];
       newRow.innerHTML = `
-        <th scope="row" style="text-align: center; margin: auto;">${
-          tableBody.querySelectorAll("tr").length + 1
+        <th scope="row" style="text-align: center; margin: auto;">${tableBody.querySelectorAll("tr").length + 1
         }</th>
         <td style="text-align: center; margin: auto;">${productInfo[0]}</td>
         <td>${productInfo[1]}</td>
         <td style="text-align: center;">
-          <input type="number" class="form-control" value="1" min="1" max="${
-            productInfo[2]
-          }" onkeydown="return false" onpaste="return false" onfocus="this.blur();" style="background: transparent; border: none; padding: 0; width: 80px; font-size: 17px; text-align: center; margin: auto;" />
+          <input type="number" class="form-control" value="1" min="1" max="${productInfo[2]
+        }" onkeydown="return false" onpaste="return false" onfocus="this.blur();" style="background: transparent; border: none; padding: 0; width: 80px; font-size: 17px; text-align: center; margin: auto;" />
         </td>
         <td style="text-align: center; margin: auto;">${productInfo[3]}$</td>
         <td class="text-center d-flex justify-content-center align-items-center">
@@ -846,27 +631,27 @@ aria-labelledby="deleteproductlabel">
     });
   });
 
-// Variable para almacenar el botón que fue presionado
-let buttonToDelete;
+  // Variable para almacenar el botón que fue presionado
+  let buttonToDelete;
 
-function confirmDelete(button) {
-  // Almacenar el botón que fue presionado
-  buttonToDelete = button;
-  // Mostrar el modal de confirmación
-  $('#deleteConfirmationModal').modal('show');
-}
+  function confirmDelete(button) {
+    // Almacenar el botón que fue presionado
+    buttonToDelete = button;
+    // Mostrar el modal de confirmación
+    $('#deleteConfirmationModal').modal('show');
+  }
 
-document.getElementById('confirmDelete').addEventListener('click', function() {
-  // Si se confirma, eliminar el producto
-  deleteProduct(buttonToDelete);
-  // Cerrar el modal
-  $('#deleteConfirmationModal').modal('hide');
-});
+  document.getElementById('confirmDelete').addEventListener('click', function () {
+    // Si se confirma, eliminar el producto
+    deleteProduct(buttonToDelete);
+    // Cerrar el modal
+    $('#deleteConfirmationModal').modal('hide');
+  });
 
-function deleteProduct(button) {
-  const row = button.closest("tr");
-  row.remove();
-}
+  function deleteProduct(button) {
+    const row = button.closest("tr");
+    row.remove();
+  }
 
   // Función para mostrar toasts personalizados
   function showToast(message, type) {

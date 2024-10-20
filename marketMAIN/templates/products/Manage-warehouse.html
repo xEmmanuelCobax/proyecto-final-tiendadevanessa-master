@@ -1,234 +1,117 @@
-{% extends 'top navbar/top-navbar.html' %} {% block title %} Manage warehouse {%
-endblock %} {% block content %}
+{% extends 'top navbar/top-navbar.html' %}
 
-<!-- TERMINADO -->
 
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{{ url_for('static', filename='css/products.css') }}"
-/>
+{% block title %} Manage warehouse {%endblock %}
 
-<!-- ESTILO PARA LAS TOAST WARNING-->
-<style>
-  /* Estilo personalizado para el toast */
-  .toast {
-    padding: 0.75rem 1.25rem;
-    margin-bottom: 0.75rem;
-    background-color: #f8f9fa; /* Color de fondo similar al de las alertas de Apple */
-    border: 1px solid rgba(0, 0, 0, 0.125); /* Borde similar al de las alertas de Apple */
-    color: #212529; /* Color del texto */
-    border-radius: 4px;
-  }
+{% block content %}
 
-  /* Estilo para el título del toast */
-  .toast-header {
-    background-color: #ffc107;
-    display: flex;
-    align-items: center;
-    padding-bottom: 0.5rem;
-    margin-bottom: -0.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-  }
+<!-- Almacen productos -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}" />
 
-  /* Estilo para el cuerpo del toast */
-  .toast-body {
-    padding: 0.5rem 0;
-  }
 
-  /* Estilo para el botón de cerrar el toast */
-  .btn-close {
-    padding: 0.25rem 0.75rem;
-    margin: 0.25rem 0 0.25rem auto;
-  }
-</style>
+<section class="inventario">
 
-<div class="container-fluid mt-5">
-  <!-- Agregamos la clase mt-5 para añadir margen superior -->
-  <div class="row mx-2 mt-5">
-    <h6 class="mt-1 d-none d-sm-flex">Gestionar almacén</h6>
+  <!--no se pueden comentar , siguen funcionando-->
+  {% include 'top navbar/top-width-navbar.html' %}
 
-    {% include 'top navbar/top-width-navbar.html' %}
+  <div class="inventario__contenedor">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createmodal"
+      data-bs-whatever="@mdo">
+      <span data-section="manage-werehouse" data-value="Create">Crear producto</span>
+    </button>
 
-    <!-- BODY DE LOS BOTONES Y DE LA TABLA-->
-    <div class="col-12 col-lg-9 mt-3">
-      <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
-      <form class="d-flex mt-3">
-        <!-- Este div se expandirá para ocupar el espacio disponible -->
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#createmodal"
-          data-bs-whatever="@mdo"
-        >
-          <span data-section="manage-werehouse" data-value="Create"
-            >Crear producto</span
-          >
-        </button>
-      </form>
+    <div class="table-responsive" style="max-height: 70vh; ">
+      <!--tabla-->
+      <table class="table table-bordered table-striped table-rounded mb-3" id="product-table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
 
-      <div
-        class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start"
-      >
-        <div
-          class="table-responsive"
-          style="max-height: 500px; overflow-y: auto"
-        >
-          <table
-            class="table table-bordered table-striped table-rounded mb-3"
-            id="product-table"
-          >
-            <thead>
-              <tr>
-                <th scope="col">#</th>
+            <th scope="col">
+              <span data-section="werehouse" data-value="Name Product">Nombre del producto</span>
+            </th>
 
-                <th scope="col">
-                  <span data-section="werehouse" data-value="Name Product"
-                    >Nombre del producto</span
-                  >
-                </th>
+            <th scope="col">
+              <span data-section="werehouse" data-value="Company">Compañia</span>
+            </th>
 
-                <th scope="col">
-                  <span data-section="werehouse" data-value="Company"
-                    >Compañia</span
-                  >
-                </th>
+            <th scope="col">
+              <span data-section="werehouse" data-value="Name Intermedary">Nombre del intermediario</span>
+            </th>
 
-                <th scope="col">
-                  <span data-section="werehouse" data-value="Name Intermedary"
-                    >Nombre del intermediario</span
-                  >
-                </th>
+            <th scope="col">
+              <span data-section="werehouse" data-value="Stock">Stock</span>
+            </th>
 
-                <th scope="col">
-                  <span data-section="werehouse" data-value="Stock">Stock</span>
-                </th>
+            <th scope="col">
+              <span data-section="werehouse" data-value="Unit Price">Precio unitario</span>
+            </th>
 
-                <th scope="col">
-                  <span data-section="werehouse" data-value="Unit Price"
-                    >Precio unitario</span
-                  >
-                </th>
+            <th scope="col">
+              <span data-section="manage-company" data-value="Actions">Acciones</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          {% for product in products %}
+          <tr data-product-id="{{ product[0] }}">
+            <th scope="row">{{ product[0] }}</th>
 
-                <th scope="col">
-                  <span data-section="manage-company" data-value="Actions"
-                    >Acciones</span
-                  >
-                </th>
-              </tr>
-            </thead>
-            <tbody class="table-group-divider">
-              {% for product in products %}
-              <tr data-product-id="{{ product[0] }}">
-                <th scope="row">{{ product[0] }}</th>
+            <td>{{ product[1] }}</td>
 
-                <td>{{ product[1] }}</td>
+            <td>{{ product[9] }}</td>
 
-                <td>{{ product[9] }}</td>
+            <td>{{ product[5] }} {{ product[6] }} {{ product[7] }}</td>
 
-                <td>{{ product[5] }} {{ product[6] }} {{ product[7] }}</td>
+            <td>{{ product[3] }}</td>
 
-                <td>{{ product[3] }}</td>
+            <td>{{ product[2] }} $</td>
+            <td class="text-center d-flex justify-content-center align-items-center">
+              <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#editproduct"
+                data-product-id="{{ product[0] }}" onclick="setEditProductId('{{ product[0] }}')">
+                <span class="material-symbols-outlined">edit_square</span>
+              </button>
+              <button type="button" class="btn btn-danger mx-2 delete-product-btn" data-bs-toggle="modal"
+                data-bs-target="#deleteproduct" data-product-id="{{ product[0] }}"
+                onclick="setProductId('{{ product[0] }}')">
+                <span class="material-symbols-outlined">delete_forever</span>
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> <!--fin tabla-->
 
-                <td>{{ product[2] }} $</td>
-                <td
-                  class="text-center d-flex justify-content-center align-items-center"
-                >
-                  <button
-                    type="button"
-                    class="btn btn-warning mx-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#editproduct"
-                    data-product-id="{{ product[0] }}"
-                    onclick="setEditProductId('{{ product[0] }}')"
-                  >
-                    <span class="material-symbols-outlined">edit_square</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-danger mx-2 delete-product-btn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteproduct"
-                    data-product-id="{{ product[0] }}"
-                    onclick="setProductId('{{ product[0] }}')"
-                  >
-                    <span class="material-symbols-outlined"
-                      >delete_forever</span
-                    >
-                  </button>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- CREAR PRODUCTOS MODAL -->
-<div
-  class="modal fade"
-  id="createmodal"
-  data-bs-backdrop="static"
-  tabindex="-1"
-  aria-labelledby="createmodallabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="createmodal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="createmodallabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Crear nuevo producto</h5>
-        <button
-          type="button"
-          class="btn-close custom-btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form
-          id="createproductmodal"
-          action="{{ url_for('products.manage_products') }}"
-          method="post"
-          class="needs-validation"
-          novalidate
-        >
-        <input type="hidden" name="form_type" value="create">
+        <form id="createproductmodal" action="{{ url_for('products.manage_products') }}" method="post"
+          class="needs-validation" novalidate>
+          <input type="hidden" name="form_type" value="create">
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="marca" class="form-label">Marca:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="marca"
-                  name="marca"
-                  required
-                />
+                <input type="text" class="form-control" id="marca" name="marca" required />
               </div>
               <div class="mb-3">
                 <label for="producto" class="form-label">Nombre del producto:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="producto"
-                  name="producto"
-                  required
-                />
+                <input type="text" class="form-control" id="producto" name="producto" required />
               </div>
               <div class="mb-3">
-                <label for="SelectUnitOfMeasure" class="form-label"
-                  >Secciona una unidad de medida:</label
-                >
-                <select
-                  class="form-select"
-                  id="SelectUnitOfMeasure"
-                  name="SelectUnitOfMeasure"
-                  required
-                >
+                <label for="SelectUnitOfMeasure" class="form-label">Secciona una unidad de medida:</label>
+                <select class="form-select" id="SelectUnitOfMeasure" name="SelectUnitOfMeasure" required>
                   <option value="" disabled selected>
                     Selecciona una uniadad de medida
                   </option>
@@ -241,19 +124,10 @@ endblock %} {% block content %}
                 </select>
               </div>
               <div class="mb-3">
-                <label for="unitquantity" class="form-label"
-                  >Unidad de medida:</label
-                >
+                <label for="unitquantity" class="form-label">Unidad de medida:</label>
                 <div class="input-group">
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="unitquantity"
-                    name="unitquantity"
-                    min="1"
-                    required
-                    disabled
-                  />
+                  <input type="number" class="form-control" id="unitquantity" name="unitquantity" min="1" required
+                    disabled />
                   <span class="input-group-text" id="unitLabel"></span>
                 </div>
               </div>
@@ -261,12 +135,7 @@ endblock %} {% block content %}
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="company-select">Seleccionar compañia:</label>
-                <select
-                  class="form-select"
-                  id="company-select"
-                  name="company_id"
-                  required
-                >
+                <select class="form-select" id="company-select" name="company_id" required>
                   <option value="" disabled selected>Seleccionar compañia</option>
                   {% for company in companies %}
                   <option value="{{ company[0] }}">{{ company[1] }}</option>
@@ -275,12 +144,7 @@ endblock %} {% block content %}
               </div>
               <div class="mb-3">
                 <label for="intermedary-select">Seleccionar intermediario:</label>
-                <select
-                  class="form-select"
-                  id="intermedary-select"
-                  name="intermedary_id"
-                  required
-                >
+                <select class="form-select" id="intermedary-select" name="intermedary_id" required>
                   <option value="" disabled selected>
                     Seleccionar intermediario
                   </option>
@@ -294,48 +158,25 @@ endblock %} {% block content %}
               </div>
               <div class="mb-3">
                 <label for="cantidadInput" class="form-label">Stock:</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="cantidad"
-                  name="cantidad"
-                  min="1"
-                  required
-                />
+                <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" required />
               </div>
               <div class="col-md-6">
                 <div class="mb-3">
                   <label for="newprecio" class="form-label">Precio unitario:</label>
                   <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input
-                      type="number"
-                      class="form-control input-float"
-                      id="precio"
-                      name="precio"
-                      min="1"
-                      step="0.01"
-                      required
-                    />
+                    <input type="number" class="form-control input-float" id="precio" name="precio" min="1" step="0.01"
+                      required />
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div class="text-end">
-            <button
-              type="button"
-              class="btn btn-warning me-2"
-              data-bs-dismiss="modal"
-              onclick="limpiarModal()"
-            >
+            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal" onclick="limpiarModal()">
               Cerrar
             </button>
-            <button
-              id="submitProductSave"
-              type="submit"
-              class="btn btn-success"
-            >
+            <button id="submitProductSave" type="submit" class="btn btn-success">
               Guardar productos
             </button>
           </div>
@@ -346,71 +187,34 @@ endblock %} {% block content %}
 </div>
 
 <!--EDITAR-PRODUCTOS MODAL-->
-<div
-  class="modal fade"
-  id="editproduct"
-  data-bs-backdrop="static"
-  tabindex="-1"
-  aria-labelledby="editproductlabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="editproduct" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editproductlabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editproductlabel">Editar productos</h5>
-        <button
-          type="button"
-          class="btn-close custom-btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form
-          id="editproductform"
-          action="{{ url_for('products.manage_products') }}"
-          method="post"
-          class="needs-validation"
-          novalidate
-        >
+        <form id="editproductform" action="{{ url_for('products.manage_products') }}" method="post"
+          class="needs-validation" novalidate>
           <input type="hidden" name="form_type" value="update">
           <div class="row">
             <div class="col-md-6">
               <!--MARCA-PRODUCTOS-id>newmarca-->
               <div class="mb-3">
                 <label for="newmarca" class="form-label">Nueva marca:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="newmarca"
-                  name="newmarca"
-                  required
-                />
+                <input type="text" class="form-control" id="newmarca" name="newmarca" required />
               </div>
               <!--NEW-NAME-PRODUCTOS-id>newproducto-->
               <div class="mb-3">
-                <label for="newproducto" class="form-label"
-                  >Nuevo nombre del producto:</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="newproducto"
-                  name="newproducto"
-                  required
-                />
+                <label for="newproducto" class="form-label">Nuevo nombre del producto:</label>
+                <input type="text" class="form-control" id="newproducto" name="newproducto" required />
               </div>
               <!--SLECT-NEW-UNIT-id>EditSelectUnitOfMeasure-->
               <div class="mb-3">
-                <label for="EditSelectUnitOfMeasure" class="form-label"
-                  >Seccionar unidad de medida:</label
-                >
-                <select
-                  class="form-select"
-                  id="EditSelectUnitOfMeasure"
-                  name="EditSelectUnitOfMeasure"
-                  required
-                >
+                <label for="EditSelectUnitOfMeasure" class="form-label">Seccionar unidad de medida:</label>
+                <select class="form-select" id="EditSelectUnitOfMeasure" name="EditSelectUnitOfMeasure" required>
                   <option value="" disabled selected>
                     Seleccionar unidad de medida
                   </option>
@@ -424,18 +228,10 @@ endblock %} {% block content %}
               </div>
               <!--NEW-UNIT-QUANTITY-id>editunitquantity-->
               <div class="mb-3">
-                <label for="editunitquantity" class="form-label"
-                  >Nuevo unidad de medida:</label
-                >
+                <label for="editunitquantity" class="form-label">Nuevo unidad de medida:</label>
                 <div class="input-group">
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="editunitquantity"
-                    name="editunitquantity"
-                    min="1"
-                    required
-                  />
+                  <input type="number" class="form-control" id="editunitquantity" name="editunitquantity" min="1"
+                    required />
                   <span class="input-group-text" id="editunitLabel"></span>
                 </div>
               </div>
@@ -445,12 +241,7 @@ endblock %} {% block content %}
               <!--EDITAR-COMPANIA-SELECCIONADO-id>company-new-select-->
               <div class="mb-3">
                 <option value="" disabled selected>Seleccionar Compañia</option>
-                <select
-                  class="form-select"
-                  id="company-new-select"
-                  name="company-new-select"
-                  required
-                >
+                <select class="form-select" id="company-new-select" name="company-new-select" required>
                   <option value="" disabled selected>Seleccionar compañia</option>
                   {% for company in companies %}
                   <option value="{{ company[0] }}">{{ company[1] }}</option>
@@ -461,12 +252,7 @@ endblock %} {% block content %}
               <!--EDITAR-INTERMEDIARIO-SELECCIONADO-id>intermedary-new-select-->
               <div class="mb-3">
                 <label for="intermedary-new-select">Seleccionar intermediario:</label>
-                <select
-                  class="form-select"
-                  id="intermedary-new-select"
-                  name="intermedary-new-select"
-                  required
-                >
+                <select class="form-select" id="intermedary-new-select" name="intermedary-new-select" required>
                   <option value="" disabled selected>
                     Seleccionar intermediario
                   </option>
@@ -480,59 +266,28 @@ endblock %} {% block content %}
               </div>
               <!--NUEVA-CANTIDAD-id>newcantidad-->
               <div class="mb-3">
-                <label for="newcantidadInput" class="form-label"
-                  >Nuevo Stock:</label
-                >
-                <input
-                  type="number"
-                  class="form-control"
-                  id="newcantidadInput"
-                  name="newcantidad"
-                  min="1"
-                  required
-                />
+                <label for="newcantidadInput" class="form-label">Nuevo Stock:</label>
+                <input type="number" class="form-control" id="newcantidadInput" name="newcantidad" min="1" required />
               </div>
               <!--NUEVO-PRECIO-id>newprecio2-->
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label for="newprecio2" class="form-label"
-                    >Nuevo precio unitario:</label
-                  >
+                  <label for="newprecio2" class="form-label">Nuevo precio unitario:</label>
                   <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input
-                      type="number"
-                      class="form-control input-float"
-                      id="newprecio2"
-                      name="newprecio"
-                      step="0.01"
-                      min="1"
-                      required
-                    />
+                    <input type="number" class="form-control input-float" id="newprecio2" name="newprecio" step="0.01"
+                      min="1" required />
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div class="text-end">
-            <button
-              type="button"
-              class="btn btn-warning me-2"
-              data-bs-dismiss="modal"
-            >
+            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal">
               Cerrar
             </button>
-            <input
-              id="editproduct_id"
-              type="hidden"
-              name="editproductid"
-              value=""
-            />
-            <button
-              id="submitEditProductSave"
-              type="submit"
-              class="btn btn-success"
-            >
+            <input id="editproduct_id" type="hidden" name="editproductid" value="" />
+            <button id="submitEditProductSave" type="submit" class="btn btn-success">
               Guardar cambios
             </button>
           </div>
@@ -543,23 +298,12 @@ endblock %} {% block content %}
 </div>
 
 <!--ELIMINAR PRODUCTO MODAL-->
-<div
-  class="modal fade"
-  id="deleteproduct"
-  data-bs-backdrop="static"
-  tabindex="-1"
-  aria-labelledby="deleteproductlabel"
->
+<div class="modal fade" id="deleteproduct" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteproductlabel">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Eliminar productos</h5>
-        <button
-          type="button"
-          class="btn-close custom-btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-warning" role="alert">
@@ -570,18 +314,9 @@ endblock %} {% block content %}
         <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
           Cerrar
         </button>
-        <form
-          id="delete-product-form"
-          action="{{ url_for('products.manage_products') }}"
-          method="post"
-        >
-        <input type="hidden" name="form_type" value="delete">
-          <input
-            id="product-id-input"
-            type="hidden"
-            name="product_id"
-            value=""
-          />
+        <form id="delete-product-form" action="{{ url_for('products.manage_products') }}" method="post">
+          <input type="hidden" name="form_type" value="delete">
+          <input id="product-id-input" type="hidden" name="product_id" value="" />
           <button id="delete-product-btn" type="submit" class="btn btn-danger">
             Eliminar producto
           </button>
@@ -596,7 +331,7 @@ endblock %} {% block content %}
   <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
       <i class="fas fa-exclamation-circle"></i>
-        <strong class="me-auto mx-2">Warning!</strong>
+      <strong class="me-auto mx-2">Warning!</strong>
       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Cerrar"></button>
     </div>
     <div class="toast-body mx-1 mt-1">
@@ -694,7 +429,7 @@ endblock %} {% block content %}
       //var id = rowData[0];
 
       //NOMBRE DEL PRODUCTO (FUNCIONA)
-      console.log("rowdata> "+rowData[1]);
+      console.log("rowdata> " + rowData[1]);
       var separatedData = rowData[1].split('_');
       console.log("el nombre del producto seleccionado es: " + separatedData);
       document.getElementById("newmarca").value = separatedData[0];
@@ -823,7 +558,7 @@ endblock %} {% block content %}
       //FIN
 
       var tostada = new bootstrap.Toast(document.getElementById('toast'));
-    tostada.show();
+      tostada.show();
     } else {
       console.log("Fila no encontrada para productId:", productId);
     }
@@ -847,26 +582,26 @@ endblock %} {% block content %}
     var intermediaries = document.querySelectorAll("#intermedary-select option");
 
     // Recorrer todas las opciones de intermediarios
-    intermediaries.forEach(function(option) {
-        // Obtener el valor del atributo data-company-id asociado con el intermediario
-        var intermediaryCompanyId = option.getAttribute('data-company-id');
-        console.log(intermediaryCompanyId);
-        // Comparar la compañía seleccionada con la compañía del intermediario
-        if (intermediaryCompanyId !== selectedCompanyId) {
-            // Ocultar el intermediario si no coincide con la compañía seleccionada
-            option.style.display = "none";
-        } else {
-            // Mostrar el intermediario si coincide con la compañía seleccionada
-            option.style.display = "block";
-        }
+    intermediaries.forEach(function (option) {
+      // Obtener el valor del atributo data-company-id asociado con el intermediario
+      var intermediaryCompanyId = option.getAttribute('data-company-id');
+      console.log(intermediaryCompanyId);
+      // Comparar la compañía seleccionada con la compañía del intermediario
+      if (intermediaryCompanyId !== selectedCompanyId) {
+        // Ocultar el intermediario si no coincide con la compañía seleccionada
+        option.style.display = "none";
+      } else {
+        // Mostrar el intermediario si coincide con la compañía seleccionada
+        option.style.display = "block";
+      }
     });
-}
+  }
 
-// Agregar un evento de cambio al campo de selección de compañía
-document.getElementById("company-select").addEventListener("change", filterIntermediaries);
+  // Agregar un evento de cambio al campo de selección de compañía
+  document.getElementById("company-select").addEventListener("change", filterIntermediaries);
 
-// Filtrar las opciones de intermediarios al cargar la página
-filterIntermediaries();
+  // Filtrar las opciones de intermediarios al cargar la página
+  filterIntermediaries();
 
 </script>
 
@@ -881,26 +616,26 @@ filterIntermediaries();
     var intermediaries = document.querySelectorAll("#intermedary-new-select option");
 
     // Recorrer todas las opciones de intermediarios
-    intermediaries.forEach(function(option) {
-        // Obtener el valor del atributo data-company-id asociado con el intermediario
-        var intermediaryCompanyId = option.getAttribute('data-new-company-id');
-        console.log(intermediaryCompanyId);
-        // Comparar la compañía seleccionada con la compañía del intermediario
-        if (intermediaryCompanyId !== selectedCompanyId) {
-            // Ocultar el intermediario si no coincide con la compañía seleccionada
-            option.style.display = "none";
-        } else {
-            // Mostrar el intermediario si coincide con la compañía seleccionada
-            option.style.display = "block";
-        }
+    intermediaries.forEach(function (option) {
+      // Obtener el valor del atributo data-company-id asociado con el intermediario
+      var intermediaryCompanyId = option.getAttribute('data-new-company-id');
+      console.log(intermediaryCompanyId);
+      // Comparar la compañía seleccionada con la compañía del intermediario
+      if (intermediaryCompanyId !== selectedCompanyId) {
+        // Ocultar el intermediario si no coincide con la compañía seleccionada
+        option.style.display = "none";
+      } else {
+        // Mostrar el intermediario si coincide con la compañía seleccionada
+        option.style.display = "block";
+      }
     });
-}
+  }
 
-// Agregar un evento de cambio al campo de selección de compañía
-document.getElementById("company-new-select").addEventListener("change", filterIntermediaries);
+  // Agregar un evento de cambio al campo de selección de compañía
+  document.getElementById("company-new-select").addEventListener("change", filterIntermediaries);
 
-// Filtrar las opciones de intermediarios al cargar la página
-filterIntermediaries();
+  // Filtrar las opciones de intermediarios al cargar la página
+  filterIntermediaries();
 
 </script>
 

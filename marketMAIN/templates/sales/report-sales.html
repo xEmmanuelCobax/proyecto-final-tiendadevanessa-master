@@ -1,104 +1,80 @@
 {% extends 'top navbar/top-navbar.html' %}
-{% block title %} Warehouse {% endblock %}
+{% block title %} Reporte de ventas {% endblock %}
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}" />
 
-<!-- DISEÑO PARA TENER TABLAS MAS PRESENTABLES-->
-<style>
-  .table-rounded {
-    border-radius: 10px;
-    /* Redondear las esquinas de la tabla */
-    border: 2px solid #ccc;
-    /* Agregar un borde de 2px sólido con color gris */
-    overflow: hidden;
-    /* Permitir que el contenido desborde los bordes redondeados */
-    background-color: rgba(128, 128, 128, 0.252);
-  }
+<section class="reporteVentas">
 
-  .no-margin {
-    margin: 0;
-  }
 
-  .table-container {
-    max-height: 500px;
-    overflow-y: auto;
-  }
-</style>
 
-<div class="container-fluid mt-5">
-  <div class="row mx-2 mt-5 border border-Tertiary rounded p-0">
-    <h6 class="mt-1 d-none d-sm-flex"><span data-section="Sales report" data-value="Sales report">Sales report</span>
-    </h6>
+  {% include 'top navbar/top-width-navbar.html' %}
 
-    {% include 'top navbar/top-width-navbar.html' %}
-
-    <div class="col-12 col-lg-9 mt-3">
-      <div class="row">
-        <div class="col-lg-12 my-2">
-          <div class="table-container">
-            <table class="table table-bordered table-striped table-rounded mb-3">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col"><span data-section="warehouse" data-value="Date">Date</span></th>
-                  <th scope="col"><span data-section="warehouse" data-value="Number of items">Number of items</span>
-                  </th>
-                  <th scope="col"><span data-section="warehouse" data-value="Total">Total</span></th>
-                  <th scope="col"><span data-section="warehouse" data-value="Actions">Actions</span></th>
-                </tr>
-              </thead>
-              <tbody class="table-group-divider">
-                {% for sale in sales %}
-                <tr>
-                  <th scope="row">{{ sale[0] }}</th>
-                  <td>{{ sale[1] }}/{{ sale[2] }}/{{ sale[3] }}</td>
-                  <td>{{ sale[4] }}</td>
-                  <td>{{ sale[5] }}</td>
-                  <td class="text-center d-flex justify-content-center align-items-center">
-                    <form action="{{ url_for('sales.reportsales') }}" method="POST">
-                      <input type="hidden" name="sale_id" value="{{ sale[0] }}">
-                      <button type="submit" class="btn btn-warning mx-2">
-                        <span class="material-symbols-outlined">edit_square</span>
-                      </button>
-                    </form>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+  <div class="reporteVentas__container">
+    <div class="row">
+      <div class="col-lg-12 my-2">
+        <div class="table-container">
+          <table class="table table-bordered table-striped table-rounded mb-3">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col"><span data-section="warehouse" data-value="Date">Fecha</span></th>
+                <th scope="col"><span data-section="warehouse" data-value="Number of items">Nº de items</span>
+                </th>
+                <th scope="col"><span data-section="warehouse" data-value="Total">Total</span></th>
+                <th scope="col"><span data-section="warehouse" data-value="Actions">Acciones</span></th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              {% for sale in sales %}
+              <tr>
+                <th scope="row">{{ sale[0] }}</th>
+                <td>{{ sale[1] }} {{ sale[2] }} {{ sale[3] }}</td>
+                <td>{{ sale[4] }}</td>
+                <td>{{ sale[5] }}</td>
+                <td class="text-center d-flex justify-content-center align-items-center">
+                  <form action="{{ url_for('sales.reportsales') }}" method="POST">
+                    <input type="hidden" name="sale_id" value="{{ sale[0] }}">
+                    <button type="submit" class="btn btn-warning mx-2">
+                      <span class="material-symbols-outlined">edit_square</span>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        <div class="col-lg-12 my-2">
-          {% if details %}
-          <div class="table-container">
-            <h3>Sale Details</h3>
-            <table class="table table-bordered table-striped table-rounded mb-3">
-              <thead>
-                <tr>
-                  <th scope="col">Product ID</th>
-                  <th scope="col"><span data-section="warehouse" data-value="Product Name">Product Name</span></th>
-                  <th scope="col"><span data-section="warehouse" data-value="Quantity">Quantity</span></th>
-                  <th scope="col"><span data-section="warehouse" data-value="Amount">Amount</span></th>
-                  <th scope="col"><span data-section="warehouse" data-value="IVA">IVA</span></th>
-                </tr>
-              </thead>
-              <tbody class="table-group-divider">
-                {% for detail in details %}
-                <tr>
-                  <td>{{ detail[0] }}</td>
-                  <td>{{ detail[1] }}</td>
-                  <td>{{ detail[2] }}</td>
-                  <td>{{ detail[3] }}</td>
-                  <td>{{ detail[4] }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          {% endif %}
+      </div>
+      <div class="col-lg-12 my-2">
+        {% if details %}
+        <div class="table-container">
+          <h3>Sale Details</h3>
+          <table class="table table-bordered table-striped table-rounded mb-3">
+            <thead>
+              <tr>
+                <th scope="col">Product ID</th>
+                <th scope="col"><span data-section="warehouse" data-value="Product Name">Product Name</span></th>
+                <th scope="col"><span data-section="warehouse" data-value="Quantity">Quantity</span></th>
+                <th scope="col"><span data-section="warehouse" data-value="Amount">Amount</span></th>
+                <th scope="col"><span data-section="warehouse" data-value="IVA">IVA</span></th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              {% for detail in details %}
+              <tr>
+                <td>{{ detail[0] }}</td>
+                <td>{{ detail[1] }}</td>
+                <td>{{ detail[2] }}</td>
+                <td>{{ detail[3] }}</td>
+                <td>{{ detail[4] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+        {% endif %}
       </div>
     </div>
   </div>
-</div>
+</section>
 {% endblock %}

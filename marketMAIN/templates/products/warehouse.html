@@ -3,78 +3,70 @@ endblock %} {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}" />
 
 
-<div class="container-fluid mt-5">
-  <!-- Agregamos la clase mt-5 para añadir margen superior -->
-  <div class="row mx-2 mt-5">
-    <h6 class="mt-1 d-none d-sm-flex"><span data-section="width-navbar" data-value="werehouse">Almacén</span></h6>
+<section class="productos">
 
-    {% include 'top navbar/top-width-navbar.html' %}
+  {% include 'top navbar/top-width-navbar.html' %}
 
-    <div class="col-12 col-lg-9 mt-3">
-      <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
-      <form class="d-flex mt-3" method="POST" action="{{ url_for('products.warehouse') }}">
-        <div class="col-sm-4">
-          <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" name="search_term" />
-        </div>
-        <div class="mx-3"></div>
-        <!-- Este div se expandirá para ocupar el espacio disponible -->
-        <button class="btn btn-primary" type="submit"><span data-section="werehouse"
-            data-value="Search">Buscar</span></button>
-      </form>
+  <div class="productos__container">
+    <form class="d-flex mt-3" method="POST" action="{{ url_for('products.warehouse') }}">
+      <div class="col-sm-4">
+        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" name="search_term" />
+      </div>
+      <button class="btn btn-primary" type="submit"><span data-section="werehouse" data-value="Search">Buscar</span>
+      </button>
+    </form>
 
-      <div class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start">
-        <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
-          <table class="table table-bordered table-striped table-rounded mb-3">
-            <!-- Mantenemos las clases existentes y agregamos espaciado -->
-            <thead>
-              <tr>
-                <th scope="col">#</th>
+    <div class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start">
+      <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
+        <table class="table table-bordered table-striped table-rounded mb-3">
+          <!-- Mantenemos las clases existentes y agregamos espaciado -->
+          <thead>
+            <tr>
+              <th scope="col">#</th>
 
-                <th scope="col"><span data-section="werehouse" data-value="Name Product">Nombre del Producto</span></th>
+              <th scope="col"><span data-section="werehouse" data-value="Name Product">Nombre del Producto</span></th>
 
-                <th scope="col"><span data-section="werehouse" data-value="Company">Compañia</span></th>
+              <th scope="col"><span data-section="werehouse" data-value="Company">Compañia</span></th>
 
-                <th scope="col"><span data-section="werehouse" data-value="Name Intermedary">Nombre del
-                    intermediario</span></th>
+              <th scope="col"><span data-section="werehouse" data-value="Name Intermedary">Nombre del
+                  intermediario</span></th>
 
-                <th scope="col"><span>Tel. </span></th>
+              <th scope="col"><span>Tel. </span></th>
 
-                <th scope="col"><span data-section="werehouse" data-value="Stock">Stock</span></th>
+              <th scope="col"><span data-section="werehouse" data-value="Stock">Stock</span></th>
 
-                <th scope="col"><span data-section="werehouse" data-value="Unit Price">Precio unitario</span></th>
+              <th scope="col"><span data-section="werehouse" data-value="Unit Price">Precio unitario</span></th>
+            </tr>
+          </thead>
 
+          <tbody class="table-group-divider">
+            <!-- Enviar mediante un array llamada task los valores (el nombre lo vamos a cambiar a futuro) -->
+            {% for product in products %}
+            <tr>
 
+              <th scope="row">{{ product[0] }}</th>
 
-              </tr>
-            </thead>
-            <tbody class="table-group-divider">
-              <!-- Enviar mediante un array llamada task los valores (el nombre lo vamos a cambiar a futuro) -->
-              {% for product in products %}
-              <tr>
+              <td>{{ product[1] }}</td>
 
-                <th scope="row">{{ product[0] }}</th>
+              <td>{{ product[9] }}</td>
 
-                <td>{{ product[1] }}</td>
+              <td>{{ product[5] }} {{ product[6] }} {{ product[7] }} </td>
 
-                <td>{{ product[9] }}</td>
+              <td>{{ product[8] }}</td>
 
-                <td>{{ product[5] }} {{ product[6] }} {{ product[7] }} </td>
+              <td>{{ product[3] }}</td>
 
-                <td>{{ product[8] }}</td>
+              <td>{{ product[2] }} $</td>
 
-                <td>{{ product[3] }}</td>
-
-                <td>{{ product[2] }} $</td>
-
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-</div>
+
+</section>
 
 <!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
 <div id="flash-messages" style="display: none;">
@@ -92,10 +84,10 @@ endblock %} {% block content %}
 <!-- MOTAL PARA MOSTRAR FLASH -->
 <div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel"
   aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="flashModalLabel">Nortification</h5>
+        <h5 class="modal-title" id="flashModalLabel">Notificacion</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="flashModalBody">

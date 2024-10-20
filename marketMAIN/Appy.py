@@ -61,7 +61,7 @@ def shortcut():
         print("#################### NO HAY SESSION ####################>")
         return redirect(url_for("index"))
     print("#################### FIN RenderT(index.html) ####################>")
-    return render_template("shortcut.html", IsAdmin=session["ES_ADMIN"])
+    return render_template("index.html", IsAdmin=session["ES_ADMIN"])
 
 
 # Ruta Principal

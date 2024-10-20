@@ -1,24 +1,153 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.inventario {
+    display: flex;
+    /* background-color: rgb(119, 255, 0); */
+    background-color: #f1f0f3de;
+}
+
+.inventario__contenedor {
+    padding: 20px;
+    width: 100%;
+}
+
+.btn-primary {
+    background-color: black;
+    margin: 10px 0;
+}
+
+/*pagina de intermediarios*/
+.intermediarios {
+    display: flex;
+    background-color: #f1f0f3de;
+}
+
+.intermediarios__contenedor {
+    padding: 20px;
+    width: 100%;
+}
+
+/*pagina de provedores*/
+.proveedores {
+    display: flex;
+    background-color: #f1f0f3de;
+}
+
+.proveedores__contenedor {
+    padding: 20px;
+    width: 100%;
+}
+
+/*pagina de prodcutos*/
+.productos {
+    display: flex;
+    background-color: #f1f0f3de;
+}
+
+.productos__container {
+    padding: 20px;
+    width: 100%;
+}
+
+/*pagina de reporte de ventas*/
+.reporteVentas {
+    display: flex;
+    background-color: #f1f0f3de;
+}
+
+.reporteVentas__container {
+    padding: 20px;
+    width: 100%;
+}
+
+/*pagina de reporte de ventas*/
+.ventas {
+    display: flex;
+    background-color: #f1f0f3de;
+    /* background-color: red; */
+}
+
+.ventas__container {
+    padding: 20px;
+    /* background-color: red; */
+    width: 90%;
+
+}
+
+/*pagina de reporte de usuarios*/
+.usuarios {
+    display: flex;
+    background-color: #f1f0f3de;
+}
+
+.usuarios__container {
+    padding: 20px;
+    width: 90%;
+
+}
+
+/* < !-- ESTILOS PARA EL DISEÑO DE LOS BOTONES AL AGREGAR PRODUCTOS--> */
+
+.transition-effect {
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    /* Ligero redondeo para las esquinas */
+    padding: 20px;
+    /* Espaciado interno para mantener proporción del contenido */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 6px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra externa para efecto 3D */
+    width: 97px;
+    /* Tamaño cuadrado */
+    height: 97px;
+    /* Tamaño cuadrado */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    background-image: linear-gradient(to top,
+            #ffffff,
+            #f1f1f1);
+    /* Gradiente suave para efecto 3D */
+}
+
+.custom-btn:hover {
+    background-color: #e9ecef;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 8px 12px rgba(0, 0, 0, 0.15);
+    /* Sombra más pronunciada al pasar el ratón */
+}
+
 .custom-tooltip .tooltip-inner {
-    background-color: #ffcc00; /* Color de advertencia estilo Apple */
-    color: #000; /* Texto en color negro */
+    background-color: #343a40;
+    color: #fff;
     font-size: 0.9rem;
-    border-radius: 8px; /* Bordes más redondeados */
-    padding: 8px 12px; /* Aumentar un poco el padding */
-    max-width: 220px; /* Ajuste de ancho */
+    border-radius: 4px;
+    padding: 5px 10px;
+    max-width: 200px;
     text-align: center;
-    border: 1px solid #e6b800; /* Borde ligeramente más oscuro */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
 .custom-tooltip .arrow::before {
-    border-top-color: #ffcc00; /* Color de advertencia estilo Apple */
-    border-width: 8px; /* Ajuste del tamaño de la flecha */
+    border-top-color: #343a40;
 }
 
+.product-name {
+    font-size: 13px;
+    word-wrap: break-word;
+    /* Permite que el texto se divida si no cabe horizontalmente */
+    text-align: center;
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-.table-rounded {
-    border-radius: 10px; /* Redondear las esquinas de la tabla */
-    border: 2px solid #ccc; /* Agregar un borde de 2px sólido con color gris */
-    overflow: hidden; /* Permitir que el contenido desborde los bordes redondeados */
-    background-color: rgba(128, 128, 128, 0.252);
-  }
