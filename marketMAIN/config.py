@@ -1,16 +1,40 @@
 import mariadb
 HEX_SEC_KEY = "d5fb8c4fa8bd46638dadc4e751e0d68d"
 
+# Conexiones
+ROOT_CONECTION = {
+    "host": "localhost",  # Cambia por tu host si es diferente
+    "user": "root",  # Usuario de MariaDB
+    "password": "123",  # Contraseña de MariaDB
+    "database": "braindamage",  # Nombre de la base de datos
+}
+
+MANAGER_CONECTION = {
+    "host": "localhost",  # Cambia por tu host si es diferente
+    "user": "Gerente",  # Usuario de MariaDB
+    "password": "123",  # Contraseña de MariaDB
+    "database": "braindamage",  # Nombre de la base de datos
+}
+
+CASHIER_CONECTION = {
+    "host": "localhost",  # Cambia por tu host si es diferente
+    "user": "Cajero",  # Usuario de MariaDB
+    "password": "123",  # Contraseña de MariaDB
+    "database": "braindamage",  # Nombre de la base de datos
+}
+
+
 
 # Metodo para poder realizar CUD> CREATE, UPDATE Y DELETE
-def CUD(query, params=None):
+def CUD(query, params=None, current_user=None):
     print("<-------------------- Conectando... --------------------")
     try:
         # Conectar a la BD
+        connection = mariadb.connect(current_user.Conection)
         connection = mariadb.connect(
             host="localhost",  # Cambia por tu host si es diferente
-            user="choterifa",  # Usuario de MariaDB
-            password="",  # Contraseña de MariaDB
+            user="root",  # Usuario de MariaDB
+            password="123",  # Contraseña de MariaDB
             database="proyecto",  # Nombre de la base de datos
         )
         cursor = connection.cursor()
@@ -23,17 +47,19 @@ def CUD(query, params=None):
     except Exception as ex:
         print(f"<-------------------- Error: {ex} -------------------->")
     finally:
-        connection.close()
-        print("-------------------- Conexión finalizada -------------------->")
+        if connection:
+            connection.close()
+            print("-------------------- Conexión finalizada -------------------->")
 
-def Read(query, params=None):
+# Metodo para poder leer consultas
+def Read(query, params=None, current_user=None):
     print("<-------------------- Conectando... --------------------")
     connection = None
     try:
         connection = mariadb.connect(
             host="localhost",  # Cambia por tu host si es diferente
-            user="choterifa",  # Usuario de MariaDB
-            password="",  # Contraseña de MariaDB
+            user="root",  # Usuario de MariaDB
+            password="123",  # Contraseña de MariaDB
             database="proyecto",  # Nombre de la base de datos
         )
         cursor = connection.cursor()
