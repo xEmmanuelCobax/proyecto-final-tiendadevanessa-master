@@ -15,6 +15,8 @@ import config, locale, re
 
 from datetime import datetime
 
+from werkzeug.security import generate_password_hash
+
 locale.setlocale(locale.LC_TIME, "es_ES")
 
 class MyException(Exception):
@@ -35,7 +37,7 @@ accounts = Blueprint("accounts", __name__, url_prefix="/accounts")
 
 
 app.config["SECRET_KEY"] = config.HEX_SEC_KEY
-# Metodos de validacion:
+# region Metodos de validacion (Posbilemente no sirva)
 def validar_entrada(texto):
     # a-z y A-Z son para minusculas y mayusculas
     # \u00e1\u00e9\u00ed\u00f3\u00fa\u00f1\u00c1\u00c9\u00cd\u00d3\u00da\u00d1  Letras mayusculas y minusculas con acentos
@@ -51,7 +53,7 @@ def validar_entrada(texto):
     else:
         return True
 
-# ShortCut
+# region ShortCut
 @sc.route("/shortcut")
 def shortcut():
     # Errores
@@ -64,7 +66,7 @@ def shortcut():
     return render_template("shortcut.html", IsAdmin=session["ES_ADMIN"])
 
 
-# Ruta Principal
+# region Ruta Principal
 @app.route("/")
 def index():
     # Errores
@@ -75,7 +77,7 @@ def index():
     return redirect(url_for("shortcut.shortcut"))
 
 
-# Bienvenida (Terminado)
+# region Bienvenida (Terminado)
 @p.route("/welcomeuser") 
 def welcomeuser():
     # Errores
@@ -94,7 +96,7 @@ def welcomeuser():
         IsAdmin=session["ES_ADMIN"],
     )
 
-# Iniciar session (Terminado)
+# region Iniciar session (Terminado)
 @auth.route("/signin", methods=["GET", "POST"])
 def signin():
     # Errores
@@ -160,7 +162,7 @@ def signin():
     return render_template("auth/signin.html",registration_successful=registration_successful,)
 
 
-# Registrarse (Terminado)
+# region Registrarse (Terminado)
 @auth.route("/signup", methods=["GET", "POST"])
 def signup():
     # Errores
@@ -266,7 +268,7 @@ def signup():
         return render_template("auth/signup.html")
 
 
-# Cerrar session (Terminado)
+# region Cerrar session (Terminado)
 @app.route("/signout")
 def signout():
     print("<#################### signout ####################")
@@ -278,14 +280,15 @@ def signout():
     else:
         print("#################### FIN NO HAY SESSION (auth.signin) ####################>")
     return redirect(url_for("auth.signin"))
+# endregion
 
-
-# Registro exitoso (Terminado)
+# region Registro exitoso (Terminado)
 @app.route("/successful_registration")
 def successful_registration():
     return render_template("auth/successful-registration.html")
+# endregion
 
-
+# region consultas
 def ConsultaProductos():
     productos = []
     productos = config.Read(
@@ -321,6 +324,9 @@ def ConsultaPIA():
     WHERE proyecto.proveedor.ID_COMPANIA = proyecto.intermediario.ID_COMPANIA
     AND proyecto.intermediario.ID_INTERMEDIARIO = proyecto.almacen.ID_INTERMEDIARIO
     AND proyecto.almacen.ESTATUS = 1
+
+    ORDER BY 
+    proyecto.almacen.ID_PRODUCTO ASC;
         """
     )
     return Cpia
@@ -358,9 +364,10 @@ def ConsultaCompanias():
         """
     )
     return companias
+# endregion
 
 
-# Mostrar los productos (Terminado)
+# region Mostrar los productos (Terminado)
 @products.route("/warehouse", methods=["GET", "POST"])
 def warehouse():
     print("<#################### warehouse ####################")
@@ -385,9 +392,17 @@ def warehouse():
                 proyecto.almacen.ID_PRODUCTO,
                 proyecto.almacen.NOMBRE, 
                 proyecto.almacen.PRECIO_UNITARIO, 
-                proyecto.almacen.EXISTENCIAS 
-            FROM  proyecto.almacen 
-            WHERE NOMBRE LIKE ?
+                proyecto.almacen.EXISTENCIAS,
+                proyecto.almacen.PRECIO_EXISTENCIA, 
+                proyecto.intermediario.NOMBRE,
+                proyecto.intermediario.AP_PAT,
+                proyecto.intermediario.AP_MAT,
+                proyecto.intermediario.TEL,
+                proyecto.proveedor.NOMBRE
+            FROM proyecto.proveedor, proyecto.intermediario, proyecto.almacen
+            WHERE proyecto.almacen.NOMBRE LIKE ? 
+            AND proyecto.proveedor.ID_COMPANIA = proyecto.intermediario.ID_COMPANIA
+            AND proyecto.intermediario.ID_INTERMEDIARIO = proyecto.almacen.ID_INTERMEDIARIO
             AND proyecto.almacen.ESTATUS = 1;
             """,
             ("%" + search_term + "%",),
@@ -411,8 +426,9 @@ def warehouse():
         products=products,
         IsAdmin=session["ES_ADMIN"],
     )
+# endregion
 
-
+# region manejar productos
 @products.route("/manage_products", methods=["GET", "POST"])
 def manage_products():
     # Verificar autenticación y permisos
@@ -425,7 +441,7 @@ def manage_products():
     # Capa 3: Procesar los formularios POST
     if request.method == "POST":
         form_type = request.form.get("form_type")
-        # Caso 1: Borrar producto
+        # region Caso 1: Borrar producto
         if form_type == "delete":
             product_id = int(request.form.get("product_id"))
             config.CUD(
@@ -433,7 +449,8 @@ def manage_products():
                     (product_id,),
             )
             flash("El producto ha sido eliminado exitosamente.")
-        # Caso 2: Crear producto
+        # endregion
+        # region Caso 2: Crear producto
         elif form_type == "create":
             try:
                 # Obtener datos del formulario
@@ -509,7 +526,7 @@ def manage_products():
                 existe = config.Read(
                     """
                     SELECT 
-                        proyecto.interdediario.ID_INTERMEDIARIO, 
+                        proyecto.intermediario.ID_INTERMEDIARIO, 
                         proyecto.intermediario.NOMBRE, 
                         proyecto.intermediario.AP_PAT, 
                         proyecto.intermediario.AP_MAT, 
@@ -618,7 +635,7 @@ def manage_products():
                 print(f"Inesperado {err=}, {type(err)=}")
                 flash("Ocurrió un error inesperado")
                 print("#################### FIN ####################>")
-        # Caso 3: Actualizar producto
+        # region Caso 3: Actualizar producto
         elif form_type == "update":
             try:
                 # Obtener datos del formulario
@@ -793,6 +810,7 @@ def manage_products():
                 print(f"Type: {e}")
                 flash(f"Type: {e}")
                 print("#################### FIN ####################>")
+        # endregion
     return render_template(
         "products/manage-warehouse.html",
         products=ConsultaPIA(),
@@ -800,9 +818,9 @@ def manage_products():
         companies=ConsultaCompanias(),
         IsAdmin=session["ES_ADMIN"],
     )
+# endregion
 
-
-# Manejar los intermediario (Terminado)
+# region Manejar los intermediario (Terminado)
 @products.route("/manage_intermediary", methods=["GET", "POST"])
 def manage_intermediary():
     # Capa 1: Verificar si el usuario está autenticado
@@ -813,19 +831,20 @@ def manage_intermediary():
     if not session.get("ES_ADMIN"):
         print("#################### NO ES ADMIN ####################>")
         return redirect(url_for("shortcut.shortcut"))
-    # Capa 3: Manejar la lógica del formulario POST
+    #  Capa 3: Manejar la lógica del formulario POST
     if request.method == "POST":
         action = request.form.get("action")
+        # region Caso 1: int(id_intermediario)
         if action == "delete":
             try:
                 print("<#################### delete ####################")
-                id_intermediario = int(request.form.get("DeleteIntermediaryId"))
+                id_intermediario = int(request.form.get("DeleteIntermediaryId"))#posible error en el SQL
                 NoSePuedeBorrar = config.Read(
                     """
                     SELECT 
                         proyecto.almacen.NOMBRE
-                    FROM proyecto.intermediario,dbo.Almacen
-                    WHERE proyecto.intermediario.ID_INTERMEDIARIO = dbo.Almacen.ID_INTERMEDIARIO
+                    FROM proyecto.intermediario,proyecto.Almacen
+                    WHERE proyecto.intermediario.ID_INTERMEDIARIO = proyecto.Almacen.ID_INTERMEDIARIO
                     AND proyecto.almacen.EXISTENCIAS != 0
                     AND proyecto.intermediario.ID_INTERMEDIARIO = ?
                     """,
@@ -838,21 +857,23 @@ def manage_intermediary():
                     )
                 config.CUD(
                     """
-                    -- Declarar la variable para ID_INTERMEDIARIO
-                    DECLARE @ID_INTERMEDIARIO INT;
-                    SET @ID_INTERMEDIARIO = ?;
-
-                    -- Actualizar dbo.Almacen
+                    -- Actualizar proyecto.Almacen
                     UPDATE proyecto.almacen
                     SET ESTATUS = 0
-                    WHERE ID_INTERMEDIARIO = @ID_INTERMEDIARIO;
-
+                    WHERE ID_INTERMEDIARIO = ?;
+                    """,
+                    (int(id_intermediario),),
+                )
+                config.CUD(
+                    """
                     -- Actualizar proyecto.intermediario
                     UPDATE proyecto.intermediario
                     SET ESTATUS = 0
-                    WHERE ID_INTERMEDIARIO = @ID_INTERMEDIARIO;
+                    WHERE ID_INTERMEDIARIO = ?;
                     """,
-                    (int(id_intermediario),),
+                    (
+                        int(id_intermediario),
+                    ),
                 )
                 flash("Se ha borrado correctamente el intermediario.")
             except MyException as ex:
@@ -938,6 +959,7 @@ def manage_intermediary():
                             "ErrorTel", "El número de teléfono ya está registrado."
                         )
                 if VerificarInactivo:
+                    print("Caso 1: Inactivo")
                     config.CUD(
                             """
                             UPDATE proyecto.intermediario 
@@ -952,6 +974,7 @@ def manage_intermediary():
                         )
                 else:
                     # Insertar en la base de datos si no hay errores
+                    print("Caso 2: Crear")
                     config.CUD(
                             """
                             INSERT INTO proyecto.intermediario (NOMBRE, AP_PAT, AP_MAT, TEL, ESTATUS, ID_COMPANIA) 
@@ -1125,7 +1148,7 @@ def manage_company():
                     )
                 config.CUD(
                     """
-                    -- Actualizar dbo.Almacen
+                    -- Actualizar proyecto.Almacen
                     UPDATE proyecto.almacen
                     SET ESTATUS = 0
                     WHERE ID_INTERMEDIARIO IN (
@@ -1135,7 +1158,12 @@ def manage_company():
                         WHERE proyecto.almacen.EXISTENCIAS = 0
                         AND proyecto.proveedor.ID_COMPANIA = ?
                     );
-                    -- Actualizar dbo.Intermediario
+                    """,
+                    (int(id_intermediario),),
+                )
+                config.CUD(
+                    """
+                    -- Actualizar proyecto.Intermediario
                     UPDATE proyecto.intermediario
                     SET ESTATUS = 0
                     WHERE ID_COMPANIA IN (
@@ -1143,14 +1171,15 @@ def manage_company():
                         FROM proyecto.proveedor
                         WHERE proyecto.proveedor.ID_COMPANIA = ?
                     );
-                    -- Actualizar dbo.Proveedor
+                    """,
+                    (int(id_intermediario),),
+                )
+                config.CUD(
+                    """
+                    -- Actualizar proyecto.Proveedor
                     UPDATE proyecto.proveedor SET ESTATUS = 0 WHERE ID_COMPANIA = ?;
                     """,
-                    (
-                        int(id_intermediario),
-                        int(id_intermediario),
-                        int(id_intermediario),
-                    ),
+                    (int(id_intermediario),),
                 )
                 flash("Se ha borrado correctamente la compañia.")
             except MyException as ex:
@@ -1180,7 +1209,7 @@ def manage_company():
                         WHERE proyecto.proveedor.NOMBRE = ?
                         AND proyecto.proveedor.ESTATUS = 0
                         """,
-                        (nombre),
+                        (nombre,),
                     )
                 # Verificar si la compañia ya existe
                 existe = config.Read(
@@ -1191,7 +1220,7 @@ def manage_company():
                         WHERE proyecto.proveedor.NOMBRE = ?
                         AND proyecto.proveedor.ESTATUS = 1
                         """,
-                        (nombre),
+                        (nombre,),
                     )
                 # Cualquier error
                 if existe:
@@ -1219,7 +1248,7 @@ def manage_company():
                             INSERT INTO proyecto.proveedor (NOMBRE,  ESTATUS) 
                             VALUES (?, 1)
                             """,
-                            (nombre),
+                            (nombre,),
                         )
                     print("#################### FIN (Se inserto en la BD) ####################>")
             except MyException as ex:
@@ -1345,6 +1374,7 @@ def addsalesworker():
             # Inicializar new como una lista de listas vacías
             tabla = [[] for _ in range(len(Entrada))]
             # Verificar que existe en la base de datos>
+            print("Paso 1: verificar existencia del producto")
             ValidarExistencia = False
             for i in range(len(Entrada)):
                 ExisteProducto = config.Read(
@@ -1386,6 +1416,7 @@ def addsalesworker():
                 # Imprimir
                 print(DiaA, MesA, AnioA)
                 # Encontrar ID_DIA en BD DIA
+                print("Paso 1: Encontrar ID_DIA en BD DIA")
                 Dia = int(
                     config.Read(
                     """
@@ -1393,10 +1424,10 @@ def addsalesworker():
                     FROM proyecto.dia 
                     WHERE proyecto.dia.DIA = ?
                     """,
-                        (DiaA),
-                    )[0][0]
+                        (DiaA,),)[0][0]
                 )
                 # Encontrar ID_MES en BD MES
+                print("Paso 1: Encontrar ID_MES en BD MES")
                 Mes = int(
                     config.Read(
                     """
@@ -1404,10 +1435,11 @@ def addsalesworker():
                     FROM proyecto.mes 
                     WHERE proyecto.mes.MES = ?
                     """,
-                        (MesA),
+                        (MesA,),
                     )[0][0]
                 )
                 # Encontrar ID_ANIO en BD ANIO
+                print("Paso 1: Encontrar ID_ANIO en BD ANIO")
                 Anio = int(
                     config.Read(
                     """
@@ -1415,7 +1447,7 @@ def addsalesworker():
                     FROM proyecto.anio 
                     WHERE proyecto.anio.ANIO = ?
                     """,
-                        (AnioA),
+                        (AnioA,),
                     )[0][0]
                 )
                 # Valores en 0
@@ -1480,9 +1512,7 @@ def addsalesworker():
                             int(Anio),
                         ),
                     )
-                    id = int(
-                        config.Read("SELECT IDENT_CURRENT('proyecto.ventas') AS NewID")[0][0]
-                    )
+                    id = int(config.Read("SELECT LAST_INSERT_ID() AS NewID;")[0][0])
                     #
                     print("ID-VENTA>", id)
                     for y in range(len(TablaDetalles)):
@@ -1636,14 +1666,10 @@ def manage_accounts():
                 print(f"id para eliminar usuarios - {id_intermediario}")
                 config.CUD(
                     """
-                    -- Declarar la variable para ID_INTERMEDIARIO
-                    DECLARE @ID_INTERMEDIARIO INT;
-                    SET @ID_INTERMEDIARIO = ?;
-
-                    -- Actualizar dbo.usuarios
+                    -- Actualizar proyecto.usuarios
                     UPDATE proyecto.usuarios
                     SET ESTATUS = 0
-                    WHERE ID_USUARIO = @ID_INTERMEDIARIO;
+                    WHERE ID_USUARIO = ?;
                     """,
                     (int(id_intermediario),),
                 )

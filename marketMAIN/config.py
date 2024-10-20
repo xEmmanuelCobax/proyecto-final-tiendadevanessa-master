@@ -26,6 +26,7 @@ def CUD(query, params=None):
         connection.close()
         print("-------------------- Conexión finalizada -------------------->")
 
+
 def Read(query, params=None):
     print("<-------------------- Conectando... --------------------")
     connection = None
