@@ -16,7 +16,7 @@ def welcomeuser():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
     print("Session > ", session)
     print("Nombre > ", session["name"])
     print("Es admin? > ", session["ES_ADMIN"])

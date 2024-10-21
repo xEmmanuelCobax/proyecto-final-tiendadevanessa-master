@@ -1,6 +1,8 @@
 import mariadb
+# import flask_login
 from flask_login import UserMixin
-
+# import werkzeug
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # NOTAS:
 
@@ -11,6 +13,7 @@ class config:
 
 class DevelopmentConfig(config):
     DEGUB=True
+    HOST = 'localhost'
 
 
 config = {'development': DevelopmentConfig}
@@ -39,16 +42,27 @@ CASHIER_CONECTION = {
 
 
 class Usuario(UserMixin):
-    def __init__(self, id : int, tipo_usuario : str, id_datos_basicos = 0, nombres = '', ap_pat='', ap_mat = '') -> None:
+
+    def __init__(
+        self,
+        id,
+        correo,
+        contraseña,
+        tipo_usuario="",
+        nombres="",
+        ap_pat="",
+        ap_mat="",
+    ) -> None:
         super().__init__()
         self.id = id
-        self._tipo_usuario = tipo_usuario
-        self._id_datos_basicos = id_datos_basicos
-        self._nombres = nombres
-        self._apellido_paterno = ap_pat
-        self._apellido_materno = ap_mat
+        self.correo = correo
+        self.contraseña = contraseña
+        self.tipo_usuario = tipo_usuario
+        self.nombres = nombres
+        self.ap_pat = ap_pat
+        self.ap_mat = ap_mat
 
-        if tipo_usuario.lower() == "admin":
+        if tipo_usuario.lower() == "Admin":
             self._conection = ADMIN_CONECTION
         elif tipo_usuario.lower() == "Gerente":
             self._conection = MANAGER_CONECTION
@@ -56,6 +70,10 @@ class Usuario(UserMixin):
             self._conection = CASHIER_CONECTION
         else:
             self._conection = None
+
+    @classmethod
+    def check_password(self, hashed_password, password):
+        return check_password_hash(hashed_password, password)
 
 
 # region CUD
@@ -105,3 +123,62 @@ def Read(query, params=None, CONECTION=None):
         if connection:
             connection.close()
             print("-------------------- Conexión finalizada -------------------->")
+
+
+class ModelUser:
+    @classmethod
+    def login(self, user):
+        print("<-------------------- Conectando... -------------------->")
+        connection = None
+        try:
+            connection = mariadb.connect(**ADMIN_CONECTION)
+            cursor = connection.cursor()
+            cursor.execute(
+                """
+                SELECT 
+                    ID_USUARIO,
+                    NOMBRE,
+                    AP_PAT,
+                    AP_MAT,
+                    CORREO,
+                    CONTRASENA,
+                    NOMBRE_ROL 
+                FROM usuarios, roles 
+                WHERE usuarios.ID_ROL = roles.ID_ROL 
+                AND ESTATUS = 1
+                AND CORREO = %s
+                """,
+                (user.correo,),  # Reemplaza con el correo del usuario
+            )
+            rows = cursor.fetchall()
+
+            if rows:
+                # Asume que el correo es único y solo devuelve una fila
+                row = rows[0]  # Primera fila
+                print("<-------------------- Conexión exitosa -------------------->")
+
+                # Crear un objeto Usuario a partir de los datos de la fila
+                logged_user = Usuario(
+                    row[0],  # ID_USUARIO
+                    row[4],  # CORREO
+                    Usuario.check_password(
+                        row[5], user.contraseña
+                    ),  # Verificar contraseña
+                    row[6],  # NOMBRE_ROL
+                    row[1],  # NOMBRE
+                    row[2],  # AP_PAT
+                    row[3],  # AP_MAT
+                )
+                return logged_user
+            else:
+                print(
+                    "<-------------------- Usuario no encontrado -------------------->"
+                )
+                return None
+        except Exception as ex:
+            print(f"<-------------------- Error: {ex} -------------------->")
+            return None
+        finally:
+            if connection:
+                connection.close()
+                print("-------------------- Conexión finalizada -------------------->")
