@@ -1,4 +1,5 @@
 import mariadb
+from flask_login import UserMixin
 
 
 # NOTAS:
@@ -37,13 +38,33 @@ CASHIER_CONECTION = {
 }
 
 
+class Usuario(UserMixin):
+    def __init__(self, id : int, tipo_usuario : str, id_datos_basicos = 0, nombres = '', ap_pat='', ap_mat = '') -> None:
+        super().__init__()
+        self.id = id
+        self._tipo_usuario = tipo_usuario
+        self._id_datos_basicos = id_datos_basicos
+        self._nombres = nombres
+        self._apellido_paterno = ap_pat
+        self._apellido_materno = ap_mat
+
+        if tipo_usuario.lower() == "admin":
+            self._conection = ADMIN_CONECTION
+        elif tipo_usuario.lower() == "Gerente":
+            self._conection = MANAGER_CONECTION
+        elif tipo_usuario.lower() == "Cajero":
+            self._conection = CASHIER_CONECTION
+        else:
+            self._conection = None
+
+
 # region CUD
 # CREATE, UPDATE Y DELETE
-def CUD(query, params=None):
+def CUD(query, params=None, CONECTION=None):
     print("<-------------------- Conectando... --------------------")
     try:
         # Conectar a la BD
-        connection = mariadb.connect(**ADMIN_CONECTION)
+        connection = mariadb.connect(CONECTION)
         cursor = connection.cursor()
         if params:
             cursor.execute(query, params)
@@ -63,7 +84,7 @@ def Read(query, params=None):
     print("<-------------------- Conectando... --------------------")
     connection = None
     try:
-        connection = mariadb.connect(**ADMIN_CONECTION)
+        connection = mariadb.connect(CONECTION=None)
         cursor = connection.cursor()
         if params:
             cursor.execute(query, params)

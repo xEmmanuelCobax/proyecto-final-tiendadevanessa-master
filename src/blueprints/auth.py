@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-import config
-
+from flask_login import login_user, logout_user, login_required
+from config import Read, CUD, Usuario
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # NOTAS:
 
@@ -17,12 +18,15 @@ def signin():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
-        existing_email = config.Read(
+        existing_email = Read(
             "SELECT * FROM usuarios WHERE CORREO = ? AND ESTATUS = 1", (email,)
         )
         if not existing_email:
             flash("Correo no encontrado", "error")
-        elif existing_email[0][6] == password:
+        else:
+            print()
+        """
+                elif existing_email[0][6] == password:
             session["email"] = existing_email[0][5]
             session["ES_ADMIN"] = bool(existing_email[0][8])
             session["name"] = (
@@ -31,11 +35,11 @@ def signin():
             return redirect(url_for("profile.welcomeuser"))
         else:
             flash("Contraseña incorrecta", "error")
-
+        """
     return render_template("auth/signin.html")
 
 
-# Registro de usuario
+# region Registro de usuario
 @auth.route("/signup", methods=["GET", "POST"])
 def signup():
     if "email" in session:
@@ -45,7 +49,7 @@ def signup():
         name = request.form.get("name")
         email = request.form.get("email")
         password = request.form.get("password")
-        config.CUD(
+        CUD(
             "INSERT INTO usuarios (NOMBRE, CORREO, CONTRASENA, ESTATUS) VALUES (?, ?, ?, 1)",
             (name, email, password),
         )
@@ -54,7 +58,7 @@ def signup():
 
     return render_template("auth/signup.html")
 
-
+# region Cerrar sesión
 @auth.route("/signout")
 def signout():
     session.clear()
