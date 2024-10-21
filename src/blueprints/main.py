@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, session, redirect, url_for
-
+from flask_login import LoginManager
+from config import Usuario
 
 # NOTAS:
 
 
 main = Blueprint("main", __name__)
-
 
 # region Ruta Principal
 @main.route("/")

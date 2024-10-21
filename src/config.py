@@ -64,7 +64,7 @@ def CUD(query, params=None, CONECTION=None):
     print("<-------------------- Conectando... --------------------")
     try:
         # Conectar a la BD
-        connection = mariadb.connect(CONECTION)
+        connection = mariadb.connect(**CONECTION)
         cursor = connection.cursor()
         if params:
             cursor.execute(query, params)
@@ -80,11 +80,11 @@ def CUD(query, params=None, CONECTION=None):
             print("-------------------- Conexión finalizada -------------------->")
 
 # region Read
-def Read(query, params=None):
+def Read(query, params=None, CONECTION=None):
     print("<-------------------- Conectando... --------------------")
     connection = None
     try:
-        connection = mariadb.connect(CONECTION=None)
+        connection = mariadb.connect(**CONECTION)
         cursor = connection.cursor()
         if params:
             cursor.execute(query, params)

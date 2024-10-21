@@ -1,7 +1,14 @@
+# import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+# import flask_login
 from flask_login import login_user, logout_user, login_required
-from config import Read, CUD, Usuario
+# import config
+from config import Read, CUD, ADMIN_CONECTION, MANAGER_CONECTION, CASHIER_CONECTION
+# import werkzeug
 from werkzeug.security import generate_password_hash, check_password_hash
+# importar config
+from config import DevelopmentConfig
+
 
 # NOTAS:
 
@@ -19,7 +26,9 @@ def signin():
         email = request.form["email"]
         password = request.form["password"]
         existing_email = Read(
-            "SELECT * FROM usuarios WHERE CORREO = ? AND ESTATUS = 1", (email,)
+            "SELECT * FROM usuarios WHERE CORREO = ? AND ESTATUS = 1",
+            (email,),
+            ADMIN_CONECTION
         )
         if not existing_email:
             flash("Correo no encontrado", "error")
