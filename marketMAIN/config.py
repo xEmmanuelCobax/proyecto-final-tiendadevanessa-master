@@ -17,7 +17,7 @@ config = {'development': DevelopmentConfig}
 # Conexiones
 ADMIN_CONECTION = {
     "host": "localhost",  # Cambia por tu host si es diferente
-    "user": "admin",  # Usuario de MariaDB
+    "user": "Admin",  # Usuario de MariaDB
     "password": "123",  # Contraseña de MariaDB
     "database": "proyecto",  # Nombre de la base de datos
 }
@@ -43,12 +43,7 @@ def CUD(query, params=None):
     print("<-------------------- Conectando... --------------------")
     try:
         # Conectar a la BD
-        connection = mariadb.connect(
-            host="localhost",  # Cambia por tu host si es diferente
-            user="choterifa",  # Usuario de MariaDB
-            password="",  # Contraseña de MariaDB
-            database="proyecto",  # Nombre de la base de datos
-        )
+        connection = mariadb.connect(**ADMIN_CONECTION)
         cursor = connection.cursor()
         if params:
             cursor.execute(query, params)
@@ -68,12 +63,7 @@ def Read(query, params=None):
     print("<-------------------- Conectando... --------------------")
     connection = None
     try:
-        connection = mariadb.connect(
-            host="localhost",  # Cambia por tu host si es diferente
-            user="choterifa",  # Usuario de MariaDB
-            password="",  # Contraseña de MariaDB
-            database="proyecto",  # Nombre de la base de datos
-        )
+        connection = mariadb.connect(**ADMIN_CONECTION)
         cursor = connection.cursor()
         if params:
             cursor.execute(query, params)
