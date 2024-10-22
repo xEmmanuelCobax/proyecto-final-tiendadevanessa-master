@@ -1,18 +1,14 @@
-import config
+from db import Read, CUD
 
 
 # NOTAS:
+# Usar la importacion para evitar conflictos:
+# from models.queries import Read, CUD, ConsultaPIA, ConsultaCompanias, ConsultaIntermediarios 
 
-
-class MyException(Exception):
-    def __init__(self, Tipo, mensaje):
-        self.Tipo = Tipo
-        self.mensaje = mensaje
-
-
+# region PIA
 def ConsultaPIA():
     Cpia = []
-    Cpia = config.Read(
+    Cpia = Read(
         """
     SELECT 
         proyecto.almacen.ID_PRODUCTO,
@@ -35,11 +31,12 @@ def ConsultaPIA():
         """
     )
     return Cpia
+# endregion
 
-
+# region Int
 def ConsultaIntermediarios():
     Intermediarios = []
-    Intermediarios = config.Read(
+    Intermediarios = Read(
         """
         SELECT 
             proyecto.proveedor.ID_COMPANIA,
@@ -55,11 +52,12 @@ def ConsultaIntermediarios():
         """
     )
     return Intermediarios
+# endregion
 
-
+# region comp
 def ConsultaCompanias():
     companias = []
-    companias = config.Read(
+    companias = Read(
         """
         SELECT 
             proyecto.proveedor.ID_COMPANIA, 

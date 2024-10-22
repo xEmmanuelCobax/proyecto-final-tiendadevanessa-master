@@ -1,6 +1,21 @@
+#
+import locale
+# import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+# importar modelos para query
+from models.queries import (
+    Read,
+    CUD,
+    ConsultaPIA,
+    ConsultaCompanias,
+    ConsultaIntermediarios,
+)
+# importar las excepciones
+from models.exceptions import MyException
+# importar las extenciones
+from extensions import login_manager
+#
 from datetime import datetime
-import config, models, locale
 
 
 # NOTAS:
@@ -45,7 +60,7 @@ def addsalesworker():
             print("Paso 1: verificar existencia del producto")
             ValidarExistencia = False
             for i in range(len(Entrada)):
-                ExisteProducto = config.Read(
+                ExisteProducto = Read(
                     """
                     SELECT 
                         proyecto.almacen.ID_PRODUCTO,
@@ -70,7 +85,7 @@ def addsalesworker():
                 print(producto)
             # Si los productos existen(Estan activos) y estan en la BD entonces>
             if ValidarExistencia == False:
-                raise models.MyException(
+                raise MyException(
                     "ErrorEntrada",
                     "Se intentaron cambiar los datos.",
                 )
@@ -86,7 +101,7 @@ def addsalesworker():
                 # Encontrar ID_DIA en BD DIA
                 print("Paso 1: Encontrar ID_DIA en BD DIA")
                 Dia = int(
-                    config.Read(
+                    Read(
                         """
                     SELECT proyecto.dia.ID_DIA 
                     FROM proyecto.dia 
@@ -98,7 +113,7 @@ def addsalesworker():
                 # Encontrar ID_MES en BD MES
                 print("Paso 2: Encontrar ID_MES en BD MES")
                 Mes = int(
-                    config.Read(
+                    Read(
                         """
                     SELECT proyecto.mes.ID_MES 
                     FROM proyecto.mes 
@@ -110,7 +125,7 @@ def addsalesworker():
                 # Encontrar ID_ANIO en BD ANIO
                 print("Paso 3: Encontrar ID_ANIO en BD ANIO")
                 Anio = int(
-                    config.Read(
+                    Read(
                         """
                     SELECT proyecto.anio.ID_ANIO 
                     FROM proyecto.anio 
@@ -155,7 +170,7 @@ def addsalesworker():
                         TablaDetalles[i].append(round(IvaValue))  # IVA
                         TablaDetalles[i].append(tabla[i][0])  # ID_PRODUCTO
                 if ErrorVenta:
-                    raise models.MyException(
+                    raise MyException(
                         "ErrorVenta",
                         "No hay existencias para reaelizar la venta.",
                     )
@@ -168,7 +183,7 @@ def addsalesworker():
                     print("Total de productos vendidos:", TotalProductos)
                     print("Total con iva:", Total)
                     #
-                    config.CUD(
+                    CUD(
                         """
                         INSERT INTO proyecto.ventas (CANTIDAD_VENTA, TOTAL, ESTATUS, ID_DIA, ID_MES, ID_ANIO) 
                         VALUES (?,?,1,?,?,?)
@@ -181,11 +196,11 @@ def addsalesworker():
                             int(Anio),
                         ),
                     )
-                    id = int(config.Read("SELECT LAST_INSERT_ID() AS NewID;")[0][0])
+                    id = int(Read("SELECT LAST_INSERT_ID() AS NewID;")[0][0])
                     #
                     print("ID-VENTA>", id)
                     for y in range(len(TablaDetalles)):
-                        config.CUD(
+                        CUD(
                             """
                             INSERT INTO proyecto.detalles(CANTIDAD,IMPORTE,IVA,ESTATUS,ID_PRODUCTO,ID_VENTA) 
                             VALUES (?,?,?,1,?,?);
@@ -204,7 +219,7 @@ def addsalesworker():
                             ESTATUS = 0
                         else:
                             ESTATUS = 1
-                        config.CUD(
+                        CUD(
                             """
                             UPDATE proyecto.almacen 
                             SET 
@@ -223,7 +238,7 @@ def addsalesworker():
         except Exception as e:
             print(e)
     # Siempre se envia estos datos
-    products = config.Read(
+    products = Read(
         """
                 SELECT 
                     ID_PRODUCTO, 
@@ -262,7 +277,7 @@ def reportsales():
     # Capa 3: Procesar la solicitud POST
     if request.method == "POST":
         sale_id = request.form.get("sale_id")
-        details = config.Read(
+        details = Read(
             """
             SELECT proyecto.detalles.ID_PRODUCTO, proyecto.almacen.NOMBRE, proyecto.detalles.CANTIDAD, proyecto.detalles.IMPORTE, proyecto.detalles.IVA
             FROM proyecto.almacen, proyecto.detalles
@@ -271,7 +286,7 @@ def reportsales():
             """,
             (sale_id,),
         )
-        sales = config.Read(
+        sales = Read(
             """
             SELECT 
                 proyecto.ventas.ID_VENTA, 
@@ -295,7 +310,7 @@ def reportsales():
 
     # Capa 4: Obtener todas las ventas si no hay método POST
     print("<==================== DATOS OBTENIDOS ====================")
-    sales = config.Read(
+    sales = Read(
         """
         SELECT 
             proyecto.ventas.ID_VENTA, 

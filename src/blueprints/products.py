@@ -1,7 +1,11 @@
+# import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-import models
-# import config
-from config import Read, CUD, ADMIN_CONECTION, MANAGER_CONECTION, CASHIER_CONECTION
+# importar modelos para query
+from models.queries import Read, CUD, ConsultaPIA, ConsultaCompanias, ConsultaIntermediarios
+# importar las excepciones 
+from models.exceptions import MyException
+# importar las extenciones
+from extensions import login_manager
 
 
 # NOTAS:
@@ -58,7 +62,7 @@ def warehouse():
         )
     # Capa 3: Renderizar con los datos
     print("<==================== DATOS OBTENIDOS ====================")
-    products = models.ConsultaPIA()
+    products = ConsultaPIA()
     print(f"products > {products}")
     print("========================================>")
     print(
@@ -88,7 +92,7 @@ def manage_products():
         # region Borrar producto
         if form_type == "delete":
             product_id = int(request.form.get("product_id"))
-            config.CUD(
+            CUD(
                 "UPDATE proyecto.almacen  SET ESTATUS = 0 WHERE ID_PRODUCTO = ?",
                 (product_id,),
             )
@@ -124,38 +128,38 @@ def manage_products():
                         auxiliar += " Marca"
                     if len(producto) > 35:
                         auxiliar += ", Nombre del producto"
-                    raise models.MyException("MaxLength", auxiliar)
+                    raise MyException("MaxLength", auxiliar)
                 # Datos formados
                 nombre = f"{marca}_{producto}_{quantity}"
                 try:
                     cantidad = int(request.form.get("cantidad"))
                 except ValueError:
-                    raise models.MyException(
+                    raise MyException(
                         "InvalidInput", "La cantidad debe ser un número entero válido."
                     )
                 try:
                     precio = float(request.form.get("precio"))
                 except ValueError:
-                    raise models.MyException(
+                    raise MyException(
                         "InvalidInput", "El precio debe ser un número válido."
                     )
                 try:
                     compania = int(request.form.get("company_id"))
                 except ValueError:
-                    raise models.MyException(
+                    raise MyException(
                         "InvalidInput",
                         "El ID de la compañía debe ser un número entero válido.",
                     )
                 try:
                     intermediario = int(request.form.get("intermedary_id"))
                 except ValueError:
-                    raise models.MyException(
+                    raise MyException(
                         "InvalidInput",
                         "El ID del intermediario debe ser un número entero válido.",
                     )
                 # Errores
                 if cantidad <= 0 or precio <= 0:
-                    raise models.MyException(
+                    raise MyException(
                         "NonPositive",
                         f"Los valores proporcionados {cantidad, precio} no son positivos. Deben ser mayores que cero.",
                     )
@@ -221,7 +225,7 @@ def manage_products():
                     print(
                         "====================! Existing product in the DB.====================>"
                     )
-                    raise models.MyException("ProductExists", "El producto existe")
+                    raise MyException("ProductExists", "El producto existe")
                 elif productoinactivo:
                     print(
                         "====================! Producto existente (Oculto) en la BD.====================>"
@@ -270,11 +274,11 @@ def manage_products():
                     print(
                         "====================!La compañía o el intermediario no cumplen las condiciones necesarias.====================>"
                     )
-                    raise models.MyException(
+                    raise MyException(
                         "CIConditions",
                         "La empresa o el intermediario no cumple con las condiciones necesarias.",
                     )
-            except models.MyException as ex:
+            except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
@@ -325,7 +329,7 @@ def manage_products():
                         auxiliar += "Marca "
                     if len(producto) > 35:
                         auxiliar += ", Nombre del producto"
-                    raise models.MyException(
+                    raise MyException(
                         "MaxLength",
                         auxiliar,
                     )
@@ -338,17 +342,17 @@ def manage_products():
                 # Errores
                 if cantidad <= 0 or precio <= 0:
                     if cantidad <= 0 or precio <= 0:
-                        raise models.MyException(
+                        raise MyException(
                             "NonPositive",
                             f"Los valores proporcionados {cantidad,precio} no son positivos. Deben ser mayores que cero.",
                         )
                     elif cantidad <= 0:
-                        raise models.MyException(
+                        raise MyException(
                             "NonPositive",
                             f"El valor proporcionado {cantidad} no es positivo. Debe ser mayor que cero.",
                         )
                     elif precio <= 0:
-                        raise models.MyException(
+                        raise MyException(
                             "NonPositive",
                             f"El valor proporcionado {precio} no es positivo. Debe ser mayor que cero.",
                         )
@@ -410,7 +414,7 @@ def manage_products():
                     print(
                         "====================! Producto existente en la BD.====================>"
                     )
-                    raise models.MyException(
+                    raise MyException(
                         "ProductExists",
                         "El producto existe",
                     )
@@ -419,7 +423,7 @@ def manage_products():
                     print(
                         "====================! La compañía o el intermediario no cumplen las condiciones necesarias.====================>"
                     )
-                    raise models.MyException(
+                    raise MyException(
                         "CIConditions",
                         "La empresa o el intermediario no cumple con las condiciones necesarias.",
                     )
@@ -454,7 +458,7 @@ def manage_products():
                 print("La cadena no representa un número válido")
                 flash("La cadena no representa un número válido")
                 print("#################### FIN ####################>")
-            except models.MyException as ex:
+            except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
@@ -466,9 +470,9 @@ def manage_products():
         # endregion
     return render_template(
         "products/manage-warehouse.html",
-        products=models.ConsultaPIA(),
-        relations=models.ConsultaIntermediarios(),
-        companies=models.ConsultaCompanias(),
+        products=ConsultaPIA(),
+        relations=ConsultaIntermediarios(),
+        companies=ConsultaCompanias(),
         IsAdmin=session["ES_ADMIN"],
     )
 # endregion
@@ -507,7 +511,7 @@ def manage_intermediary():
                     (id_intermediario,),
                 )
                 if NoSePuedeBorrar:
-                    raise models.MyException(
+                    raise MyException(
                         "Error al borrar compañia.",
                         "Para poder borrar un intermediario primero debe asegurarse que los productos relacionados sean inexistentes.",
                     )
@@ -530,7 +534,7 @@ def manage_intermediary():
                     (int(id_intermediario),),
                 )
                 flash("Se ha borrado correctamente el intermediario.")
-            except models.MyException as ex:
+            except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
@@ -559,7 +563,7 @@ def manage_intermediary():
                 print("========================================>")
                 # Error telefono
                 if len(str(telefono)) != 10:
-                    raise models.MyException(
+                    raise MyException(
                         "ErrorTel", "El número de teléfono no tiene 10 números."
                     )
                 # Existe pero esta inactivo
@@ -606,12 +610,12 @@ def manage_intermediary():
                 # Cualquier error
                 if existe or tel_existe:
                     if existe:
-                        raise models.MyException(
+                        raise MyException(
                             "ErrorIntermediary",
                             "El intermediario ya existe en el DB.",
                         )
                     if tel_existe:
-                        raise models.MyException(
+                        raise MyException(
                             "ErrorTel", "El número de teléfono ya está registrado."
                         )
                 if VerificarInactivo:
@@ -647,7 +651,7 @@ def manage_intermediary():
                     print(
                         "#################### FIN (Se inserto en la BD) ####################>"
                     )
-            except models.MyException as ex:
+            except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
@@ -680,7 +684,7 @@ def manage_intermediary():
                 print("========================================>")
                 # Error telefono
                 if len(str(telefono)) != 10:
-                    raise models.MyException(
+                    raise MyException(
                         "ErrorTel", "El número de teléfono no tiene 10 números."
                     )
                 # Verificar si el intermediario ya existe
@@ -712,12 +716,12 @@ def manage_intermediary():
                 # Cualquier error
                 if existe or tel_existe:
                     if existe:
-                        raise models.MyException(
+                        raise MyException(
                             "ErrorIntermediary",
                             "El intermediario ya existe en el DB.",
                         )
                     if tel_existe:
-                        raise models.MyException(
+                        raise MyException(
                             "ErrorTel", "El número de teléfono ya está registrado."
                         )
                 else:
@@ -744,7 +748,7 @@ def manage_intermediary():
                         "Se ha actualizado correctamente los datos del intermediario."
                     )
                     print("#################### FIN ####################>")
-            except models.MyException as ex:
+            except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
@@ -778,7 +782,7 @@ def manage_intermediary():
     return render_template(
         "products/manage-intermediary.html",
         relations=relations,
-        companies=models.ConsultaCompanias(),
+        companies=ConsultaCompanias(),
         IsAdmin=session["ES_ADMIN"],
     )
 # endregion
@@ -818,7 +822,7 @@ def manage_company():
                     (id_intermediario,),
                 )
                 if NoSePuedeBorrar:
-                    raise models.MyException(
+                    raise MyException(
                         "Error al borrar compañia.",
                         "Para poder borrar una compañia primero debe asegurarse que los productos relacionados sean inexistentes.",
                     )
@@ -858,7 +862,7 @@ def manage_company():
                     (int(id_intermediario),),
                 )
                 flash("Se ha borrado correctamente la compañia.")
-            except models.MyException as ex:
+            except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
@@ -905,7 +909,7 @@ def manage_company():
                 # Cualquier error
                 if existe:
                     if existe:
-                        raise models.MyException(
+                        raise MyException(
                             "Errorcompany",
                             "La empresa ya existe en la base de datos.",
                         )
@@ -936,7 +940,7 @@ def manage_company():
                     print(
                         "#################### FIN (Se inserto en la BD) ####################>"
                     )
-            except models.MyException as ex:
+            except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
@@ -983,7 +987,7 @@ def manage_company():
                 )
                 # Cualquier error
                 if existe:
-                    raise models.MyException(
+                    raise MyException(
                         "ErrorCompany",
                         "La empresa ya existe en la base de datos.",
                     )
@@ -1001,7 +1005,7 @@ def manage_company():
                         ),
                     )
                     print("#################### FIN ####################>")
-            except models.MyException as ex:
+            except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
@@ -1026,7 +1030,7 @@ def manage_company():
     return render_template(
         "products/manage-company.html",
         relations=relations,
-        companies=models.ConsultaCompanias(),
+        companies=ConsultaCompanias(),
         IsAdmin=session["ES_ADMIN"],
     )
 # endregion

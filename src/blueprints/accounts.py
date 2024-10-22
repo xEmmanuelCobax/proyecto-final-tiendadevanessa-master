@@ -1,5 +1,17 @@
+# import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-import config,models
+# importar modelos para query
+from models.queries import (
+    Read,
+    CUD,
+    ConsultaPIA,
+    ConsultaCompanias,
+    ConsultaIntermediarios,
+)
+# importar las excepciones
+from models.exceptions import MyException
+# importar las extenciones
+from extensions import login_manager
 
 
 # NOTAS:
@@ -28,7 +40,7 @@ def manage_accounts():
                 print("<#################### delete ####################")
                 id_intermediario = int(request.form.get("DeleteIntermediaryId"))
                 print(f"id para eliminar usuarios - {id_intermediario}")
-                config.CUD(
+                CUD(
                     """
                     -- Actualizar proyecto.usuarios
                     UPDATE proyecto.usuarios
@@ -63,7 +75,7 @@ def manage_accounts():
                 print(f"id_usuario - {id_usuario}")
                 print("========================================>")
                 # Consulta para verificar si existe el correo en la BD
-                existing_email = config.Read(
+                existing_email = Read(
                     """
                     SELECT * 
                     FROM proyecto.usuarios 
@@ -73,7 +85,7 @@ def manage_accounts():
                     (correo, int(id_usuario)),
                 )
                 # Consulta para verificar si existe el usuario en la BD
-                existing_user = config.Read(
+                existing_user = Read(
                     """
                     SELECT * 
                     FROM proyecto.usuarios 
@@ -87,23 +99,23 @@ def manage_accounts():
                 # Cualquier error
                 if existing_email or existing_user:
                     if existing_email and existing_user:
-                        raise models.MyException(
+                        raise MyException(
                             "ErrorEditAccounts",
                             "El correo electronico y usuario ya existe en la base de datos.",
                         )
                     elif existing_email:
-                        raise models.MyException(
+                        raise MyException(
                             "ErrorEditAccounts",
                             "El correo electronico ya existe en la base de datos.",
                         )
                     elif existing_user:
-                        raise models.MyException(
+                        raise MyException(
                             "ErrorEditAccounts",
                             "El usuario ya existe en la base de datos.",
                         )
                 else:
                     # Actualizar en la base de datos
-                    config.CUD(
+                    CUD(
                         """
                         UPDATE proyecto.usuarios 
                         SET NOMBRE=?, AP_PAT=?, AP_MAT=?, CORREO=?
@@ -120,7 +132,7 @@ def manage_accounts():
                     flash("Se ha actualizado correctamente los datos.")
                     print("Se ha actualizado correctamente los datos.")
                     print("#################### FIN ####################>")
-            except models.MyException as ex:
+            except MyException as ex:
                 Tipo, Mensaje = ex.args
                 print(f"Type {Tipo} : {Mensaje}")
                 flash(f"{Mensaje}")
@@ -135,7 +147,7 @@ def manage_accounts():
                 )
     # region Datos
     relations = []
-    relations = config.Read(
+    relations = Read(
         """
         SELECT 
             proyecto.usuarios.ID_USUARIO,
@@ -155,6 +167,6 @@ def manage_accounts():
     return render_template(
         "accounts/manage-accounts.html",
         relations=relations,
-        companies=models.ConsultaCompanias(),
+        companies=ConsultaCompanias(),
         IsAdmin=session["ES_ADMIN"],
     )

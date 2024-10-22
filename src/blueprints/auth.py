@@ -1,12 +1,13 @@
 # import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-# import flask_login
-from flask_login import login_user, logout_user, login_required
-# import config
-from config import Read, CUD, ADMIN_CONECTION, MANAGER_CONECTION, CASHIER_CONECTION
+# import
+from models.queries import Read, CUD
 # importar config
-from config import ModelUser, Usuario
-
+from models.user import ModelUser, Usuario
+#
+from extensions import login_manager
+#
+from flask_login import login_user
 
 # NOTAS:
 
@@ -19,38 +20,19 @@ auth = Blueprint("auth", __name__, url_prefix="/auth")
 def signin():
     if "email" in session:
         return redirect(url_for("profile.welcomeuser"))
-
     if request.method == "POST":
-        """
-        email = request.form["email"]
-        password = request.form["password"]
-        """
         user = Usuario(0, request.form["email"], request.form["password"])
         logged_user=ModelUser.login(user)
         if logged_user is not None:
             if logged_user.contraseña:
-                print(logged_user._conection)
+                login_user(logged_user)
+                print(logged_user.id)
+                print(logged_user.tipo_usuario)
                 return redirect(url_for("profile.welcomeuser"))
             else:
                 flash("Contraseña incorrecta", "error")
         else:
             flash("Correo no encontrado", "error")
-        """
-        if not existing_email:
-            flash("Correo no encontrado", "error")
-        else:
-            print()
-        
-                elif existing_email[0][6] == password:
-            session["email"] = existing_email[0][5]
-            session["ES_ADMIN"] = bool(existing_email[0][8])
-            session["name"] = (
-                f"{existing_email[0][1]} {existing_email[0][2]} {existing_email[0][3]}"
-            )
-            return redirect(url_for("profile.welcomeuser"))
-        else:
-            flash("Contraseña incorrecta", "error")
-        """
     return render_template("auth/signin.html")
 
 
@@ -75,6 +57,7 @@ def signup():
 
 # region Cerrar sesión
 @auth.route("/signout")
+
 def signout():
     session.clear()
     flash("Sesión cerrada correctamente", "success")
