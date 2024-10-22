@@ -1,7 +1,18 @@
 {% extends 'top navbar/top-navbar.html' %}
 {% block title %} Inicio {% endblock%}
 
+{% block estilos %}
+<style>
+  .navbar__principal {
+    background: linear-gradient(-15deg, #f4f1f0, #f4f1f0 0%);
+  }
+</style>
+{% endblock %}
+
 {%block content %}
+
+
+
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/inicio.css') }}" />
 
 
@@ -26,7 +37,16 @@
     <img src="/static/img/arc.png" class="inicio__img--img">
   </figure>
 
-
+  <footer class="py-2">
+    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Features</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Pricing</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
+    </ul>
+    <p class="text-center text-body-secondary">© 2024 Company, Inc</p>
+  </footer>
 </section>
 
 <!-- <div class="container-fluid mx-4">
@@ -41,5 +61,6 @@
     </figure>
   </div>
 </div> -->
+
 
 {% endblock %}

@@ -6,7 +6,7 @@ import config, models, locale
 # NOTAS:
 
 
-locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
+# locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
 
 sales = Blueprint("sales", __name__, url_prefix="/sales")
 
