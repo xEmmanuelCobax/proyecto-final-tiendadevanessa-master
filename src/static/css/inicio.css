@@ -12,7 +12,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(-15deg, #ede6f4, #ecc4e5 10%, #f4c1b6, #f7dacb, #f4f1f0 70%);
+    /* background: linear-gradient(-15deg, #ede6f4, #ecc4e5 10%, #f4c1b6, #f7dacb, #f4f1f0 70%); */
+    background: linear-gradient(-15deg, #8191ef 10%, #7f95e6 , #4ccaf0da, #e6f1f5 80%);
     /* background: linear-gradient(-15deg,  #4c96f098, #f0f1f4 70%); */
     /* Cambia los colores según sea necesario */
 }
