@@ -13,7 +13,6 @@ class config:
 
 class DevelopmentConfig(config):
     DEGUB=True
-    HOST = 'localhost'
 
 
 config = {'development': DevelopmentConfig}
@@ -42,7 +41,6 @@ CASHIER_CONECTION = {
 
 
 class Usuario(UserMixin):
-
     def __init__(
         self,
         id,
@@ -61,15 +59,25 @@ class Usuario(UserMixin):
         self.nombres = nombres
         self.ap_pat = ap_pat
         self.ap_mat = ap_mat
-
-        if tipo_usuario.lower() == "Admin":
+        if tipo_usuario == "Admin":
             self._conection = ADMIN_CONECTION
-        elif tipo_usuario.lower() == "Gerente":
+        elif tipo_usuario == "Gerente":
             self._conection = MANAGER_CONECTION
-        elif tipo_usuario.lower() == "Cajero":
+        elif tipo_usuario == "Cajero":
             self._conection = CASHIER_CONECTION
         else:
             self._conection = None
+
+    def is_active(self):
+        # Here you should write whatever the code is
+        # that checks the database if your user is active
+        return self.active
+
+    def is_anonymous(self):
+        return False
+
+    def is_authenticated(self):
+        return True
 
     @classmethod
     def check_password(self, hashed_password, password):
@@ -124,7 +132,7 @@ def Read(query, params=None, CONECTION=None):
             connection.close()
             print("-------------------- Conexión finalizada -------------------->")
 
-
+# region Class ModelUser
 class ModelUser:
     @classmethod
     def login(self, user):
@@ -142,7 +150,7 @@ class ModelUser:
                     AP_MAT,
                     CORREO,
                     CONTRASENA,
-                    NOMBRE_ROL 
+                    NOMBRE_ROL,
                 FROM usuarios, roles 
                 WHERE usuarios.ID_ROL = roles.ID_ROL 
                 AND ESTATUS = 1
@@ -151,12 +159,10 @@ class ModelUser:
                 (user.correo,),  # Reemplaza con el correo del usuario
             )
             rows = cursor.fetchall()
-
             if rows:
                 # Asume que el correo es único y solo devuelve una fila
                 row = rows[0]  # Primera fila
                 print("<-------------------- Conexión exitosa -------------------->")
-
                 # Crear un objeto Usuario a partir de los datos de la fila
                 logged_user = Usuario(
                     row[0],  # ID_USUARIO

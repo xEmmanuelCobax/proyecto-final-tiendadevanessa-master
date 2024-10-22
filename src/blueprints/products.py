@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-import config,models
+import models
+# import config
+from config import Read, CUD, ADMIN_CONECTION, MANAGER_CONECTION, CASHIER_CONECTION
 
 
 # NOTAS:
@@ -27,7 +29,7 @@ def warehouse():
         print(f"nombre - {search_term}")
         print("========================================>")
         # Consulta
-        products = config.Read(
+        products = Read(
             """
             SELECT 
                 proyecto.almacen.ID_PRODUCTO,
@@ -169,7 +171,7 @@ def manage_products():
                 print(
                     "<==================== VERIFICAR RELACION COMPANIA - INTERMEDIARIO ===================="
                 )
-                existe = config.Read(
+                existe = Read(
                     """
                     SELECT 
                         proyecto.intermediario.ID_INTERMEDIARIO, 
@@ -188,7 +190,7 @@ def manage_products():
                 )
                 print("========================================>")
                 print("<==================== productoinactivo ====================")
-                productoinactivo = config.Read(
+                productoinactivo = Read(
                     """
                     SELECT 
                         proyecto.almacen.ID_PRODUCTO,
@@ -202,7 +204,7 @@ def manage_products():
                 print("========================================>")
                 # Verificar si el producto ya existe
                 print("<==================== productoexiste ====================")
-                productoexiste = config.Read(
+                productoexiste = Read(
                     """
                     SELECT 
                         proyecto.almacen.NOMBRE 
@@ -225,7 +227,7 @@ def manage_products():
                         "====================! Producto existente (Oculto) en la BD.====================>"
                     )
                     product_id = productoinactivo[0][0]
-                    config.CUD(
+                    CUD(
                         """
                         UPDATE proyecto.almacen  
                         SET 
@@ -246,7 +248,7 @@ def manage_products():
                     )
                     flash("Producto creado exitosamente.")
                 elif existe:
-                    config.CUD(
+                    CUD(
                         """
                         INSERT INTO proyecto.almacen (NOMBRE, PRECIO_UNITARIO, EXISTENCIAS, PRECIO_EXISTENCIA, ID_INTERMEDIARIO, ESTATUS)
                         VALUES (?, ?, ?, ?, ?, 1)
@@ -363,7 +365,7 @@ def manage_products():
                 print(
                     "<==================== VERIFICAR RELACION COMPANIA - INTERMEDIARIO ===================="
                 )
-                existe = config.Read(
+                existe = Read(
                     """
                         SELECT 
                             proyecto.intermediario.ID_INTERMEDIARIO,
@@ -389,7 +391,7 @@ def manage_products():
                 print(
                     "<==================== VERIFICAR SI EL PRODUCTO EXISTE ===================="
                 )
-                productoexiste = config.Read(
+                productoexiste = Read(
                     """
                         SELECT 
                             proyecto.almacen.NOMBRE 
@@ -423,7 +425,7 @@ def manage_products():
                     )
                 else:
                     # Actualizar el producto en la base de datos
-                    config.CUD(
+                    CUD(
                         """
                             UPDATE proyecto.almacen 
                             SET 
@@ -493,7 +495,7 @@ def manage_intermediary():
                 id_intermediario = int(
                     request.form.get("DeleteIntermediaryId")
                 )  # posible error en el SQL
-                NoSePuedeBorrar = config.Read(
+                NoSePuedeBorrar = Read(
                     """
                     SELECT 
                         proyecto.almacen.NOMBRE
@@ -509,7 +511,7 @@ def manage_intermediary():
                         "Error al borrar compañia.",
                         "Para poder borrar un intermediario primero debe asegurarse que los productos relacionados sean inexistentes.",
                     )
-                config.CUD(
+                CUD(
                     """
                     -- Actualizar proyecto.Almacen
                     UPDATE proyecto.almacen
@@ -518,7 +520,7 @@ def manage_intermediary():
                     """,
                     (int(id_intermediario),),
                 )
-                config.CUD(
+                CUD(
                     """
                     -- Actualizar proyecto.intermediario
                     UPDATE proyecto.intermediario
@@ -561,7 +563,7 @@ def manage_intermediary():
                         "ErrorTel", "El número de teléfono no tiene 10 números."
                     )
                 # Existe pero esta inactivo
-                VerificarInactivo = config.Read(
+                VerificarInactivo = Read(
                     """
                         SELECT 
                             proyecto.intermediario.ID_INTERMEDIARIO,
@@ -577,7 +579,7 @@ def manage_intermediary():
                     (nombre, apellido_paterno, apellido_materno),
                 )
                 # Verificar si el intermediario ya existe
-                existe = config.Read(
+                existe = Read(
                     """
                         SELECT 
                             proyecto.intermediario.NOMBRE,
@@ -592,7 +594,7 @@ def manage_intermediary():
                     (nombre, apellido_paterno, apellido_materno),
                 )
                 # Verificar si el teléfono ya está en uso
-                tel_existe = config.Read(
+                tel_existe = Read(
                     """
                         SELECT 
                             proyecto.intermediario.TEL
@@ -614,7 +616,7 @@ def manage_intermediary():
                         )
                 if VerificarInactivo:
                     print("Caso 1: Inactivo")
-                    config.CUD(
+                    CUD(
                         """
                             UPDATE proyecto.intermediario 
                             SET TEL=?, ID_COMPANIA=?, ESTATUS=1
@@ -629,7 +631,7 @@ def manage_intermediary():
                 else:
                     # Insertar en la base de datos si no hay errores
                     print("Caso 2: Crear")
-                    config.CUD(
+                    CUD(
                         """
                             INSERT INTO proyecto.intermediario (NOMBRE, AP_PAT, AP_MAT, TEL, ESTATUS, ID_COMPANIA) 
                             VALUES (?, ?, ?, ?, 1, ?)
@@ -682,7 +684,7 @@ def manage_intermediary():
                         "ErrorTel", "El número de teléfono no tiene 10 números."
                     )
                 # Verificar si el intermediario ya existe
-                existe = config.Read(
+                existe = Read(
                     """
                     SELECT 
                         proyecto.intermediario.NOMBRE,
@@ -697,7 +699,7 @@ def manage_intermediary():
                     (nombre, apellido_paterno, apellido_materno, int(id_intermediario)),
                 )
                 # Verificar si el teléfono ya está en uso
-                tel_existe = config.Read(
+                tel_existe = Read(
                     """
                     SELECT 
                         proyecto.intermediario.TEL
@@ -720,7 +722,7 @@ def manage_intermediary():
                         )
                 else:
                     # Actualizar en la base de datos
-                    config.CUD(
+                    CUD(
                         """
                         UPDATE proyecto.intermediario 
                         SET NOMBRE=?, AP_PAT=?, AP_MAT=?, TEL=?, ID_COMPANIA=?
@@ -754,7 +756,7 @@ def manage_intermediary():
         # endregion
     # Datos que se envian siempre
     relations = []
-    relations = config.Read(
+    relations = Read(
         """
         SELECT 
             proyecto.proveedor.ID_COMPANIA,
@@ -803,7 +805,7 @@ def manage_company():
                 id_intermediario = int(
                     request.form.get("DeleteIntermediaryId")
                 )  # cambiar la direccion
-                NoSePuedeBorrar = config.Read(
+                NoSePuedeBorrar = Read(
                     """
                     SELECT 
                         proyecto.almacen.NOMBRE
@@ -820,7 +822,7 @@ def manage_company():
                         "Error al borrar compañia.",
                         "Para poder borrar una compañia primero debe asegurarse que los productos relacionados sean inexistentes.",
                     )
-                config.CUD(
+                CUD(
                     """
                     -- Actualizar proyecto.Almacen
                     UPDATE proyecto.almacen
@@ -835,7 +837,7 @@ def manage_company():
                     """,
                     (int(id_intermediario),),
                 )
-                config.CUD(
+                CUD(
                     """
                     -- Actualizar proyecto.Intermediario
                     UPDATE proyecto.intermediario
@@ -848,7 +850,7 @@ def manage_company():
                     """,
                     (int(id_intermediario),),
                 )
-                config.CUD(
+                CUD(
                     """
                     -- Actualizar proyecto.Proveedor
                     UPDATE proyecto.proveedor SET ESTATUS = 0 WHERE ID_COMPANIA = ?;
@@ -877,7 +879,7 @@ def manage_company():
                 print("========================================>")
                 print("<==================== VerificarInactivo ====================")
                 # Existe pero esta inactivo
-                VerificarInactivo = config.Read(
+                VerificarInactivo = Read(
                     """
                         SELECT 
                             proyecto.proveedor.ID_COMPANIA,
@@ -890,7 +892,7 @@ def manage_company():
                 )
                 print("<==================== existe ====================")
                 # Verificar si la compañia ya existe
-                existe = config.Read(
+                existe = Read(
                     """
                         SELECT 
                             proyecto.proveedor.NOMBRE
@@ -909,7 +911,7 @@ def manage_company():
                         )
                 if VerificarInactivo:
                     print("<==================== Inactivo ====================")
-                    config.CUD(
+                    CUD(
                         """
                             UPDATE proyecto.proveedor
                             SET ESTATUS=1
@@ -924,7 +926,7 @@ def manage_company():
                     print("<==================== Crear ====================")
                     print(nombre)
                     # Insertar en la base de datos si no hay errores
-                    config.CUD(
+                    CUD(
                         """
                             INSERT INTO proyecto.proveedor (NOMBRE,  ESTATUS) 
                             VALUES (?, 1)
@@ -956,7 +958,7 @@ def manage_company():
                 print(f"id-company - {id_intermediario}")
                 print("========================================>")
                 # Verificar si es inactivo
-                ExisteInactivo = config.Read(
+                ExisteInactivo = Read(
                     """
                     SELECT 
                         proyecto.proveedor.NOMBRE,
@@ -968,7 +970,7 @@ def manage_company():
                     (nombre, int(id_intermediario)),
                 )
                 # Verificar si la campañia ya existe
-                existe = config.Read(
+                existe = Read(
                     """
                     SELECT 
                         proyecto.proveedor.NOMBRE,
@@ -987,7 +989,7 @@ def manage_company():
                     )
                 else:
                     # Actualizar en la base de datos
-                    config.CUD(
+                    CUD(
                         """
                         UPDATE proyecto.proveedor  
                         SET NOMBRE=?
@@ -1011,7 +1013,7 @@ def manage_company():
             # endregion
     # region Datos
     relations = []
-    relations = config.Read(
+    relations = Read(
         """
         SELECT 
             proyecto.proveedor.ID_COMPANIA,

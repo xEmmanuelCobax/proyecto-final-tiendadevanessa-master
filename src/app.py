@@ -47,7 +47,7 @@ app.register_blueprint(profile)
 app.register_blueprint(shortcut)
 app.register_blueprint(sales)
 
-
+# 
 if __name__ == "__main__":
     app.config.from_object(config["development"])
-    app.run(debug=True)
+    app.run(debug=True, port=8000)

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-import config, models
+# import flask_login
+from flask_login import login_user, logout_user, login_required
 
 
 # NOTAS:
@@ -9,14 +10,12 @@ profile = Blueprint("profile", __name__, url_prefix="/profile")
 
 
 # region Bienvenida
+@login_user
 @profile.route("/welcomeuser")
 def welcomeuser():
     # Errores
     print("<#################### welcomeuser ####################")
-    # Capa 1: Verificar si el usuario está autenticado
-    if "email" not in session:
-        print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("main.index"))
+    
     print("Session > ", session)
     print("Nombre > ", session["name"])
     print("Es admin? > ", session["ES_ADMIN"])

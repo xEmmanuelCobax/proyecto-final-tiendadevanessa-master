@@ -5,7 +5,7 @@ from flask_login import login_user, logout_user, login_required
 # import config
 from config import Read, CUD, ADMIN_CONECTION, MANAGER_CONECTION, CASHIER_CONECTION
 # importar config
-from config import DevelopmentConfig, ModelUser, Usuario
+from config import ModelUser, Usuario
 
 
 # NOTAS:
@@ -29,6 +29,7 @@ def signin():
         logged_user=ModelUser.login(user)
         if logged_user is not None:
             if logged_user.contraseña:
+                print(logged_user._conection)
                 return redirect(url_for("profile.welcomeuser"))
             else:
                 flash("Contraseña incorrecta", "error")
