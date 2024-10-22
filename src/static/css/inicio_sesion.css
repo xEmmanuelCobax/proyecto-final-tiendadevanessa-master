@@ -1,5 +1,5 @@
 .inicio__sesion {
-  background-color: #f3f1ed;
+  background-color: #f0f2f6;
   height: 90vh;
   display: flex;
   justify-content: center;
@@ -13,6 +13,7 @@
   padding: 10px 32px;
   gap: 8px;
   width: 29.5%;
+  max-width: 420px;
   height: 500px;
   background-color: #ffffff;
   border-radius: 32px;
@@ -60,8 +61,9 @@
 }
 
 .btn__submit {
-  background-color: #f6ca90;
+  background-color: #355bed;
   color: black;
+  color: white;
   font-weight: 500;
   margin-top: 20px;
 }
@@ -107,6 +109,7 @@
 
 .imagen__izq--img {
   width: 100%;
+  /* filter: grayscale(); */
 }
 
 /*imagen derecha*/
@@ -119,4 +122,5 @@
 
 .imagen__der--img {
   width: 100%;
+  /* filter: grayscale(); */
 }

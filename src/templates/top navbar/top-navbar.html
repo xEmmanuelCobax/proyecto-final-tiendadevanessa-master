@@ -26,7 +26,8 @@
   <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
-
+  {% block estilos%}
+  {% endblock%}
 
 </head>
 
@@ -35,13 +36,17 @@
   <nav class="navbar__principal" id="navbar">
     <div class="navbar__container">
 
-      <!--aqui-->
-
-      <a class="navbar-brand" href="{{ url_for('main.index') }}">SaleTrackStar</a>
+      <!--Empieza-->
+      <div class="nav__logo__flex">
+        <figure class="nav__logo--figure">
+          <img class="nav__logo--img" src="../../static/img/logo1.png">
+        </figure>
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">SaleTrackStar</a>
+      </div>
 
       <div class="navbar__lista__container" id="navbarText">
         <ul class="navbar__lista">
-          <!--Mostrar cerrar si ya hay correo-->
+          <!--Mostrar cerrar sesion si ya hay correo-->
           {% if 'email' in session %}
           <li class="nav__item">
             <a class="nav__link">{{ email }}</a>
@@ -51,9 +56,7 @@
           </li>
           {% endif %}
 
-
-
-          <!--Sin correo iniciado-->
+          <!--Sin correo iniciado, mostrar esto-->
           {% if 'email' not in session %}
           <li class="nav__item">
             <a class="nav__link" href="{{ url_for('auth.signin') }}">Iniciar Sesión</a>
@@ -69,11 +72,12 @@
   </nav>
 
 
+
   <!--El inicio de sesion, etc-->
   {% block content %}
   {% endblock %}
 
-
+ 
   <!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
   <div id="flash-messages" style="display: none;">
     {% with messages = get_flashed_messages(with_categories=true) %}

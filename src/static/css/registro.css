@@ -14,15 +14,15 @@
 }
 
 .parte__izquierda {
-    background-color: wheat;
-    /* background-color: #275cf6 !important; */
+    background-color: #275cf6;
     width: 45%;
     height: 90vh;
-    padding: 20px 70px;
-    background-image: url(/static/img/fotoside.png);
+    padding: 20px 70px 10px 100px;
+    color: white;
+    /* background-image: url(/static/img/fotoside.png);
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center;
+    background-position: center; */
 }
 
 /*Por si cambia los colres*/
@@ -123,13 +123,15 @@
     margin-top: 20px;
     color: black;
     border: none;
-    background-color: #f6ca90;
+    background-color: #6c6e7148;
+    /* background-color: #275cf6;
+    color: white; */
 }
 
 .cuenta__creada {
     color: #656565;
     padding: 3px;
-    text-decoration: none;
+    /* text-decoration: none; */
 }
 
 .cuenta__creada--enlace {
@@ -157,6 +159,11 @@
     border-radius: 20px;
     width: 79%;
     padding: 35px;
+    /*glass*/
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.048);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .card__titulo {
