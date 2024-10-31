@@ -12,7 +12,8 @@ from models.queries import (
 from models.exceptions import MyException
 # importar las extenciones
 from extensions import login_manager
-
+#
+from flask_login import login_user, logout_user, login_required, current_user
 
 # NOTAS:
 
@@ -22,10 +23,8 @@ main = Blueprint("main", __name__)
 # region Ruta Principal
 @main.route("/")
 def index():
-    # Errores
-    if "email" not in session:
-        print("#################### NO HAY SESSION ####################>")
+    if current_user.is_authenticated:
         return render_template("index.html")
-    print("#################### FIN RenderT(index.html) ####################>")
+    print("#################### NO HAY SESSION ####################>")
     return render_template("index.html")
-#endregion
+# endregion

@@ -84,7 +84,7 @@ endblock %} {% block content %}
                     <span data-section="shortcut" data-value="Sales" class="d-none d-md-block">Ventas</span>
                   </div>
                 </a>
-                {% if IsAdmin %}
+                {% if tipo == "Admin" %}
                 <a class="btn custom-btn mx-4" data-bs-toggle="tooltip" data-bs-placement="top"
                   data-bs-custom-class="custom-tooltip" data-bs-title="Ir al almacén de productos"
                   href="{{url_for('products.warehouse')}}">

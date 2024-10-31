@@ -47,7 +47,7 @@
       <div class="navbar__lista__container" id="navbarText">
         <ul class="navbar__lista">
           <!--Mostrar cerrar sesion si ya hay correo-->
-          {% if 'email' in session %}
+          {% if current_user.is_authenticated %}
           <li class="nav__item">
             <a class="nav__link">{{ email }}</a>
           </li>
@@ -57,7 +57,7 @@
           {% endif %}
 
           <!--Sin correo iniciado, mostrar esto-->
-          {% if 'email' not in session %}
+          {% if not current_user.is_authenticated %}
           <li class="nav__item">
             <a class="nav__link" href="{{ url_for('auth.signin') }}">Iniciar Sesión</a>
           </li>

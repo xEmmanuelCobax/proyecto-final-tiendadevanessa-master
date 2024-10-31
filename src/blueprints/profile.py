@@ -9,19 +9,21 @@ from flask_login import login_user, logout_user, login_required, current_user
 profile = Blueprint("profile", __name__, url_prefix="/profile")
 
 
-# region Bienvenida
 @profile.route("/welcomeuser")
 @login_required
 def welcomeuser():
-    # Errores
     print("<#################### welcomeuser ####################")
+    user = ""
+    tipo = ""
     if current_user.is_authenticated:
-        
-        return render_template("welcome.html", user=current_user)
+        user = current_user.get_name()  # Obtener el nombre del usuario
+        tipo = current_user.get_tipo_usuario()
     print("#################### FIN (profile/welcome-user.html) ####################>")
     return render_template(
         "profile/welcome-user.html",
-        user=session["name"],
-        IsAdmin=session["ES_ADMIN"],
+        user=user,
+        tipo=tipo
     )
+
+
 # endregion

@@ -1,17 +1,30 @@
 import mariadb
+#
+from flask_login import current_user
+#
+from config import ADMIN_CONECTION
 
+# current_user._conection
 
 # NOTAS:
+# estoy checando lo de usuarios
 
 
 # region CUD
 # CREATE, UPDATE Y DELETE
-def CUD(query, params=None, CONECTION=None):
+def CUD(query, params=None, CONECTION = None):
     print("<-------------------- Conectando... --------------------")
+    connection = None  # Inicializa connection como None
     try:
-        # Conectar a la BD
-        connection = mariadb.connect(**CONECTION)
-        cursor = connection.cursor()
+        if CONECTION == None:
+            # Conectar a la BD
+            print(current_user._conection)
+            connection = mariadb.connect(**current_user._conection)
+            cursor = connection.cursor()
+        else:
+            print(**CONECTION)
+            connection = mariadb.connect(**CONECTION)
+            cursor = connection.cursor()
         if params:
             cursor.execute(query, params)
         else:
@@ -21,16 +34,17 @@ def CUD(query, params=None, CONECTION=None):
     except Exception as ex:
         print(f"<-------------------- Error: {ex} -------------------->")
     finally:
-        if connection:
+        if connection:  # Solo cierra si connection fue asignada
             connection.close()
             print("-------------------- Conexión finalizada -------------------->")
 
+
 # region Read
-def Read(query, params=None, CONECTION=None):
+def Read(query, params=None):
     print("<-------------------- Conectando... --------------------")
     connection = None
     try:
-        connection = mariadb.connect(**CONECTION)
+        connection = mariadb.connect(**current_user._conection)
         cursor = connection.cursor()
         if params:
             cursor.execute(query, params)

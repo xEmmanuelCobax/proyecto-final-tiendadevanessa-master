@@ -16,6 +16,7 @@ from models.user import Usuario
 #
 import mariadb
 
+from flask_socketio import SocketIO, emit
 # NOTAS:
 
 
@@ -23,6 +24,7 @@ import mariadb
 app = Flask(__name__)
 # Configuración de Flask-Login
 login_manager.init_app(app)
+socketio = SocketIO(app)
 
 
 # Configuración
@@ -54,6 +56,7 @@ def load_user(user_id):
             """,
             (user_id,),
         )
+
         row = cursor.fetchone()
         if row:
             return Usuario(
@@ -73,6 +76,7 @@ def load_user(user_id):
         if connection:
             connection.close()
 
+print(load_user)
 
 # Registro de Blueprints
 app.register_blueprint(accounts)
