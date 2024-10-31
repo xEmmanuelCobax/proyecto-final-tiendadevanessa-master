@@ -12,6 +12,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
 #
 import re
+from config import ADMIN_CONECTION
 
 # NOTAS:
 
@@ -39,11 +40,16 @@ def validar_entrada(texto):
 # region Iniciar sesión
 @auth.route("/signin", methods=["GET", "POST"])
 def signin():
+
     if current_user.is_authenticated:
+        # print("holaaaaaaaaaaa")
+        # print(current_user.get_gmail())
         return redirect(url_for("profile.welcomeuser"))
     if request.method == "POST":
         user = Usuario(0, request.form["email"], request.form["password"])
         logged_user=ModelUser.login(user)
+        # if current_user.get_gmail() == user.get_gmail:
+        #     return render_template("auth/signin.html") 
         if logged_user is not None:
             if logged_user.contraseña:
                 login_user(logged_user)
@@ -70,13 +76,8 @@ def signup():
     registration_successful = False
     print("<#################### signup ####################")
     # Verificar si hay una dirección de correo dentro de la sesión
-    if "email" in session:
-        print(
-            "#################### Session iniciada renderizar index.html ####################>"
-        )
-        return render_template(
-            "index.html", email=session["email"], IsAdmin=session["ES_ADMIN"]
-        )
+    if current_user.is_authenticated:
+        return redirect(url_for("profile.welcomeuser"))
     elif request.method == "POST":
         # Obtener datos del formulario
         name = request.form.get("name")
@@ -107,6 +108,7 @@ def signup():
             WHERE CORREO = ?
             """,
             (email,),
+            ADMIN_CONECTION,
         )
         print("CONSULTA USUARIO")
         # Consulta para verificar si existe el usuario en la BD
@@ -119,6 +121,7 @@ def signup():
             AND AP_MAT = ?
             """,
             (name, apellido_paterno, apellido_materno),
+            ADMIN_CONECTION,
         )
         print("========================================>")
         # Existe el correo en la base de datos
@@ -140,16 +143,17 @@ def signup():
             # Registrar en base de datos
             CUD(
                 """
-                INSERT INTO proyecto.usuarios (NOMBRE, AP_PAT, AP_MAT, CORREO, CONTRASENA, ESTATUS, ES_ADMIN) 
-                VALUES (?, ?, ?, ?, ?, 1, 0)
+                INSERT INTO proyecto.usuarios (NOMBRE, AP_PAT, AP_MAT, CORREO, CONTRASENA, ESTATUS, ID_ROL) 
+                VALUES (?, ?, ?, ?, ?, 1, 3)
                 """,
                 (
                     name,
                     apellido_paterno,
                     apellido_materno,
                     email,
-                    password,
-                ),  # Tupla correctamente definida
+                    generate_password_hash(password),
+                ),
+                ADMIN_CONECTION,  # Tupla correctamente definida
             )
             print("========================================>")
             # Salio todo bien entonces
@@ -164,38 +168,6 @@ def signup():
         print("#################### Renderizar auth/signup.html ####################>")
         return render_template("auth/signup.html")
 
-
-@auth.route("/signup", methods=["GET", "POST"])
-def signup():
-    if current_user.is_authenticated:
-        return redirect(url_for("profile.welcomeuser"))
-    if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        password = generate_password_hash(request.form.get("password"))  # Hash de la contraseña
-        print("<-------------------- Conectando... --------------------")
-        connection = None  # Inicializa connection como None
-        try:
-            # Conectar a la BD
-            connection = mariadb.connect(**ADMIN_CONECTION)
-            cursor = connection.cursor()
-            
-            # Define la consulta y los parámetros como una tupla plana
-            query = "INSERT INTO usuarios (NOMBRE, CORREO, CONTRASENA, ESTATUS) VALUES (?, ?, ?, 1)"
-            params = (name, email, password)  # Tupla plana
-
-            cursor.execute(query, params)  # Pasar la tupla plana
-            connection.commit()  # Confirmar los cambios en la base de datos
-            print("<-------------------- Conexión exitosa -------------------->")
-        except Exception as ex:
-            print(f"<-------------------- Error: {ex} -------------------->")
-        finally:
-            if connection:  # Solo cierra si connection fue asignada
-                connection.close()
-                print("-------------------- Conexión finalizada -------------------->")
-        flash("Registro exitoso", "success")
-        return redirect(url_for("auth.signin"))
-    return render_template("auth/signup.html")
 
 # region Cerrar sesión
 @login_required

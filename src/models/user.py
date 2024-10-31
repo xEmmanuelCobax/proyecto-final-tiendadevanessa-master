@@ -49,7 +49,9 @@ class Usuario(UserMixin):
         return f"{self.nombres} {self.ap_pat} {self.ap_mat}"
     def get_tipo_usuario(self):
         return self.tipo_usuario
-
+    def get_gmail(self):
+        return f"{self.correo}"
+   
     # region check_password
     @classmethod
     def check_password(self, hashed_password, password):
