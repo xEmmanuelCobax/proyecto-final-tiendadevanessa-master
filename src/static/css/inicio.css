@@ -2,20 +2,14 @@
     display: none;
 }
 
-
-
 .inicio {
     width: 100vw;
-    /* height: 90vh; */
-    /* background-color: red; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(-15deg, #ede6f4, #ecc4e5 10%, #f4c1b6, #f7dacb, #f4f1f0 70%);
+    /* background: linear-gradient(-15deg, #ede6f4, #ecc4e5 10%, #f4c1b6, #f7dacb, #f4f1f0 70%); */
     background: linear-gradient(-15deg, rgb(62, 90, 228), #4ccaf0da, #e6f1f5 80%);
-    /* background: linear-gradient(-15deg,  #4c96f098, #f0f1f4 70%); */
-    /* Cambia los colores según sea necesario */
 }
 
 .textos__container {
@@ -46,7 +40,7 @@
     font-size: 16px;
     font-weight: 600;
     text-transform: uppercase;
-    margin-top: 45px;
+    margin-top: 42px;
     line-height: 20px;
     cursor: default !important;
     /* background-color: red; */
@@ -55,7 +49,8 @@
 .inicio__titulo {
     width: 95%;
     text-align: center;
-    font-size: 3.55rem;
+    font-size: 3.8rem;
+    line-height: 4.75rem;
     font-weight: 600;
     margin-top: 20px;
 }
@@ -63,24 +58,27 @@
 .inicio__desc {
     width: 60%;
     text-align: center;
-    margin-top: 7px;
+    margin-top: 5px;
     color: #8b8d94;
     color: #464749;
-    font-size: 1.2rem;
+    font-size: 1.32rem;
+    line-height: 2.2rem;
 }
 
+/*Imagen inicio*/
 .inicio__img--figure {
-    width: 82%;
-    transition: transform .8s ease-in-out;
-    /* Transición suave */
+    margin-top: 12px;
+    width: 90%;
+    transition: transform 1s ease-in-out;
 }
 
+/*Transicion*/
 .inicio__img--figure:hover {
     transform: scale(1.01);
-    /* Escalar un poco el elemento en hover */
 }
 
 .inicio__img--img {
+    display: block;
     width: 100%;
     /* background-color: yellow; */
 }
@@ -93,7 +91,7 @@ footer ul {
     display: none;
 }
 
-
+/*Moviles*/
 @media screen and (max-width: 428px) {
 
     .inicio {
@@ -101,11 +99,9 @@ footer ul {
     }
 
     .inicio__titulo {
-        /* background-color: red; */
         font-size: 1.9rem;
         width: 80%;
         line-height: 2.3rem;
-
     }
 
     .textos__container {
@@ -130,8 +126,6 @@ footer ul {
         margin-top: 25px;
     }
 
-
-
     .inicio__img--figure {
         width: 95%;
     }
@@ -143,7 +137,4 @@ footer ul {
     .border-bottom {
         display: none;
     }
-
-
-
 }
