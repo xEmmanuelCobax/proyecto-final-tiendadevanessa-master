@@ -8,30 +8,37 @@
 
   <div class="parte__izquierda">
 
-    <h2 class="izq__titulo">Configuremos su <br> sistema de gestión de inventario</h2>
-    <p class="izq__desc">Solución todo en uno para optimizar su negocio. Administre su inventario desde cero o
-      integre los datos de su empresa existente en nuestro sistema eficiente y fácil de usar.
-    </p>
-
-    <div class="card__reseña">
-      <h4 class="card__titulo">Me encantó la experiencia</h4>
-      <p class="card__desc">Pude configurar mi negocio y gestionar todos los detalles necesarios en aproximadamente un
-        mes, ¡y apenas tuve que hacer nada! Definitivamente lo recomiendo.
-      </p>
-
-      <div class="card__flex">
-        <figure class="card__flex--figure">
-          <img src="/static/img/gigachat.jpg" class="card__flex--img">
-        </figure>
-        <p class="card__name">Emmanuel Coba</p>
-
-        <div class="flex__estrellas">
-          <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-            class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-        </div>
+    <div class="izq-wrapper">
+      <div class="izq__titulos-flex">
+        <h2 class="izq__titulo">Configuremos su <br> sistema de gestión de inventario</h2>
+        <p class="izq__desc">Solución todo en uno para optimizar su negocio. Administre su inventario desde cero o
+          integre los datos de su empresa existente en nuestro sistema eficiente y fácil de usar.
+        </p>
 
       </div>
+
+      <div class="card__reseña">
+        <h4 class="card__titulo">Me encantó la experiencia</h4>
+        <p class="card__desc">Pude configurar mi negocio y gestionar todos los detalles necesarios en aproximadamente un
+          mes, ¡y apenas tuve que hacer nada! Definitivamente lo recomiendo.
+        </p>
+
+        <div class="card__flex">
+          <figure class="card__flex--figure">
+            <img src="/static/img/gigachat.jpg" class="card__flex--img">
+          </figure>
+          <p class="card__name">Emmanuel Coba</p>
+
+          <div class="flex__estrellas">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+              class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+          </div>
+
+        </div>
+      </div>
     </div>
+
+
   </div>
 
   <div class="registro__container">
@@ -45,14 +52,14 @@
 
           <!--Nombre-->
           <label class="etiqueta" for="name">Nombres</label>
-          <input type="text"  onpaste="return false;" class="form__input {% if user_found %}is-invalid{% endif %}"
+          <input type="text" onpaste="return false;" class="form__input {% if user_found %}is-invalid{% endif %}"
             id="name" name="name" required />
         </div>
 
         <div class="apellidos__flex">
           <!-- Apellido paterno -->
           <div class="input-container">
-            <label class="etiqueta" for="apellidoPaterno">Apellido paterno</label>
+            <label class="etiqueta" for="apellidoPaterno">Apellido Paterno</label>
             <div>
               <input type="text" onpaste="return false;" class="form__input form__input--paterno" id="apellidoPaterno"
                 name="paternal_lastname" data-bs-toggle="tooltip" data-bs-placement="left"
@@ -62,7 +69,7 @@
 
           <!-- Apellido materno-->
           <div class="input-container">
-            <label class="etiqueta" for="apellidoMaterno">Apellido materno</label>
+            <label class="etiqueta" for="apellidoMaterno">Apellido Materno</label>
             <div>
               <input type="text" onpaste="return false;" class="form__input form__input--materno" id="apellidoMaterno"
                 name="maternal_lastname" data-bs-toggle="tooltip" data-bs-placement="left"
@@ -73,7 +80,7 @@
 
         <!-- Correo -->
         <div class="input-container">
-          <label class="etiqueta" for="email">Correo electrónico</label>
+          <label class="etiqueta" for="email">Correo Electrónico</label>
           <div class="">
             <input type="email" class="form__input {% if email_found %}is-invalid{% endif %}" id="email" name="email"
               data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"

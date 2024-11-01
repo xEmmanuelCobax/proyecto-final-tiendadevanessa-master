@@ -17,31 +17,113 @@
     background-color: #275cf6;
     width: 45%;
     height: 90vh;
-    padding: 20px 70px 10px 100px;
+    /* padding: 20px 70px 10px 100px; */
     color: white;
 }
 
-/*Por si cambia los colres*/
-.btn__submit {
-    background-color: #275cf6 !important;
-    color: white !important;
+.izq-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    height: 100%;
+    gap: 30px;
+    /* background-color: red; */
+}
+
+.izq__titulos-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 12%;
+    /* background-color: yellow; */
 }
 
 /*Seccion izq*/
 .izq__titulo {
-    width: 75%;
+    width: 80%;
     font-size: 2.5rem;
     text-align: left;
     font-weight: 600;
     line-height: 60px;
-    margin: 30px 0;
+    /* background-color: red; */
 }
 
 .izq__desc {
-    width: 85%;
+    width: 70%;
     line-height: 27px;
+    /* background-color: red; */
 }
 
+/*Seccion de la reseña*/
+.card__reseña {
+    background-color: #c6b5918d;
+    border-radius: 20px;
+    width: 60%;
+    max-width: 372px;
+    padding: 28px 34px;
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.048);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    align-self: flex-start;
+    margin-left: 12%;
+}
+
+.card__titulo {
+    font-size: 1.1rem;
+}
+
+.card__desc {
+    font-size: 13.2px;
+    /* width: 90%; */
+}
+
+.card__flex {
+    /* background-color: red; */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.card__name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.card__flex--figure {
+    width: 33px;
+    height: 33px;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.card__flex--img {
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+.flex__estrellas {
+    margin-left: 40px;
+    display: flex;
+    gap: 2px;
+}
+
+/*las estrellas*/
+.bi-star-fill {
+    color: #ebfe58;
+}
+
+
+/*Parte derecha*/
 .registro__container {
     width: 55%;
     height: 100%;
@@ -123,6 +205,12 @@
     color: white; */
 }
 
+/*Por si cambia los colres*/
+.btn__submit {
+    background-color: #275cf6 !important;
+    color: white !important;
+}
+
 .cuenta__creada {
     color: #656565;
     padding: 3px;
@@ -138,70 +226,6 @@
 }
 
 
-/*Seccion de la reseña*/
-.card__reseña {
-    margin-top: 80px;
-    background-color: #c6b5918d;
-    border-radius: 20px;
-    width: 79%;
-    padding: 35px;
-    /*glass*/
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.048);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-.card__titulo {
-    font-size: 1.1rem;
-}
-
-.card__desc {
-    font-size: 13.2px;
-    /* width: 90%; */
-}
-
-.card__flex {
-    /* background-color: red; */
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.card__name {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 0;
-}
-
-.card__flex--figure {
-    width: 33px;
-    height: 33px;
-    margin-bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-}
-
-.card__flex--img {
-    object-fit: cover;
-    object-position: center top;
-    border-radius: 50%;
-    width: 100%;
-    height: 100%;
-}
-
-.flex__estrellas {
-    margin-left: 40px;
-    display: flex;
-    gap: 2px;
-}
-
-/*las estrellas*/
-.bi-star-fill {
-    color: #ebfe58;
-}
 
 @media screen and (max-width: 428px) {
     .parte__izquierda {
