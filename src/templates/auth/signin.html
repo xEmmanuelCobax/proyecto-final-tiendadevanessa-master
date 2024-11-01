@@ -9,7 +9,6 @@
 </style>
 {% endblock %}
 
-
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/inicio_sesion.css') }}" />
 
@@ -35,10 +34,10 @@
 
       <!-- Formulario de contraseña -->
       <div class="input-container">
-        <input type="password" onpaste="return false;" class="form__input" id="password" name="password" minlength="4"
-          maxlength="30" pattern="^(?=.*\S)(?=^\S)([^\s]{4,20})$" data-bs-toggle="tooltip-badpassword"
-          data-bs-custom-class="custom-tooltip" data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}"
-          placeholder="Contraseña" title="Ingresa un mínimo de 4 caracteres" required />
+        <input type="password" onpaste="return false;" class="form__input" id="password" name="password" minlength="5"
+          maxlength="15" data-bs-toggle="tooltip-badpassword" data-bs-custom-class="custom-tooltip"
+          data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}" placeholder="Contraseña"
+          title="Ingresa un mínimo de 5 caracteres" required />
 
         <button type="button" class="toggle-password btn " onclick="togglePassword()">
           <i id="eye-icon" class="bi bi-eye-slash icon"></i>

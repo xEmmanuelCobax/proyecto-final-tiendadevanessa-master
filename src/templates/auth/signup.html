@@ -45,10 +45,8 @@
 
           <!--Nombre-->
           <label class="etiqueta" for="name">Nombres</label>
-          <input type="text" onpaste="return false;" class="form__input {% if user_found %}is-invalid{% endif %}"
-            minlength="2" maxlength="30" id="name" name="name" pattern="(?=.{2,})([A-Za-zÀ-ÿ]+(\s[A-Za-zÀ-ÿ]+)*)"
-            title="Solo se permiten letras y espacios, mínimo 2" title="Solo se permiten letras y espacios, mínimo 2"
-            required />
+          <input type="text"  onpaste="return false;" class="form__input {% if user_found %}is-invalid{% endif %}"
+            id="name" name="name" required />
         </div>
 
         <div class="apellidos__flex">
@@ -56,10 +54,9 @@
           <div class="input-container">
             <label class="etiqueta" for="apellidoPaterno">Apellido paterno</label>
             <div>
-              <input type="text" onpaste="return false;" class="form__input form__input--paterno" minlength="2"
-                maxlength="20" pattern="(?=.{2,})([A-Za-zÀ-ÿ]+(\s[A-Za-zÀ-ÿ]+)*)"
-                title="Solo se permiten letras y espacios, mínimo 2" id="apellidoPaterno" name="paternal_lastname"
-                data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip" required />
+              <input type="text" onpaste="return false;" class="form__input form__input--paterno" id="apellidoPaterno"
+                name="paternal_lastname" data-bs-toggle="tooltip" data-bs-placement="left"
+                data-bs-custom-class="custom-tooltip" required />
             </div>
           </div>
 
@@ -67,10 +64,9 @@
           <div class="input-container">
             <label class="etiqueta" for="apellidoMaterno">Apellido materno</label>
             <div>
-              <input type="text" onpaste="return false;" class="form__input form__input--materno" minlength="2"
-                maxlength="20" pattern="(?=.{2,})([A-Za-zÀ-ÿ]+(\s[A-Za-zÀ-ÿ]+)*)"
-                title="Solo se permiten letras y espacios, mínimo 2" id="apellidoMaterno" name="maternal_lastname"
-                data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip" required />
+              <input type="text" onpaste="return false;" class="form__input form__input--materno" id="apellidoMaterno"
+                name="maternal_lastname" data-bs-toggle="tooltip" data-bs-placement="left"
+                data-bs-custom-class="custom-tooltip" required />
             </div>
           </div>
         </div>
@@ -79,8 +75,8 @@
         <div class="input-container">
           <label class="etiqueta" for="email">Correo electrónico</label>
           <div class="">
-            <input type="email" class="form__input {% if email_found %}is-invalid{% endif %}" maxlength="40" id="email"
-              name="email" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+            <input type="email" class="form__input {% if email_found %}is-invalid{% endif %}" id="email" name="email"
+              data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
               data-bs-title="{% if email_found %}Este correo electrónico ya ha sido registrado xd.{% endif %}"
               required />
           </div>
@@ -95,10 +91,8 @@
         <div class="input-container">
           <label class="etiqueta" for="password">Contraseña</label>
           <div class="input-group"> <!--agrupar el boton-->
-            <input type="text" onpaste="return false;" class="form__input--contraseña form__input" id="password"
+            <input type="password" onpaste="return false;" class="form__input--contraseña form__input" id="password"
               name="password" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
-              data-bs-title="La contraseña debe al menos tener 4 caracteres" pattern="^(?=.*\S)(?=^\S)([^\s]{4,20})$"
-              title="Ingresa un mínimo de 4 caracteres; no se permiten espacios." minlength="4" maxlength="15"
               required />
 
             <button class="generate__password" type="button" id="generatePassword">
