@@ -8,19 +8,14 @@
 
   <div class="parte__izquierda">
 
-    <h2 class="izq__titulo">Configuremos su <br> sistema de gestión de inventario
-    </h2>
+    <h2 class="izq__titulo">Configuremos su <br> sistema de gestión de inventario</h2>
     <p class="izq__desc">Solución todo en uno para optimizar su negocio. Administre su inventario desde cero o
-      integre los datos de su
-      empresa
-      existente en nuestro sistema eficiente y fácil de usar.
+      integre los datos de su empresa existente en nuestro sistema eficiente y fácil de usar.
     </p>
 
     <div class="card__reseña">
       <h4 class="card__titulo">Me encantó la experiencia</h4>
-      <p class="card__desc">Pude configurar mi negocio y gestionar todos los detalles
-        necesarios en
-        aproximadamente un
+      <p class="card__desc">Pude configurar mi negocio y gestionar todos los detalles necesarios en aproximadamente un
         mes, ¡y apenas tuve que hacer nada! Definitivamente lo recomiendo.
       </p>
 
@@ -36,121 +31,81 @@
         </div>
 
       </div>
-
-
     </div>
-
-    <!--Ilustraciones-->
-    <!-- <div class="imagen__izq">
-      <figure class="imagen__izq--figure">
-        <img src="/static/img/vector3.svg" class="imagen__izq--img">
-      </figure>
-    </div> -->
   </div>
 
   <div class="registro__container">
-
     <div class="parte__derecha">
 
       <h1 class="registro__titulo">Empecemos</h1>
 
-      <!--Fomrulario-->
+      <!--Formulario-->
       <form method="post" action="" id="signupForm">
         <div class="input-container">
-          <label class="etiqueta" for="username">Nombres</label>
-          <input type="text" class="form__input {% if user_found %}is-invalid{% endif %}" id="name" name="name" required
-            pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"
-            oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')"
-            data-bs-toggle="tooltip-user-found" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
-            data-bs-title="{% if user_found %}Estos nombres ya han sido registrados.{% endif %}" />
-          <!--Logia python-->
-          {% if name_error %}
-          <div class="invalid-feedback">Error name.</div>
-          {% endif %}
-        </div>
 
+          <!--Nombre-->
+          <label class="etiqueta" for="name">Nombres</label>
+          <input type="text" onpaste="return false;" class="form__input {% if user_found %}is-invalid{% endif %}"
+            minlength="2" maxlength="30" id="name" name="name" pattern="(?=.{2,})([A-Za-zÀ-ÿ]+(\s[A-Za-zÀ-ÿ]+)*)"
+            title="Solo se permiten letras y espacios, mínimo 2" title="Solo se permiten letras y espacios, mínimo 2"
+            required />
+        </div>
 
         <div class="apellidos__flex">
           <!-- Apellido paterno -->
           <div class="input-container">
             <label class="etiqueta" for="apellidoPaterno">Apellido paterno</label>
             <div>
-              <input type="text"
-                class="form__input form__input--paterno {% if paternal_lastname_error %}is-invalid{% endif %} {% if paternal_lastname_valid %}is-valid{% endif %}"
-                id="apellidoPaterno" name="paternal_lastname" required
-                oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')" data-bs-toggle="tooltip"
-                data-bs-placement="left" data-bs-custom-class="custom-tooltip"
-                data-bs-title="{% if paternal_lastname_error %}Error de apellido paterno.{% endif %}" />
-              {% if paternal_lastname_valid %}
-              <div class="valid-feedback">
-                <i class="bi bi-check-circle"></i> Apellido paterno
-                provided
-              </div>
-              {% endif %}
+              <input type="text" onpaste="return false;" class="form__input form__input--paterno" minlength="2"
+                maxlength="20" pattern="(?=.{2,})([A-Za-zÀ-ÿ]+(\s[A-Za-zÀ-ÿ]+)*)"
+                title="Solo se permiten letras y espacios, mínimo 2" id="apellidoPaterno" name="paternal_lastname"
+                data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip" required />
             </div>
-            {% if paternal_lastname_error %}
-            <div class="invalid-feedback">
-              Error in paternal last name.
-            </div>
-            {% endif %}
           </div>
-          <!-- apellido materno-->
+
+          <!-- Apellido materno-->
           <div class="input-container">
-            <labe class="etiqueta" for="apellidoMaterno">Apellido materno</label>
-              <div>
-                <input type="text"
-                  class="form__input form__input--materno {% if maternal_lastname_error %}is-invalid{% endif %} {% if maternal_lastname_valid %}is-valid{% endif %}"
-                  id="apellidoMaterno" name="maternal_lastname"
-                  oninput="this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '')" data-bs-toggle="tooltip"
-                  data-bs-placement="left" data-bs-custom-class="custom-tooltip"
-                  data-bs-title="{% if maternal_lastname_error %}Error de apellido paterno{% endif %}" />
-                {% if maternal_lastname_valid %}
-                <div class="valid-feedback">
-                  <i class="bi bi-check-circle"></i> Apellido materno
-                  provided
-                </div>
-                {% endif %}
-              </div>
-              {% if maternal_lastname_error %}
-              <div class="invalid-feedback">
-                Error in maternal last name.
-              </div>
-              {% endif %}
+            <label class="etiqueta" for="apellidoMaterno">Apellido materno</label>
+            <div>
+              <input type="text" onpaste="return false;" class="form__input form__input--materno" minlength="2"
+                maxlength="20" pattern="(?=.{2,})([A-Za-zÀ-ÿ]+(\s[A-Za-zÀ-ÿ]+)*)"
+                title="Solo se permiten letras y espacios, mínimo 2" id="apellidoMaterno" name="maternal_lastname"
+                data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip" required />
+            </div>
           </div>
         </div>
-
-
 
         <!-- Correo -->
         <div class="input-container">
           <label class="etiqueta" for="email">Correo electrónico</label>
           <div class="">
-            <input type="email" class="form__input {% if email_found %}is-invalid{% endif %}" id="email" name="email"
-              required data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
-              data-bs-title="{% if email_found %}Este correo electrónico ya ha sido registrado.{% endif %}" />
+            <input type="email" class="form__input {% if email_found %}is-invalid{% endif %}" maxlength="40" id="email"
+              name="email" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+              data-bs-title="{% if email_found %}Este correo electrónico ya ha sido registrado xd.{% endif %}"
+              required />
           </div>
           {% if email_found %}
           <div class="invalid-feedback">
-            The email is already registered.
+            Este correo ya está registrado
           </div>
           {% endif %}
         </div>
-
 
         <!-- Contraseña  -->
         <div class="input-container">
           <label class="etiqueta" for="password">Contraseña</label>
           <div class="input-group"> <!--agrupar el boton-->
-            <input type="password" class="form__input--contraseña form__input" id="password" name="password" required
-              data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
-              data-bs-title="La contraseña debe al menos tener 8 caracteres de largo" />
+            <input type="text" onpaste="return false;" class="form__input--contraseña form__input" id="password"
+              name="password" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+              data-bs-title="La contraseña debe al menos tener 4 caracteres" pattern="^(?=.*\S)(?=^\S)([^\s]{4,20})$"
+              title="Ingresa un mínimo de 4 caracteres; no se permiten espacios." minlength="4" maxlength="15"
+              required />
 
             <button class="generate__password" type="button" id="generatePassword">
               Generar
             </button>
           </div>
         </div>
-
 
         <!--Extras-->
         <div class="cuenta__creada">
@@ -170,372 +125,8 @@
 </section>
 
 
+<!-- SCRIPTS -->
+<script src="{{ url_for('static', filename='Js/registro_validaciones.js') }} "></script>
 
-<!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
-<div id="flash-messages" style="display: none;">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-  {% for category, message in messages %}
-  <div class="alert alert-{{ category }}" role="alert">
-    {{ message }}
-  </div>
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-</div>
-
-<!-- MOTAL PARA MOSTRAR FLASH -->
-<div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="flashModalLabel">Nortificación</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="flashModalBody">
-        <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- MOSTRAR EL MODAL PARA MOSTRAR ERRORES Y MENSAJES  -->
-<script>
-  $(document).ready(function () {
-    var flashMessages = $('#flash-messages').html().trim();
-    if (flashMessages) {
-      $('#flashModalBody').html(flashMessages);
-      $('#flashModal').modal('show');
-    }
-  });
-</script>
-
-
-<!-- BLOQUEA EL BOTON DE CREAR CUENTA SI EL PASSWORD Y EL EMAIL SON INCORRECTOS -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Obtener referencia al botón de envío del formulario
-    var submitButton = document.getElementById("submitButton");
-
-    // Función para verificar si el formulario puede enviarse
-    function validarEnvioFormulario() {
-      // Verificar si tanto el campo de contraseña como el campo de correo electrónico cumplen con los requisitos
-      var passwordIsValid =
-        document.getElementById("password").value.length >= 8;
-      var emailIsValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-        document.getElementById("email").value
-      );
-
-      // Habilitar o deshabilitar el botón de envío del formulario según los resultados de las validaciones
-      if (passwordIsValid && emailIsValid) {
-
-        var submitButton = document.getElementById("submitButton");
-        submitButton.classList.remove("btn-danger");
-        submitButton.classList.add("btn-primary");
-
-        submitButton.disabled = false;
-
-      } else {
-
-        var submitButton = document.getElementById("submitButton");
-
-        // Cambiar la clase del botón de primary a danger
-        submitButton.classList.remove("btn-primary");
-        submitButton.classList.add("btn-danger");
-
-        submitButton.disabled = true;
-      }
-    }
-
-    // Agregar eventos de entrada a los campos de contraseña y correo electrónico para realizar la validación
-    document
-      .getElementById("password")
-      .addEventListener("input", validarEnvioFormulario);
-    document
-      .getElementById("email")
-      .addEventListener("input", validarEnvioFormulario);
-  });
-</script>
-
-<!-- TOOLTIP PARA MOSTRAR RECOMENDACION DEL EMAIL Y EVITA PONER MENOS DE 8 CARACTERES POR CONTRASEÑA -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var tooltipTriggerList = [].slice.call(
-      document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    );
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
-    document.getElementById("email").addEventListener("input", function () {
-      var emailInput = this.value;
-      var emailIsValid =
-        /^[\w-\.]+@(?:(?:[\w]+\.)+)?(?:gmail\.com|hotmail\.com|live\.com|outlook\.com)$/.test(
-          emailInput
-        );
-      var tooltip = bootstrap.Tooltip.getInstance(this);
-
-      if (!emailIsValid) {
-        this.classList.add("is-invalid");
-        this.classList.remove("is-valid");
-        if (!tooltip) {
-          tooltip = new bootstrap.Tooltip(this);
-        }
-        tooltip.show();
-      } else {
-        this.classList.remove("is-invalid");
-        this.classList.add("is-valid");
-        if (tooltip) {
-          tooltip.hide();
-          tooltip.dispose(); // Destruir la instancia del tooltip
-        }
-      }
-    });
-
-    var passwordInput = document.getElementById("password");
-    var passwordTooltip = bootstrap.Tooltip.getInstance(passwordInput);
-
-    // Validar la contraseña antes de enviar el formulario
-    document
-      .getElementById("signupForm")
-      .addEventListener("submit", function (event) {
-        if (passwordInput.value.length < 8) {
-          passwordInput.classList.add("is-invalid");
-          if (!passwordTooltip) {
-            passwordTooltip = new bootstrap.Tooltip(passwordInput);
-          }
-          passwordTooltip.show();
-          event.preventDefault(); // Prevenir el envío del formulario
-        } else {
-          passwordInput.classList.remove("is-invalid");
-          passwordInput.classList.add("is-valid");
-          if (passwordTooltip) {
-            passwordTooltip.hide();
-            passwordTooltip.dispose(); // Destruir la instancia del tooltip
-          }
-        }
-      });
-
-    // Verificar la longitud de la contraseña en tiempo real
-    passwordInput.addEventListener("input", function () {
-      if (passwordInput.value.length < 8) {
-        passwordInput.classList.add("is-invalid");
-        passwordInput.classList.remove("is-valid");
-        if (!passwordTooltip) {
-          passwordTooltip = new bootstrap.Tooltip(passwordInput);
-        }
-        passwordTooltip.show();
-      } else {
-        passwordInput.classList.remove("is-invalid");
-        passwordInput.classList.add("is-valid");
-        if (passwordTooltip) {
-          passwordTooltip.hide();
-          passwordTooltip.dispose(); // Destruir la instancia del tooltip
-        }
-      }
-    });
-  });
-</script>
-
-<!-- SCRIPT PARA GENERAR CONTRASEÑAS SEGURAS -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    document
-      .getElementById("generatePassword")
-      .addEventListener("click", function () {
-        var length = 10; // Longitud de la contraseña
-        var charset =
-          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/#@"; // Caracteres para la contraseña
-        var password = "";
-        for (var i = 0; i < length; i++) {
-          password += charset.charAt(
-            Math.floor(Math.random() * charset.length)
-          );
-        }
-        var passwordField = document.getElementById("password");
-        passwordField.value = password;
-        passwordField.type = "text"; // Cambiar temporalmente el tipo de entrada a "text"
-        setTimeout(function () {
-          passwordField.type = "password"; // Volver a cambiar el tipo de entrada a "password" después de 3 segundos
-        }, 4000);
-
-        // Verificar si la contraseña generada cumple con los requisitos
-        if (passwordField.value.length >= 8) {
-          passwordField.classList.remove("is-invalid");
-          passwordField.classList.add("is-valid");
-        } else {
-          passwordField.classList.add("is-invalid");
-          passwordField.classList.remove("is-valid");
-        }
-      });
-  });
-</script>
-
-<!-- MOSTRAR TOOLTIPS CON MENSAJES DE ERRORES Y MOSTRAR INFORMACION ADICIONAL -->
-<script>
-  var tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip-user-found"]')
-  );
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
-  });
-
-  var tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip-email-found"]')
-  );
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
-  });
-
-  var tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip-lastname-error"]')
-  );
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
-  });
-</script>
-
-<!-- ESTADO DE LA TOOLTIP -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var emailInput = document.getElementById("email");
-    var tooltipEmailFound = document.getElementById("tooltip-email-found");
-    var tooltipEmailValidation = document.getElementById(
-      "tooltip-email-validation"
-    );
-
-    // Mostrar u ocultar el tooltip según el estado de email_found
-    emailInput.addEventListener("input", function () {
-      if (emailInput.value && email_found) {
-        tooltipEmailFound.classList.remove("d-none");
-        tooltipEmailValidation.classList.add("d-none");
-      } else {
-        tooltipEmailFound.classList.add("d-none");
-        tooltipEmailValidation.classList.remove("d-none");
-      }
-    });
-
-    // Ocultar el tooltip de validación cuando se hace clic en el tooltip de correo electrónico ya encontrado
-    tooltipEmailFound.addEventListener("click", function () {
-      tooltipEmailValidation.classList.add("d-none");
-    });
-  });
-</script>
-
-<!-- EVITA EL USO DE ESPACIOS, COMILLAS SIMPLES Y DOBLES EN EL EMAIL Y EN EL PASSWORD -->
-<script>
-  // Función para validar la entrada de contraseña y eliminar espacios, comillas simples y dobles
-  document.getElementById("password").addEventListener("input", function (event) {
-    // Obtener el valor actual del campo de contraseña
-    var passwordInput = event.target.value;
-    // Eliminar los espacios, comillas simples y dobles del valor actual
-    var passwordCleaned = passwordInput.replace(/[ '\"\t\\]/g, "");
-    // Actualizar el valor del campo de contraseña sin espacios, comillas simples y dobles
-    event.target.value = passwordCleaned;
-  });
-
-  // Función para eliminar espacios, comillas simples y dobles del campo de correo electrónico
-  document.getElementById("email").addEventListener("input", function (event) {
-    // Obtener el valor actual del campo de correo electrónico
-    var emailInput = event.target.value;
-    // Eliminar los espacios, comillas simples y dobles del valor actual
-    var emailCleaned = emailInput.replace(/[^\w\s@.]/g, "");
-    // Actualizar el valor del campo de correo electrónico sin espacios, comillas simples y dobles
-    event.target.value = emailCleaned;
-  });
-</script>
-
-<!-- ELIMINAR LOS ESPACIOS EN BLANCO DEL PRINCIPIO Y FINAL DE LOS INPUTS APELLIDOS Y NOMBRE-->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var trimDelay = 500; // Cambia este valor según el tiempo que desees en milisegundos
-    var timeout = null;
-
-    // Función para eliminar espacios en blanco de los valores de los campos de entrada
-    function trimInputFields() {
-      var inputFields = document.querySelectorAll("input");
-      inputFields.forEach(function (input) {
-        input.value = input.value.trim();
-      });
-    }
-
-    // Función para reiniciar el temporizador
-    function resetTrimTimer() {
-      clearTimeout(timeout);
-      timeout = setTimeout(trimInputFields, trimDelay);
-    }
-
-    // Función para manejar el evento de pegar y eliminar espacios en blanco
-    function handlePaste(event) {
-      var paste = (event.clipboardData || window.clipboardData).getData('text');
-      event.preventDefault();
-      var trimmedPaste = paste.trim();
-      document.execCommand('insertText', false, trimmedPaste);
-      resetTrimTimer();
-    }
-
-    // Agregar eventos a todos los campos de entrada
-    var inputFields = document.querySelectorAll("input");
-    inputFields.forEach(function (input) {
-      input.addEventListener("input", resetTrimTimer);
-      input.addEventListener("change", resetTrimTimer);
-      input.addEventListener("blur", resetTrimTimer);
-      input.addEventListener("paste", handlePaste);
-    });
-  });
-</script>
-
-<!-- SOLO PERMITE AGREGAR UN UNICO ESPACIO ENTRE PALABRA EN LOS INPUTS NOMBRE Y APELLIDOS -->
-<script>
-  // Función para mantener solo un espacio entre palabras en los campos de nombre, apellido paterno y materno
-  function limitarEspacios(event) {
-    // Obtener el valor actual del campo
-    var valorCampo = event.target.value;
-    // Reemplazar múltiples espacios por uno solo
-    var valorSinEspaciosRepetidos = valorCampo.replace(/\s+/g, " ");
-    // Actualizar el valor del campo con un solo espacio entre palabras
-    event.target.value = valorSinEspaciosRepetidos;
-  }
-
-  // Agregar evento de escucha para los campos de nombre, apellido paterno y materno
-  document.getElementById("name").addEventListener("input", limitarEspacios);
-  document
-    .getElementById("apellidoPaterno")
-    .addEventListener("input", limitarEspacios);
-  document
-    .getElementById("apellidoMaterno")
-    .addEventListener("input", limitarEspacios);
-</script>
-
-<!-- LIMITA EL NÚMERO DE CARACTERES DE LAS ENTRADAS-->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Definir los máximos de caracteres para cada tipo de campo de entrada
-    var maxCharacters = {
-      "text": 30,
-      "email": 55,
-      "password": 15
-    };
-
-    // Función para manejar el evento de entrada y limitar la longitud de los campos de entrada
-    function handleInput(event) {
-      var inputType = event.target.type.toLowerCase();
-      if (event.target.value.length > maxCharacters[inputType]) {
-        event.target.value = event.target.value.substring(0, maxCharacters[inputType]); // Limita según el tipo de campo de entrada
-      }
-    }
-
-    // Agregar evento de entrada a todos los campos de entrada
-    var inputFields = document.querySelectorAll("input");
-    inputFields.forEach(function (input) {
-      input.addEventListener("input", handleInput);
-    });
-  });
-</script>
 
 {% endblock %}

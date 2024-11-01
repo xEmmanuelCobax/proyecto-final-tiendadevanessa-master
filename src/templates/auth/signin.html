@@ -24,10 +24,9 @@
 
       <!-- Formulario de correo -->
       <div class="input-container">
-        <!-- <label for="email" data-section="singin" data-value="Email Address">Correo Electronico</label> -->
         <input type="email" value="{{ email }}" class="form__input {% if email_not_found %}is-invalid{% endif %}"
-          id="email" name="email" required placeholder="Correo Electronico" data-bs-toggle="tooltip-bademail"
-          data-bs-custom-class="custom-tooltip" />
+          id="email" name="email" maxlength="40" placeholder="Correo Electrónico" data-bs-toggle="tooltip-bademail"
+          data-bs-custom-class="custom-tooltip" required />
         <!--Logica de python-->
         {% if email_not_found %}
         <div class="invalid-feedback">Correo no encontrado.</div>
@@ -36,11 +35,11 @@
 
       <!-- Formulario de contraseña -->
       <div class="input-container">
-        <!-- <label for="password" data-section="singin" data-value="Password">Contraseña</label> -->
-        <input type="password" class="form__input  {% if bad_password %}is-invalid{% endif %}" id="password"
-          name="password" maxlength="30" pattern="[a-zA-Z1-9]+" data-bs-toggle="tooltip-badpassword"
-          data-bs-custom-class="custom-tooltip" data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}"
-          placeholder="Contraseña" required />
+        <input type="password" onpaste="return false;" class="form__input" id="password" name="password" maxlength="30"
+          pattern="^(?=.*\S)(?=^\S)([^\s]{4,20})$" data-bs-toggle="tooltip-badpassword"
+          data-bs-custom-class="custom-tooltip" minlength="4"
+          data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}" placeholder="Contraseña"
+          title="Ingresa un mínimo de 4 caracteres" required />
 
         <button type="button" class="toggle-password btn " onclick="togglePassword()">
           <i id="eye-icon" class="bi bi-eye-slash icon"></i>
@@ -51,21 +50,7 @@
         {% endif %}
 
         <!--Para poder ver la contraseña-->
-        <script>
-          function togglePassword() {
-            var passwordField = document.getElementById("password");
-            var eyeIcon = document.getElementById("eye-icon");
-
-            if (passwordField.type === "password") {
-              passwordField.type = "text";
-              eyeIcon.classList.remove("bi-eye-slash");
-              eyeIcon.classList.add("bi-eye");
-            } else {
-              passwordField.type = "password";
-              eyeIcon.classList.remove("bi-eye");
-              eyeIcon.classList.add("bi-eye-slash");
-            }
-          }
+        <script src="../../static/js/ver-contraseña.js">
         </script>
       </div>
 
@@ -96,213 +81,8 @@
       <img src="/static/img/login2.2.png" class="imagen__der--img">
     </figure>
   </div>
-</section> 
+</section>
 
+<script src="{{ url_for('static', filename='Js/registro_validaciones.js') }} "></script>
 
-  <!--Modal-->
-  {% if registration_successful == 'True' %}
-  <div class="modal fade show" id="successfulRegistrationModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Cuenta registrada</h5>
-          <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="alert alert-success" role="alert">
-            <p>¡Te has registrado exitosamente!.</p>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-bs-dismiss="modal">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% endif %}
-
-  <!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
-  <div id="flash-messages" style="display: none;">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }}" role="alert">
-      {{ message }}
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-  </div>
-
-  <!-- MOTAL PARA MOSTRAR FLASH -->
-  <div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="flashModalLabel">Notification</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" id="flashModalBody">
-          <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- MOSTRAR EL MODAL PARA MOSTRAR ERRORES Y MENSAJES  -->
-  <script>
-    $(document).ready(function () {
-      var flashMessages = $('#flash-messages').html().trim();
-      if (flashMessages) {
-        $('#flashModalBody').html(flashMessages);
-        $('#flashModal').modal('show');
-      }
-    });
-  </script>
-
-  {% if registration_successful %}
-
-  <!-- SCRIPT PARA MOSTRAR REGISTRO EXITOSO MEDIANTE UNA BOOLEANO EN LA PAGINA SING UP-->
-  <script>
-    // Show the successful registration modal if the 'successful' variable is true
-    $(document).ready(function () {
-      console.log("test 1");
-      $("#successfulRegistrationModal").modal("show");
-    });
-  </script>
-  {% endif %}
-
-  <!-- TOOLTIP PARA MOSTRAR RECOMENDACION DEL EMAIL -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var tooltipTriggerList = [].slice.call(
-        document.querySelectorAll('[data-bs-toggle="tooltip"]')
-      );
-      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-      });
-
-      document.getElementById("email").addEventListener("input", function () {
-        var emailInput = this.value;
-        var emailIsValid =
-          /^[\w-\.]+@(?:(?:[\w]+\.)+)?(?:gmail\.com|hotmail\.com|live\.com|outlook\.com)$/.test(
-            emailInput
-          );
-        var tooltip = bootstrap.Tooltip.getInstance(this);
-
-        if (!emailIsValid) {
-          this.classList.add("is-invalid");
-          this.classList.remove("is-valid");
-          if (!tooltip) {
-            tooltip = new bootstrap.Tooltip(this);
-          }
-          tooltip.show();
-        } else {
-          this.classList.remove("is-invalid");
-          this.classList.add("is-valid");
-          if (tooltip) {
-            tooltip.hide();
-            tooltip.dispose(); // Destruir la instancia del tooltip
-          }
-        }
-      });
-    });
-  </script>
-
-  <!-- TOOLTIP PARA MOSTRAR RECOMENDACION DEL EMAIL -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-      var emailInput = document.getElementById("email");
-      var submitButton = document.getElementById("submitButton");
-
-      emailInput.addEventListener("input", function () {
-        var emailIsValid = /^[\w-\.]+@(?:(?:[\w]+\.)+)?(?:gmail\.com|hotmail\.com|live\.com|outlook\.com)$/.test(emailInput.value);
-
-        if (!emailIsValid) {
-          emailInput.classList.add("is-invalid");
-          submitButton.classList.remove("btn-primary");
-          submitButton.classList.add("btn-danger");
-          submitButton.disabled = true; // Deshabilitar el botón de envío
-        } else {
-          emailInput.classList.remove("is-invalid");
-          submitButton.classList.remove("btn-danger");
-          submitButton.classList.add("btn-primary");
-          submitButton.disabled = false; // Habilitar el botón de envío
-        }
-      });
-    });
-  </script>
-
-
-  <!-- SCRIPT PARA MOSTRAR TOOLTIPS RE ERROR-->
-  <script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-bademail"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip-badpassword"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
-  </script>
-
-  <!-- EVITA EL USO DE ESPACIOS, COMILLAS SIMPLES Y DOBLES EN EL EMAIL Y EN EL PASSWORD -->
-  <script>
-    // Función para validar la entrada de contraseña y eliminar espacios, comillas simples y dobles
-    document.getElementById("password").addEventListener("input", function (event) {
-      // Obtener el valor actual del campo de contraseña
-      var passwordInput = event.target.value;
-      // Eliminar los espacios, comillas simples y dobles del valor actual
-      var passwordCleaned = passwordInput.replace(/[ '\"\t\\]/g, "");
-      // Actualizar el valor del campo de contraseña sin espacios, comillas simples y dobles
-      event.target.value = passwordCleaned;
-    });
-
-    // Función para eliminar espacios, comillas simples y dobles del campo de correo electrónico
-    document.getElementById("email").addEventListener("input", function (event) {
-      // Obtener el valor actual del campo de correo electrónico
-      var emailInput = event.target.value;
-      // Eliminar los espacios, comillas simples y dobles del valor actual
-      var emailCleaned = emailInput.replace(/[^\w\s@.]/g, "");
-      // Actualizar el valor del campo de correo electrónico sin espacios, comillas simples y dobles
-      event.target.value = emailCleaned;
-    });
-  </script>
-
-  <!-- LIMITA EL NÚMERO DE CARACTERES DE LAS ENTRADAS-->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      // Definir los máximos de caracteres para cada tipo de campo de entrada
-      var maxCharacters = {
-        "text": 30,
-        "email": 55,
-        "password": 15
-      };
-
-      // Función para manejar el evento de entrada y limitar la longitud de los campos de entrada
-      function handleInput(event) {
-        var inputType = event.target.type.toLowerCase();
-        if (event.target.value.length > maxCharacters[inputType]) {
-          event.target.value = event.target.value.substring(0, maxCharacters[inputType]); // Limita según el tipo de campo de entrada
-        }
-      }
-
-      // Agregar evento de entrada a todos los campos de entrada
-      var inputFields = document.querySelectorAll("input");
-      inputFields.forEach(function (input) {
-        input.addEventListener("input", handleInput);
-      });
-    });
-  </script>
-
-  {% endblock %}
+{% endblock %}

@@ -42,9 +42,8 @@ def validar_entrada(texto):
 def signin():
 
     if current_user.is_authenticated:
-        # print("holaaaaaaaaaaa")
         # print(current_user.get_gmail())
-        return redirect(url_for("profile.welcomeuser"))
+        return redirect(url_for("sales.addsalesworker"))
     if request.method == "POST":
         user = Usuario(0, request.form["email"], request.form["password"])
         logged_user=ModelUser.login(user)
@@ -127,7 +126,7 @@ def signup():
         # Existe el correo en la base de datos
         if existing_email:
             email_found = True
-        # Existe el usuario en la base de datos
+        # Existe el usuario en la base de datos (checar la logica de esto)
         if existing_user:
             user_found = True
         # Cualquier error

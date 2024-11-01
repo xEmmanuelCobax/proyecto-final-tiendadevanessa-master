@@ -19,22 +19,13 @@
     height: 90vh;
     padding: 20px 70px 10px 100px;
     color: white;
-    /* background-image: url(/static/img/fotoside.png);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center; */
 }
 
 /*Por si cambia los colres*/
-/* .parte__izquierda * {
-    color: white;
-
-}
-
 .btn__submit {
     background-color: #275cf6 !important;
     color: white !important;
-} */
+}
 
 /*Seccion izq*/
 .izq__titulo {
@@ -79,8 +70,12 @@
     border-radius: 4px;
     margin: 10px 0;
     border: 1.85px solid #f0f2f6;
-    text-indent: 6px;
+    text-indent: 8px;
     background-color: #f0f2f6bb;
+}
+
+[type="text"]:not([name="password"]) {
+    text-transform: capitalize;
 }
 
 .apellidos__flex {
@@ -141,15 +136,6 @@
 .etiqueta {
     color: #606470;
 }
-
-/*imagen izq*/
-/* .imagen__izq {
-    width: 500px;
-}
-
-.imagen__izq--img {
-    width: 100%;
-} */
 
 
 /*Seccion de la reseña*/
@@ -218,12 +204,6 @@
 }
 
 @media screen and (max-width: 428px) {
-    .registro {
-        /* background-color: #f5f6f7; */
-        /* height: 100dvh; */
-        /* background-color: red; */
-    }
-
     .parte__izquierda {
         display: none;
     }
@@ -264,7 +244,6 @@
         margin-right: 0;
     }
 
-   
     .generate__password {
         margin-top: 7px;
         width: 25%;
@@ -273,7 +252,7 @@
         color: #000;
     }
 
-    #signupForm{
+    #signupForm {
         gap: 10px;
         /* background-color: red; */
     }

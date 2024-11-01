@@ -54,6 +54,9 @@
             <a class="nav__link">{{ email }}</a>
           </li>
           <li class="nav__item">
+            <a class="nav__link" href="{{ url_for('auth.signin') }}">Entrar</a>
+          </li>
+          <li class="nav__item">
             <a class="nav__link" href="{{ url_for('auth.signout') }}">Cerrar Sesión</a>
           </li>
           {% endif %}
@@ -95,6 +98,7 @@
 
 
   <!--Seccion de modales para que todos las paginas pueden tener modales-->
+
   <!-- MOTAL PARA MOSTRAR FLASH -->
   <div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel"
     aria-hidden="true">
@@ -125,6 +129,22 @@
       }
     });
   </script>
+
+
+
+<!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
+<div id="flash-messages" style="display: none;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }}" role="alert">
+    {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+</div>
+
 
 </body>
 
