@@ -216,3 +216,65 @@
 .bi-star-fill {
     color: #ebfe58;
 }
+
+@media screen and (max-width: 428px) {
+    .registro {
+        /* background-color: #f5f6f7; */
+        /* height: 100dvh; */
+        /* background-color: red; */
+    }
+
+    .parte__izquierda {
+        display: none;
+    }
+
+    .registro__container {
+        width: 100vw;
+        background-color: transparent;
+    }
+
+    .registro__titulo {
+        margin-top: -5%;
+    }
+
+    .parte__derecha {
+        /* background-color: yellow; */
+        /* height: 100dvh; */
+        gap: 10px;
+        padding: 4%;
+    }
+
+    .form__input {
+        border: none;
+        width: 95%;
+        margin: 7px;
+        /* background-color: blue; */
+    }
+
+    .apellidos__flex {
+        display: flex;
+        width: 100%;
+        gap: 30px;
+        padding-right: 11px;
+        /* background-color: red; */
+    }
+
+    .form__input--contraseña {
+        width: 70%;
+        margin-right: 0;
+    }
+
+   
+    .generate__password {
+        margin-top: 7px;
+        width: 25%;
+        padding: 0;
+        border: 0;
+        color: #000;
+    }
+
+    #signupForm{
+        gap: 10px;
+        /* background-color: red; */
+    }
+}

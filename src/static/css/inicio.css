@@ -12,8 +12,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* background: linear-gradient(-15deg, #ede6f4, #ecc4e5 10%, #f4c1b6, #f7dacb, #f4f1f0 70%); */
-    background: linear-gradient(-15deg, #8191ef 10%, #7f95e6 , #4ccaf0da, #e6f1f5 80%);
+    background: linear-gradient(-15deg, #ede6f4, #ecc4e5 10%, #f4c1b6, #f7dacb, #f4f1f0 70%);
+    background: linear-gradient(-15deg, rgb(62, 90, 228), #4ccaf0da, #e6f1f5 80%);
     /* background: linear-gradient(-15deg,  #4c96f098, #f0f1f4 70%); */
     /* Cambia los colores según sea necesario */
 }
@@ -23,6 +23,7 @@
     flex-direction: column;
     align-items: center;
     padding: 10px;
+    gap: 6px;
     /* background-color: palegreen; */
 }
 
@@ -47,7 +48,7 @@
     text-transform: uppercase;
     margin-top: 45px;
     line-height: 20px;
-    cursor: default !important ;
+    cursor: default !important;
     /* background-color: red; */
 }
 
@@ -64,12 +65,13 @@
     text-align: center;
     margin-top: 7px;
     color: #8b8d94;
+    color: #464749;
     font-size: 1.2rem;
 }
 
 .inicio__img--figure {
     width: 82%;
-    transition: transform .8s ease-in-out ;
+    transition: transform .8s ease-in-out;
     /* Transición suave */
 }
 
@@ -83,9 +85,22 @@
     /* background-color: yellow; */
 }
 
+.nav-item {
+    display: none;
+}
+
+footer ul {
+    display: none;
+}
+
 
 @media screen and (max-width: 428px) {
-    .inicio__titulo{
+
+    .inicio {
+        background: linear-gradient(-15deg, #7f95e6, #4ccaf0da, #e6f1f5 70%);
+    }
+
+    .inicio__titulo {
         /* background-color: red; */
         font-size: 1.9rem;
         width: 80%;
@@ -93,57 +108,42 @@
 
     }
 
-    .textos__container{
-        gap: 2px;
+    .textos__container {
+        gap: 5px;
     }
 
-    .inicio__desc{
+    .inicio__desc {
         width: 80%;
         font-size: 1rem;
         color: #464749;
     }
 
-    .inicio__btn{
+    .inicio__btn {
         width: 100px;
         height: 35px;
+        font-size: 14.5px;
     }
 
-    .inicio__btn--titulo{
+    .inicio__btn--titulo {
         width: 220px;
         font-size: 1rem;
         margin-top: 25px;
     }
-    .navbar-brand{
-        display: none;
-    }
 
-   
-    .nav__item{
-        padding: 0;
-    }
 
-    .navbar__lista__container{
-        width: 80%;
-    }
 
-    .nav__logo__flex{
-        margin-left: 9%;
-    }
-
-    .navbar__lista{
-        margin-right:10%;
-    }
-
-    .inicio__img--figure{
+    .inicio__img--figure {
         width: 95%;
     }
 
-    .nav-item{
+    .nav-item {
         display: none;
     }
 
-    .border-bottom{
+    .border-bottom {
         display: none;
     }
-    
+
+
+
 }

@@ -1,6 +1,6 @@
 .inicio__sesion {
   background-color: #f0f2f6;
-  height: 90vh;
+  height: 90dvh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -123,4 +123,34 @@
 .imagen__der--img {
   width: 100%;
   /* filter: grayscale(); */
+}
+
+@media screen and (max-width:450px) {
+  .inicio__container {
+    width: 88%;
+    padding: 25px 25px;
+    height: auto;
+  }
+
+  .inicio__titulo{
+    font-size: 2rem;
+  }
+
+  .inicio__desc{
+    font-size: 1rem;
+  }
+
+  .imagen__izq {
+    display: none;
+    /*temporal*/
+    left: 0;
+    z-index: -1;
+  }
+
+  .imagen__der {
+    display: none;
+    bottom: 0;
+    z-index: -2;
+  }
+
 }
