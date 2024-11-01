@@ -26,9 +26,10 @@
   margin-left: 6%;
 }
 
+/*Imagen*/
 .nav__logo--figure {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   margin-bottom: 0;
   /* background-color: #ffc107; */
 }
