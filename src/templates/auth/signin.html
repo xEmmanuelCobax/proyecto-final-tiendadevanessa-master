@@ -34,10 +34,9 @@
 
       <!-- Formulario de contraseña -->
       <div class="input-container">
-        <input type="password" onpaste="return false;" class="form__input" id="password" name="password" minlength="5"
-          maxlength="15" data-bs-toggle="tooltip-badpassword" data-bs-custom-class="custom-tooltip"
-          data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}" placeholder="Contraseña"
-          title="Ingresa un mínimo de 5 caracteres" required />
+        <input type="password" onpaste="return false;" class="form__input" id="password" name="password"
+          data-bs-toggle="tooltip-badpassword" data-bs-custom-class="custom-tooltip"
+          data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}" placeholder="Contraseña" required />
 
         <button type="button" class="toggle-password btn " onclick="togglePassword()">
           <i id="eye-icon" class="bi bi-eye-slash icon"></i>
