@@ -244,7 +244,7 @@
 @media screen and (max-width: 1024px) {
 
     *{
-        outline: 1px solid red;
+        /* outline: 1px solid red; */
     }
     
     .izq-wrapper {
