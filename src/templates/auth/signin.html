@@ -13,71 +13,75 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/inicio_sesion.css') }}" />
 
 <section class="inicio__sesion">
-  <div class="inicio__container">
+  <div class="wrapper-img">
 
-    <h1 class="inicio__titulo">Inicia sesión</h1>
-    <p class="inicio__desc">Hey, ingresa tus datos para iniciar sesión en tu cuenta.</p>
+    <div class="inicio__container">
 
-    <!-- Formulario-->
-    <form method="post" action="">
+      <h1 class="inicio__titulo">Inicia sesión</h1>
+      <p class="inicio__desc">Hey, ingresa tus datos para iniciar sesión en tu cuenta.</p>
 
-      <!-- Formulario de correo -->
-      <div class="input-container">
-        <input type="email" value="{{ email }}" class="form__input {% if email_not_found %}is-invalid{% endif %}"
-          id="email" name="email" maxlength="40" placeholder="Correo Electrónico" data-bs-toggle="tooltip-bademail"
-          data-bs-custom-class="custom-tooltip" required />
-        <!--Logica de python-->
-        {% if email_not_found %}
-        <div class="invalid-feedback">Correo no encontrado.</div>
-        {% endif %}
-      </div>
+      <!-- Formulario-->
+      <form method="post" action="">
 
-      <!-- Formulario de contraseña -->
-      <div class="input-container">
-        <input type="password" onpaste="return false;" class="form__input" id="password" name="password"
-          data-bs-toggle="tooltip-badpassword" data-bs-custom-class="custom-tooltip"
-          data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}" placeholder="Contraseña" required />
+        <!-- Formulario de correo -->
+        <div class="input-container">
+          <input type="email" value="{{ email }}" class="form__input {% if email_not_found %}is-invalid{% endif %}"
+            id="email" name="email" maxlength="40" placeholder="Correo Electrónico" data-bs-toggle="tooltip-bademail"
+            data-bs-custom-class="custom-tooltip" required />
+          <!--Logica de python-->
+          {% if email_not_found %}
+          <div class="invalid-feedback">Correo no encontrado.</div>
+          {% endif %}
+        </div>
 
-        <button type="button" class="toggle-password btn " onclick="togglePassword()">
-          <i id="eye-icon" class="bi bi-eye-slash icon"></i>
+        <!-- Formulario de contraseña -->
+        <div class="input-container">
+          <input type="password" onpaste="return false;" class="form__input" id="password" name="password"
+            data-bs-toggle="tooltip-badpassword" data-bs-custom-class="custom-tooltip"
+            data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}" placeholder="Contraseña" required />
+
+          <button type="button" class="toggle-password btn " onclick="togglePassword()">
+            <i id="eye-icon" class="bi bi-eye-slash icon"></i>
+          </button>
+          <!--Logica de python-->
+          {% if bad_password %}
+          <div class="invalid-feedback">Contraseña invalida.</div>
+          {% endif %}
+
+          <!--Para poder ver la contraseña-->
+          <!-- <script src="../../static/js/ver-contraseña.js"> -->
+          </script>
+        </div>
+
+        <!--Extras-->
+        <div class="inicio__extras">
+          <a data-section="singin" data-value="check in" data-section="singin" data-value="check in"
+            href="{{url_for('auth.signup')}}" class="no__registrado">¿No tienes una cuenta?</a>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn__submit form__input" id="submitButton">
+          <span data-section="singin" data-value="Sign in">Iniciar sesión</span>
         </button>
-        <!--Logica de python-->
-        {% if bad_password %}
-        <div class="invalid-feedback">Contraseña invalida.</div>
-        {% endif %}
+      </form> <!--Fin formulario-->
 
-        <!--Para poder ver la contraseña-->
-        <!-- <script src="../../static/js/ver-contraseña.js"> -->
-        </script>
-      </div>
+      <p class="marca__registrada">Copyright 2024 | Privacy Policy</p>
+    </div>
 
-      <!--Extras-->
-      <div class="inicio__extras">
-        <a data-section="singin" data-value="check in" data-section="singin" data-value="check in"
-          href="{{url_for('auth.signup')}}" class="no__registrado">¿No tienes una cuenta?</a>
-      </div>
+    <!--Ilustraciones-->
+    <div class="imagen__izq">
+      <figure class="imagen__izq--figure">
+        <img src="/static/img/login1.1.webp" class="imagen__izq--img">
+      </figure>
+    </div>
 
-      <!-- Submit button -->
-      <button type="submit" class="btn__submit form__input" id="submitButton">
-        <span data-section="singin" data-value="Sign in">Iniciar sesión</span>
-      </button>
-    </form> <!--Fin formulario-->
-
-    <p class="marca__registrada">Copyright 2024 | Privacy Policy</p>
+    <div class="imagen__der">
+      <figure class="imagen__der--figure">
+        <img src="/static/img/login2.2.webp" class="imagen__der--img">
+      </figure>
+    </div>
   </div>
 
-  <!--Ilustraciones-->
-  <div class="imagen__izq">
-    <figure class="imagen__izq--figure">
-      <img src="/static/img/login1.1.webp" class="imagen__izq--img">
-    </figure>
-  </div>
-
-  <div class="imagen__der">
-    <figure class="imagen__der--figure">
-      <img src="/static/img/login2.2.webp" class="imagen__der--img">
-    </figure>
-  </div>
 </section>
 
 <script src="{{ url_for('static', filename='Js/inicio_validaciones.js') }} "></script>
