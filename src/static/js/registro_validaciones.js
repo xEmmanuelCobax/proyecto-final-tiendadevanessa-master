@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-//IMPEDIR CUALQUIER COSA QUE NO SE LETRA EN TIPOS TEXT
+//IMPEDIR CUALQUIER COSA QUE NO SE LETRA EN TIPOS TEXT (numeros)
 document.addEventListener("DOMContentLoaded", function () {
     // Seleccionar los campos de entrada
     var nameInput = document.getElementById("name");
@@ -41,30 +41,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 //CAMBIO AUTOMATICO PARA VER CONTRASEÑA EN PASSWORD
-// document.addEventListener("DOMContentLoaded", function () {
-//     var passwordField = document.getElementById("password");
+document.addEventListener("DOMContentLoaded", function () {
+    var passwordField = document.getElementById("password");
 
-//     // Cambia el tipo de campo a "text" al recibir el foco
-//     passwordField.addEventListener("focus", function () {
-//         passwordField.type = "text";
-//     });
+    // Cambia el tipo de campo a "text" al recibir el foco
+    passwordField.addEventListener("focus", function () {
+        passwordField.type = "text";
+    });
 
-//     // Cambia el tipo de campo a "password" al perder el foco
-//     passwordField.addEventListener("blur", function () {
-//         passwordField.type = "password";
-//     });
+    // Cambia el tipo de campo a "password" al perder el foco
+    passwordField.addEventListener("blur", function () {
+        passwordField.type = "password";
+    });
 
-//     // Generar una contraseña al hacer clic en el botón de generación
-//     document.getElementById("generatePassword").addEventListener("click", function () {
-//         var length = 10; // Longitud de la contraseña
-//         var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-//         var password = "";
-//         for (var i = 0; i < length; i++) {
-//             password += charset.charAt(Math.floor(Math.random() * charset.length));
-//         }
-//         passwordField.value = password;
-//     });
-// });
+    // Generar una contraseña al hacer clic en el botón de generación
+    document.getElementById("generatePassword").addEventListener("click", function () {
+        var length = 10; // Longitud de la contraseña
+        var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var password = "";
+        for (var i = 0; i < length; i++) {
+            password += charset.charAt(Math.floor(Math.random() * charset.length));
+        }
+        passwordField.value = password;
+    });
+});
 
 
 // ELIMINAR LOS ESPACIOS EN BLANCO DEL PRINCIPIO Y FINAL DE LOS INPUTS APELLIDOS Y NOMBRE
@@ -86,73 +86,99 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-// MINIMO Y MAXIMO DE CARACTERES Y PATRON DE VALIDACION
+
+// LIMITAR NOMBRES Y VALIDAR
 document.addEventListener("DOMContentLoaded", function () {
-    // Definir los máximos, mínimos de caracteres y el patrón para cada tipo de campo de entrada
-    var charLimits = {
-        "text": { min: 2, max: 20, pattern: /^[A-Za-z]{2,21}$/ },
-        "email": { min: 2, max: 40, pattern: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/ },
-        "password": { min: 5, max: 15, pattern: /^[A-Za-z0-9]{6,16}$/ }
-    };
+    // Selecciona los campos a validar
+    const fields = [
+        document.getElementById("name"),
+        document.getElementById("apellidoPaterno"),
+        document.getElementById("apellidoMaterno")
+    ];
 
-    // Función para manejar el evento de entrada, limitar la longitud y validar el patrón
-    function handleInput(event) {
-        var inputType = event.target.type.toLowerCase();
-        var value = event.target.value;
+    // Función de validación y limitación de caracteres
+    function validateField(field) {
+        const value = field.value;
+        const isValid = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]{2,20}$/.test(value);
 
-        // Limitar el número máximo de caracteres
-        if (value.length > charLimits[inputType].max) {
-            event.target.value = value.substring(0, charLimits[inputType].max);
+        // Limitar la longitud del input
+        if (value.length > 20) {
+            field.value = value.substring(0, 20); // Limita a 20 caracteres
         }
 
-        // Validar el patrón y la longitud mínima
-        if (!charLimits[inputType].pattern.test(value)) {
-            event.target.setCustomValidity("El campo solo debe contener letras o numeros y tener entre " + charLimits[inputType].min + " y " + charLimits[inputType].max + " caracteres.");
+        // Validar el patrón
+        if (!isValid) {
+            field.setCustomValidity("Debe tener entre 2 y 20 caracteres y solo contener letras.");
+            field.classList.add("is-invalid");
         } else {
-            event.target.setCustomValidity("");
+            field.setCustomValidity("");
+            field.classList.remove("is-invalid");
         }
     }
 
-    // Agregar evento de entrada a todos los campos de entrada
-    var inputFields = document.querySelectorAll("input[type='text'], input[type='password']");
-    inputFields.forEach(function (input) {
-        input.addEventListener("input", handleInput);
+    // Agregar el evento "input" a cada campo
+    fields.forEach(function (field) {
+        field.addEventListener("input", function () {
+            validateField(field);
+        });
     });
 });
 
-// EVITA EL USO DE ESPACIOS, COMILLAS SIMPLES Y DOBLES EN EL EMAIL Y EN EL PASSWORD 
+
+//LIMITAR CORREO Y CONTRASEÑA Y VALIDARLOS
 document.addEventListener("DOMContentLoaded", function () {
-    // Selecciona todos los campos de entrada de tipo "text", "password" y "email"
-    var inputFields = document.querySelectorAll("input[type='text'], input[type='password'], input[type='email']");
+    // Selecciona los campos a validar
+    const emailField = document.getElementById("email");
+    const passwordField = document.getElementById("password");
 
-    // Función para limpiar el valor del campo según su tipo
-    function cleanInput(event) {
-        var inputType = event.target.type.toLowerCase();
-        var inputValue = event.target.value;
-        var cursorPosition = event.target.selectionStart; // Guarda la posición del cursor
-        var cleanedValue;
-
-        // Aplica el patrón de limpieza según el tipo de campo
-        if (inputType === "password") {
-            cleanedValue = inputValue.replace(/[^a-zA-Z0-9]/g, ""); // Letras y números para "password"
-        } else { // Esta línea ha sido corregida
-            cleanedValue = inputValue.replace(/[^\w\s@.]/g, ""); // Letras, números, "@", ".", y "_" para "email"
+    // Función de validación y limitación de caracteres
+    function validateEmail() {
+        const value = emailField.value;
+        // Limitar la longitud del input
+        if (value.length > 40) {
+            emailField.value = value.substring(0, 40); // Limita a 40 caracteres
         }
 
-        // Si el valor cambió, actualiza el campo y restaura el cursor
-        if (inputValue !== cleanedValue) {
-            event.target.value = cleanedValue;
-            event.target.setSelectionRange(cursorPosition - 1, cursorPosition - 1); // Restaura la posición del cursor
+        // Validar el formato del email
+        const isValid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+        if (!isValid) {
+            emailField.setCustomValidity("Por favor, ingresa un correo electrónico válido.");
+            emailField.classList.add("is-invalid");
+        } else {
+            emailField.setCustomValidity("");
+            emailField.classList.remove("is-invalid");
         }
     }
 
-    // Asocia la función de limpieza a todos los campos seleccionados
-    inputFields.forEach(function (input) {
-        input.addEventListener("input", cleanInput);
-    });
+    function validatePassword() {
+        const value = passwordField.value;
+
+        // Limitar la longitud del input
+        if (value.length > 20) {
+            passwordField.value = value.substring(0, 20); // Limita a 20 caracteres
+        }
+
+        // Validar que la contraseña no esté vacía y cumpla con los requisitos de longitud
+        if (value.length < 5) {
+            passwordField.setCustomValidity("La contraseña debe tener al menos 5 caracteres.");
+            passwordField.classList.add("is-invalid");
+        }
+        // Validar que solo contenga letras y números
+        else if (!/^[a-zA-Z0-9]+$/.test(value)) {
+            passwordField.setCustomValidity("La contraseña solo puede contener letras y números.");
+            passwordField.classList.add("is-invalid");
+        }
+        // Si cumple con todos los requisitos, se considera válida
+        else {
+            passwordField.setCustomValidity("");
+            passwordField.classList.remove("is-invalid");
+        }
+    }
+
+
+    // Agregar el evento "input" a cada campo
+    emailField.addEventListener("input", validateEmail);
+    passwordField.addEventListener("input", validatePassword);
 });
 
 
-
-
-// Validar la contraseña antes de enviar el formulario

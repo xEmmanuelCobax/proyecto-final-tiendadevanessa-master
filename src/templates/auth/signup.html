@@ -83,7 +83,7 @@
           <label class="etiqueta" for="email">Correo Electrónico</label>
           <div class="">
             <input type="email" class="form__input {% if email_found %}is-invalid{% endif %}" id="email" name="email"
-              data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+              data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"  autocomplete="off"
               data-bs-title="{% if email_found %}Este correo electrónico ya ha sido registrado xd.{% endif %}"
               required />
           </div>
@@ -99,7 +99,7 @@
           <label class="etiqueta" for="password">Contraseña</label>
           <div class="input-group"> <!--agrupar el boton-->
             <input type="password" onpaste="return false;" class="form__input--contraseña form__input" id="password"
-              name="password" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
+              name="password" data-bs-toggle="tooltip" autocapitalize="off" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
               required />
 
             <button class="generate__password" type="button" id="generatePassword">
