@@ -2,9 +2,19 @@
 {% block title %} Sign In {% endblock%}
 
 {% block estilos %}
+<script src="https://kit.fontawesome.com/c04f55e6fc.js" crossorigin="anonymous"></script>
+
+
 <style>
   .navbar__principal {
     background-color: #f0f2f6;
+  }
+
+  @media screen and (max-width:425px) {
+    .navbar__principal {
+      background-color: #e6f1f5;
+
+    }
   }
 </style>
 {% endblock %}
@@ -25,6 +35,7 @@
 
         <!-- Formulario de correo -->
         <div class="input-container">
+          <i class="fas fa-at icon"></i>
           <input type="email" value="{{ email }}" class="form__input {% if email_not_found %}is-invalid{% endif %}"
             id="email" name="email" maxlength="40" placeholder="Correo Electrónico" data-bs-toggle="tooltip-bademail"
             data-bs-custom-class="custom-tooltip" required />
@@ -36,6 +47,7 @@
 
         <!-- Formulario de contraseña -->
         <div class="input-container">
+          <i class="fas fa-unlock-alt icon"></i>
           <input type="password" onpaste="return false;" class="form__input" id="password" name="password"
             data-bs-toggle="tooltip-badpassword" data-bs-custom-class="custom-tooltip"
             data-bs-title="{% if bad_password %}Contraseña invalida.{% endif %}" placeholder="Contraseña" required />

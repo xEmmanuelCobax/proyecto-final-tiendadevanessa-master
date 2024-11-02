@@ -46,6 +46,33 @@
   margin-bottom: 5px;
 }
 
+/*Seccion de iconos*/
+.input-container {
+  position: relative;
+}
+
+.input-container input {
+  padding: 10px 10px 10px 40px;
+  /* Espacio para el ícono */
+}
+
+.input-container .icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  /* Centra el ícono verticalmente */
+  font-size: 18px;
+  color: #888;
+}
+
+/* Estilo del ícono del ojo */
+#eye-icon {
+  font-size: 19px;
+  left: -16px;
+  color: #aaaaaae3;
+}
+
 .form__input {
   width: 100%;
   padding: 8px;
@@ -103,11 +130,7 @@
   cursor: pointer;
 }
 
-/* Estilo del ícono del ojo */
-#eye-icon {
-  font-size: 18px;
-  color: #aaaaaae3;
-}
+
 
 /*Seccion de las ilustraciones*/
 
@@ -157,17 +180,22 @@
 
 /*Moviles*/
 @media screen and (max-width:425px) {
-  
-  .wrapper-img{
+  .inicio__sesion {
+    background-color: rgba(182, 225, 244, 0.78);
+    background: linear-gradient(-15deg, rgba(62, 90, 228, 0.902), #4ccaf0da 20%, #e6f1f5 60%);
+  }
+
+  .wrapper-img {
     flex-direction: column;
     height: 100%;
     /* background-color: red; */
   }
 
   .inicio__container {
-    width: 85%;
+    width: 88%;
     padding: 25px 30px;
     gap: 0;
+    box-shadow: 0 4px 5px 0px rgba(186, 185, 185, 0.202);
   }
 
   .inicio__titulo {
