@@ -8,24 +8,24 @@
     display: none;
   }
 
-  .btn-primary{
+  .btn-primary {
     width: 140px;
   }
 </style>
 
 <div class="container-fluid  animate__animated animate__fadeIn">
-  
+
   <div class="d-flex justify-content-center align-items-center" style="height: 90vh">
     <div class="col-xl-10 d-flex flex-column align-items-center  text-center">
       <div class="row">
-        <h1 cl><span >Bienvenido a SaleTrack</span> {{ user }}</h1>
-        <p class="fs-5 my-2"><span>¡Organiza tu trabajo y mejora tu desempeño con nosotros aquí!</span> </p>
+        <h1>Bienvenido a SaleTrack <br><span class="text-capitalize ">¡{{ user }}!</span></h1>
+        <p class="fs-5 my-2 ">¡Organiza tu trabajo y mejora tu desempeño con nosotros aquí!</p>
       </div>
       <a href="{{ url_for('sales.addsalesworker') }}" class="btn btn-primary  mt-2"><span data-section="welcome"
           data-value="shortcut">Entrar</span></a>
     </div>
   </div>
-  
+
 </div>
 
 {% endblock %}
