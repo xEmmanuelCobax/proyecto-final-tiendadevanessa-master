@@ -60,33 +60,26 @@
           <!-- Apellido paterno -->
           <div class="input-container">
             <label class="etiqueta" for="apellidoPaterno">Apellido Paterno</label>
-            <div>
-              <input type="text" onpaste="return false;" class="form__input form__input--paterno" id="apellidoPaterno"
-                name="paternal_lastname" data-bs-toggle="tooltip" data-bs-placement="left"
-                data-bs-custom-class="custom-tooltip" required />
-            </div>
+            <input type="text" onpaste="return false;" class="form__input form__input--paterno" id="apellidoPaterno"
+              name="paternal_lastname" data-bs-toggle="tooltip" data-bs-placement="left"
+              data-bs-custom-class="custom-tooltip" required />
           </div>
 
           <!-- Apellido materno-->
           <div class="input-container">
             <label class="etiqueta" for="apellidoMaterno">Apellido Materno</label>
-            <div>
-              <input type="text" onpaste="return false;" class="form__input form__input--materno" id="apellidoMaterno"
-                name="maternal_lastname" data-bs-toggle="tooltip" data-bs-placement="left"
-                data-bs-custom-class="custom-tooltip" required />
-            </div>
+            <input type="text" onpaste="return false;" class="form__input form__input--materno" id="apellidoMaterno"
+              name="maternal_lastname" data-bs-toggle="tooltip" data-bs-placement="left"
+              data-bs-custom-class="custom-tooltip" required />
           </div>
         </div>
 
         <!-- Correo -->
         <div class="input-container">
           <label class="etiqueta" for="email">Correo Electrónico</label>
-          <div class="">
-            <input type="email" class="form__input {% if email_found %}is-invalid{% endif %}" id="email" name="email"
-              data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip"  autocomplete="off"
-              data-bs-title="{% if email_found %}Este correo electrónico ya ha sido registrado xd.{% endif %}"
-              required />
-          </div>
+          <input type="email" class="form__input {% if email_found %}is-invalid{% endif %}" id="email" name="email"
+            data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip" autocomplete="off"
+            data-bs-title="{% if email_found %}Este correo electrónico ya ha sido registrado xd.{% endif %}" required />
           {% if email_found %}
           <div class="invalid-feedback">
             Este correo ya está registrado
@@ -99,8 +92,8 @@
           <label class="etiqueta" for="password">Contraseña</label>
           <div class="input-group"> <!--agrupar el boton-->
             <input type="password" onpaste="return false;" class="form__input--contraseña form__input" id="password"
-              name="password" data-bs-toggle="tooltip" autocapitalize="off" data-bs-placement="left" data-bs-custom-class="custom-tooltip"
-              required />
+              name="password" data-bs-toggle="tooltip" autocapitalize="off" data-bs-placement="left"
+              data-bs-custom-class="custom-tooltip" required />
 
             <button class="generate__password" type="button" id="generatePassword">
               Generar
@@ -128,6 +121,7 @@
 
 <!-- SCRIPTS -->
 <script src="{{ url_for('static', filename='Js/registro_validaciones.js') }} "></script>
+
 
 
 {% endblock %}

@@ -47,6 +47,7 @@
 
 .navbar__lista__container {
   width: 35%;
+  width: 100%;
   /* background-color: palegreen; */
 }
 
@@ -57,7 +58,7 @@
   padding: 0;
   margin: 0;
   gap: 15px;
-  margin-right: 18%;
+  margin-right: 8%;
   /* background-color: aqua; */
 }
 
