@@ -57,7 +57,7 @@
             <a class="nav__link" href="{{ url_for('auth.signin') }}">Entrar</a>
           </li>
           <li class="nav__item">
-            <a class="nav__link" href="{{ url_for('auth.signout') }}">Cerrar Sesión</a>
+            <a class="nav__link" href="{{ url_for('auth.cerrar_sesion') }}">Cerrar Sesión</a>
           </li>
           {% endif %}
 
@@ -83,7 +83,38 @@
   {% endblock %}
 
 
-  <!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
+
+
+  <!--Seccion de modales para que todos las paginas pueden tener modales-->
+  <!-- MODALES PARA MOSTRAR FLASH -->
+  <div class="modal fade" id="flashModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="flashModalLabel">Mensaje</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="flashModalBody">
+          <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MOSTRAR EL MODAL CON LOS FLASHES  -->
+  <script>
+    $(document).ready(function () {
+      var flashMessages = $('#flash-messages').html().trim();
+      if (flashMessages) {
+        $('#flashModalBody').html(flashMessages); //mostrar en el body
+        $('#flashModal').modal('show');
+      }
+    });
+  </script>
+
+
+  <!-- DIV OCULTO PARA GUARDAR LOS MENSAJES FLASH -->
   <div id="flash-messages" style="display: none;">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -95,55 +126,6 @@
     {% endif %}
     {% endwith %}
   </div>
-
-
-  <!--Seccion de modales para que todos las paginas pueden tener modales-->
-
-  <!-- MOTAL PARA MOSTRAR FLASH -->
-  <div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="flashModalLabel">Notification</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" id="flashModalBody">
-          <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- MOSTRAR EL MODAL PARA MOSTRAR ERRORES Y MENSAJES  -->
-  <script>
-    $(document).ready(function () {
-      var flashMessages = $('#flash-messages').html().trim();
-      if (flashMessages) {
-        $('#flashModalBody').html(flashMessages);
-        $('#flashModal').modal('show');
-      }
-    });
-  </script>
-
-
-
-<!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
-<div id="flash-messages" style="display: none;">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-  {% for category, message in messages %}
-  <div class="alert alert-{{ category }}" role="alert">
-    {{ message }}
-  </div>
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-</div>
 
 
 </body>

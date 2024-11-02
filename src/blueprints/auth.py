@@ -46,9 +46,9 @@ def signin():
         return redirect(url_for("sales.addsalesworker"))
     if request.method == "POST":
         user = Usuario(0, request.form["email"], request.form["password"])
-        logged_user=ModelUser.login(user)
+        logged_user = ModelUser.login(user)
         # if current_user.get_gmail() == user.get_gmail:
-        #     return render_template("auth/signin.html") 
+        #     return render_template("auth/signin.html")
         if logged_user is not None:
             if logged_user.contraseña:
                 login_user(logged_user)
@@ -67,7 +67,7 @@ def signin():
 def signup():
     # Errores
     email_found = False  # El email ya esta registrado
-    user_found = False  #   El usuario ya ha sido encontradoin
+    user_found = False  # El usuario ya ha sido encontradoin
     ErrorNombre = False
     ErrorAP_PAT = False
     ErrorAP_MAT = False
@@ -131,6 +131,7 @@ def signup():
             user_found = True
         # Cualquier error
         if existing_email or existing_user:
+            flash("El correo electrónico ingresado ya está en uso", "warning")
             return render_template(
                 "auth/signup.html",
                 user_found=user_found,
@@ -159,7 +160,7 @@ def signup():
             registration_successful = True
             user = f"{name} {apellido_paterno} {apellido_materno} "
             print("#################### Renderizar auth/signin ####################>")
-            flash(f"¡Gracias por registrarte, {user}!", "éxito")
+            flash(f"¡Gracias por registrarte, {user}!", "success")
             return render_template(
                 "auth/signup.html", registration_successful=registration_successful
             )
@@ -170,8 +171,8 @@ def signup():
 
 # region Cerrar sesión
 @login_required
-@auth.route("/signout")
-def signout():
+@auth.route("/cerrar_sesion")
+def cerrar_sesion():
     if current_user.is_authenticated:
         logout_user()
         flash("Sesión cerrada correctamente", "success")
