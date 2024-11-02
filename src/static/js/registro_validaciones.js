@@ -41,30 +41,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 //CAMBIO AUTOMATICO PARA VER CONTRASEÑA EN PASSWORD
-document.addEventListener("DOMContentLoaded", function () {
-    var passwordField = document.getElementById("password");
+// document.addEventListener("DOMContentLoaded", function () {
+//     var passwordField = document.getElementById("password");
 
-    // Cambia el tipo de campo a "text" al recibir el foco
-    passwordField.addEventListener("focus", function () {
-        passwordField.type = "text";
-    });
+//     // Cambia el tipo de campo a "text" al recibir el foco
+//     passwordField.addEventListener("focus", function () {
+//         passwordField.type = "text";
+//     });
 
-    // Cambia el tipo de campo a "password" al perder el foco
-    passwordField.addEventListener("blur", function () {
-        passwordField.type = "password";
-    });
+//     // Cambia el tipo de campo a "password" al perder el foco
+//     passwordField.addEventListener("blur", function () {
+//         passwordField.type = "password";
+//     });
 
-    // Generar una contraseña al hacer clic en el botón de generación
-    document.getElementById("generatePassword").addEventListener("click", function () {
-        var length = 10; // Longitud de la contraseña
-        var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        var password = "";
-        for (var i = 0; i < length; i++) {
-            password += charset.charAt(Math.floor(Math.random() * charset.length));
-        }
-        passwordField.value = password;
-    });
-});
+//     // Generar una contraseña al hacer clic en el botón de generación
+//     document.getElementById("generatePassword").addEventListener("click", function () {
+//         var length = 10; // Longitud de la contraseña
+//         var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+//         var password = "";
+//         for (var i = 0; i < length; i++) {
+//             password += charset.charAt(Math.floor(Math.random() * charset.length));
+//         }
+//         passwordField.value = password;
+//     });
+// });
 
 
 // ELIMINAR LOS ESPACIOS EN BLANCO DEL PRINCIPIO Y FINAL DE LOS INPUTS APELLIDOS Y NOMBRE
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var charLimits = {
         "text": { min: 2, max: 20, pattern: /^[A-Za-z]{2,21}$/ },
         "email": { min: 2, max: 40, pattern: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/ },
-        "password": { min: 5, max: 15, pattern: /^[A-Za-z]{5,15}$/ }
+        "password": { min: 5, max: 15, pattern: /^[A-Za-z0-9]{6,16}$/ }
     };
 
     // Función para manejar el evento de entrada, limitar la longitud y validar el patrón
