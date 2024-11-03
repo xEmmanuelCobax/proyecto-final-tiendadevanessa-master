@@ -11,6 +11,27 @@
   .btn-primary {
     width: 140px;
   }
+
+  .user-color {
+    background-image: linear-gradient(90deg, rgb(62, 90, 228), #4ccaf0da, #bde1ee 80%, rgb(62, 90, 228));
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 100%;
+    /* Hace el degradado más largo para que se mueva */
+    animation: gradient-scroll 5s ease-in-out infinite alternate;
+    /* Alterna la animación para que vaya en ambas direcciones */
+  }
+
+  /* Animación para el efecto de desplazamiento */
+  @keyframes gradient-scroll {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    100% {
+      background-position: 100% 50%;
+    }
+  }
 </style>
 
 <div class="container-fluid  animate__animated animate__fadeIn">
@@ -18,7 +39,10 @@
   <div class="d-flex justify-content-center align-items-center" style="height: 90vh">
     <div class="col-xl-10 d-flex flex-column align-items-center  text-center">
       <div class="row">
-        <h1>Bienvenido a Fynex <br><span class="text-capitalize ">¡{{ user }}!</span></h1>
+        <h1>Bienvenido a Fynex <br>
+          <span class="text-capitalize user-color ">¡{{ user }}!</span>
+        </h1>
+
         <p class="fs-5 my-2 ">¡Organiza tu trabajo y mejora tu desempeño con nosotros aquí!</p>
       </div>
       <a href="{{ url_for('sales.addsalesworker') }}" class="btn btn-primary  mt-2"><span data-section="welcome"
@@ -27,5 +51,6 @@
   </div>
 
 </div>
+
 
 {% endblock %}
