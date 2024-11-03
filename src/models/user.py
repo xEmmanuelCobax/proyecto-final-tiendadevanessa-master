@@ -25,7 +25,7 @@ class Usuario(UserMixin):
         super().__init__()
         self.id = id
         self.correo = correo
-        self.contraseña = generate_password_hash(contraseña)
+        self.contraseña = contraseña
         self.tipo_usuario = tipo_usuario
         self.nombres = nombres
         self.ap_pat = ap_pat
@@ -39,19 +39,24 @@ class Usuario(UserMixin):
         else:
             self._conection = None
     # region is_active
+
     def is_active(self):
         return self.ESTATUS == 1
     # region is_anonymous
+
     def is_anonymous(self):
         return False
     # region metodos get
+
     def get_name(self):
         return f"{self.nombres} {self.ap_pat} {self.ap_mat}"
+
     def get_tipo_usuario(self):
         return self.tipo_usuario
+
     def get_gmail(self):
         return f"{self.correo}"
-   
+
     # region check_password
     @classmethod
     def check_password(self, hashed_password, password):
@@ -88,18 +93,29 @@ class ModelUser:
             if rows:
                 # Asume que el correo es único y solo devuelve una fila
                 row = rows[0]  # Primera fila
-                print("<-------------------- Conexión exitosa (ModelUser) -------------------->")
+                print(
+                    "<-------------------- Conexión exitosa (ModelUser) -------------------->")
                 # Crear un objeto Usuario a partir de los datos de la fila
                 logged_user = Usuario(
                     row[0],  # ID_USUARIO
                     row[4],  # CORREO
-                    row[5],  
+                    row[5],
                     row[6],  # NOMBRE_ROL
                     row[1],  # NOMBRE
                     row[2],  # AP_PAT
                     row[3],  # AP_MAT
                 )
-                return logged_user
+
+                print(f"Contraseña ingresada desde el form: {user.contraseña}")
+                print(
+                    "Contraseña (hash) almacenada en la base de datos:", row[5])
+                # Validar la contraseña ingresada con el hash almacenado
+                if Usuario.check_password(row[5], user.contraseña):
+                    print("Contraseña correcta")
+                    return logged_user
+                else:
+                    print("Contraseña incorrecta")
+                    return None
             else:
                 print(
                     "<-------------------- Usuario no encontrado -------------------->"

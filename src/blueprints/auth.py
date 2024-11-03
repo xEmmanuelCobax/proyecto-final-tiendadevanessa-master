@@ -46,6 +46,7 @@ def signin():
         return redirect(url_for("sales.addsalesworker"))
     if request.method == "POST":
         user = Usuario(0, request.form["email"], request.form["password"])
+        
         logged_user = ModelUser.login(user)
         # if current_user.get_gmail() == user.get_gmail:
         #     return render_template("auth/signin.html")
@@ -56,9 +57,10 @@ def signin():
                 print(logged_user.tipo_usuario)
                 return redirect(url_for("profile.welcomeuser"))
             else:
-                flash("Contraseña incorrecta", "error")
+                flash("Contraseña no incorrecta", "danger")
         else:
-            flash("Correo no encontrado", "error")
+            flash("Contraseña incorrecta", "danger")
+
     return render_template("auth/signin.html")
 
 
