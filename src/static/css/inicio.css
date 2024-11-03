@@ -86,7 +86,7 @@
 .inicio__img--img {
     display: block;
     width: 100%;
-    mask-image: linear-gradient(black, transparent 130%);
+    mask-image: linear-gradient(black, transparent 90%);
     /* background-color: yellow; */
     mask-repeat: no-repeat;
 }
