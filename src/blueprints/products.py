@@ -74,16 +74,20 @@ def warehouse():
 # endregion
 
 
-# region manejar productos
+# region manejar productos (SOLO GERENTES O ADMINS)
 @products.route("/manage_products", methods=["GET", "POST"])
 def manage_products():
     # Verificar autenticación y permisos
     # Capa 1: Verificar si el usuario está autenticado
     if current_user.is_authenticated:   
         tipo_usuario = current_user.get_tipo_usuario()
-        # Capa 2: Verificar si el usuario es administrador
+        # Capa 2: Verificar si el usuario es administrador o gerente
         if tipo_usuario not in ["Admin", "Gerente"]:
-            return redirect(url_for("shortcut.shortcut"))
+            flash("Esta seccion es solo para gerentes", "danger")
+            # Redirige a la URL anterior o a una página por defecto
+            return redirect(request.referrer or url_for("products.warehouse"))
+
+            # return redirect(url_for("products.warehouse")) 
         # Capa 3: Procesar los formularios POST
         if request.method == "POST":
             form_type = request.form.get("form_type")
@@ -483,7 +487,12 @@ def manage_intermediary():
         tipo_usuario = current_user.get_tipo_usuario()
         # Capa 2: Verificar si el usuario es administrador
         if tipo_usuario not in ["Admin", "Gerente"]:
-            return redirect(url_for("shortcut.shortcut"))
+            flash("Esta seccion es solo para gerentes o administradores", "danger")
+            # Redirige a la URL anterior o a una página por defecto
+            return redirect(request.referrer or url_for("products.warehouse"))
+
+
+            # return redirect(url_for("shortcut.shortcut"))
         #  Capa 3: Manejar la lógica del formulario POST
         if request.method == "POST":
             action = request.form.get("action")
@@ -792,7 +801,9 @@ def manage_company():
         tipo_usuario = current_user.get_tipo_usuario()
         # Capa 2: Verificar si el usuario es administrador
         if tipo_usuario not in ["Admin", "Gerente"]:
-            return redirect(url_for("shortcut.shortcut"))
+            flash("Esta seccion es solo para gerentes o administradores", "danger")
+            return redirect(request.referrer or url_for("products.warehouse"))  # Redirige a la URL anterior o a una página por defecto
+
         # Capa 3: Manejar la lógica del formulario POST
         if request.method == "POST":
             action = request.form.get("action")

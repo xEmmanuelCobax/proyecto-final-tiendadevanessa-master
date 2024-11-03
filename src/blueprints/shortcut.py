@@ -21,7 +21,7 @@ def shortcuts():
     # Capa 1: Verificar si el usuario está autenticado
     if "email" not in session:
         print("#################### NO HAY SESSION ####################>")
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
     print("#################### FIN RenderT(index.html) ####################>")
     return render_template("shortcut.html", IsAdmin=session["ES_ADMIN"])
 # endregion

@@ -274,7 +274,11 @@ def reportsales():
         tipo_usuario = current_user.get_tipo_usuario()
         # Capa 2: Verificar si el usuario es administrador
         if tipo_usuario not in ["Admin", "Gerente"]:
-            return redirect(url_for("shortcut.shortcut"))
+            flash("Esta seccion es solo para gerentes o administradores", "danger")
+            # Redirige a la URL anterior o a una página por defecto
+            return redirect(request.referrer or url_for("products.warehouse"))
+
+
         # Capa 3: Procesar la solicitud POST
         if request.method == "POST":
             sale_id = request.form.get("sale_id")

@@ -29,7 +29,10 @@ def manage_accounts():
         tipo_usuario = current_user.get_tipo_usuario()
         # Capa 2: Verificar si el usuario es administrador
         if tipo_usuario not in ["Admin", "Gerente"]:
-            return redirect(url_for("shortcut.shortcut"))
+            # Redirige a la URL anterior o a una página por defecto
+            flash("Esta seccion es solo para gerentes o administradores", "danger")
+            return redirect(request.referrer or url_for("products.warehouse"))
+
         # Capa 3: Manejar la lógica del formulario POST
         if request.method == "POST":
             action = request.form.get("action")
