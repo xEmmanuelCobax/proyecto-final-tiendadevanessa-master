@@ -44,7 +44,7 @@ endblock %} {% block content %}
               {% for relation in relations %}
               <tr data-relation-id="{{ relation[2] }}">
                 <th scope="row">{{ relation[0] }}</th>
-                <td>{{ relation[1] }}</td>
+                <td><span class="tabla-compañia">{{relation[1] }}</span></td>
                 <td class="text-center d-flex justify-content-center align-items-center">
                 </td>
                 <td class="text-center d-flex justify-content-center align-items-center">
@@ -94,10 +94,10 @@ endblock %} {% block content %}
           </div>
 
           <div class="text-end">
-            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
               Cerrar
             </button>
-            <button id="submitProductSave" type="submit" class="btn btn-success">
+            <button id="submitProductSave" type="submit" class="btn btn-primary">
               Guardar
             </button>
           </div>

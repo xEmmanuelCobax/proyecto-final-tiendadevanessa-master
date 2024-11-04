@@ -19,11 +19,11 @@
     <!-- <p class="desc-inventario">Aquí encontrarás las herramientas necesarias para administrar y eliminar tus productos de
       manera eficiente. -->
 
-      <!-- <br> -->
-      <button type="button" class="btn btn-primary btn-mover" data-bs-toggle="modal" data-bs-target="#createmodal"
-        data-bs-whatever="@mdo">
-        <span data-section="manage-werehouse" data-value="Create">Crear producto</span>
-      </button>
+    <!-- <br> -->
+    <button type="button" class="btn btn-primary btn-mover" data-bs-toggle="modal" data-bs-target="#createmodal"
+      data-bs-whatever="@mdo">
+      <span data-section="manage-werehouse" data-value="Create">Crear producto</span>
+    </button>
 
     <div class="table-responsive" style="max-height: 70vh; ">
       <!--tabla-->
@@ -58,12 +58,20 @@
 
             <td>{{ product[1] }}</td>
 
-            <td>{{ product[9] }}</td>
+            <td><span class="tabla-compañia">{{ product[9] }}</span></td>
+
 
             <td>{{ product[5] }} {{ product[6] }} {{ product[7] }}</td>
 
-            <td>{{ product[3] }}</td>
-
+            <td>
+              {% if product[3] > 70 %}
+              <span class="alto-stock">{{ product[3] }} - Alto Stock</span>
+              {% elif product[3] >= 50 %}
+              <span class="medio-stock">{{ product[3] }} - Medio Stock</span>
+              {% else %}
+              <span class="bajo-stock">{{ product[3] }} - Bajo Stock</span>
+              {% endif %}
+            </td>
             <td>${{ product[2] }} </td>
             <td class="text-center d-flex justify-content-center align-items-center">
               <button type="button" class="btn btn-secondary " data-bs-toggle="modal" data-bs-target="#editproduct"
@@ -175,10 +183,10 @@
             </div>
           </div>
           <div class="text-end">
-            <button type="button" class="btn btn-warning me-2" data-bs-dismiss="modal" onclick="limpiarModal()">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal" onclick="limpiarModal()">
               Cerrar
             </button>
-            <button id="submitProductSave" type="submit" class="btn btn-success">
+            <button id="submitProductSave" type="submit" class="btn btn-primary">
               Guardar productos
             </button>
           </div>
