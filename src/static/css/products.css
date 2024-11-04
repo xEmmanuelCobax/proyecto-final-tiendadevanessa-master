@@ -15,7 +15,13 @@
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
+    /* outline: 1px solid red; */
 }
+
+.dropdown-menu{
+    width: 450px;
+}
+
 
 section{
     background-color: var(--color-fondo);
@@ -217,28 +223,21 @@ td {
     transition: all 0.3s ease-in-out;
 }
 
+
 .custom-btn {
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-    /* Ligero redondeo para las esquinas */
-    padding: 20px;
-    /* Espaciado interno para mantener proporción del contenido */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 6px 8px rgba(0, 0, 0, 0.1);
-    /* Sombra externa para efecto 3D */
-    width: 97px;
-    /* Tamaño cuadrado */
-    height: 97px;
-    /* Tamaño cuadrado */
+    background-color: red ;
+    border: 3px solid #ffffff;
+    border-radius: 10px;
+    width: 100px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     overflow: hidden;
-    background-image: linear-gradient(to top,
-            #ffffff,
-            #f1f1f1);
-    /* Gradiente suave para efecto 3D */
+    background-color: rgb(247, 247, 247);
+    box-shadow: 0 2px 4px rgba(126, 123, 123, 0.1), 0 6px 8px rgba(0, 0, 0, 0.1);
+   
 }
 
 .custom-btn:hover {

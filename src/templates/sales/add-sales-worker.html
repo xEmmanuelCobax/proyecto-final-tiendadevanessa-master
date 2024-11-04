@@ -121,13 +121,15 @@ endblock %} {% block content %}
         <div class="col-md col-lg-6 my-2">
           <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
           <div class="input-group">
-            <input id="searchInput" class="form-control" type="search" placeholder="Buscar producto"
+            <!--Buscador-->
+            <input id="searchInput" class="form-control buscador" type="search" placeholder="Buscar producto"
               aria-label="Search Product" />
-            <button id="addButton" type="button" class="btn btn-outline-primary btn-sm ms-2">
+
+            <button id="addButton" type="button" class="btn btn-outline-primary btn-sm " style="margin: 0;">
               <span data-section="Sale" data-value="Add Product">Agregar producto</span>
             </button>
           </div>
-          <div id="searchResults" class="dropdown-menu"></div>
+          <div id="searchResults" class="dropdown-menu "></div>
         </div>
         <div class="col-md col-lg-6 my-2">
           <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
@@ -155,15 +157,16 @@ endblock %} {% block content %}
 
         <div
           class="buttons mt-3 border border-Tertiary p-3 rounded d-flex flex-wrap justify-content-center align-items-center"
-          style="max-height: 600px; overflow-y: auto">
+          style="max-height: 600px; overflow-y: auto; background-color: rgba(245, 245, 245, 0.797);">
           {% for product in products %}
-          <div class="col mb-2 d-flex justify-content-center align-items-center" style="display: none">
-            <a class="btn custom-btn mx-1 product-btn" data-id="{{ product[0] }}" data-name="{{ product[1] }}"
+          <div class="col mb-2 d-flex justify-content-center align-items-center " >
+            <a class="btn custom-btn mx-1 product-btn " data-id="{{ product[0] }}" data-name="{{ product[1] }}"
               data-price="{{ product[2] }}" data-amount="{{ product[3] }}" data-status="{{ product[4] }}"
               data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
               title="ID: {{ product[0] }} &#10;Nombre: {{ product[1] }} &#10;Precio: {{ product[2] }}$ &#10;Stock: {{ product[3] }} &#10;Estado: {{ product[4] }}">
-              <div class="d-flex flex-column align-items-center">
-                <span class="material-symbols-outlined"> inventory_2 </span>
+              <div class="d-flex flex-column align-items-center  ">
+                <i class="bi bi-archive-fill"></i>
+                <!-- <span class="material-symbols-outlined"> inventory_2 </span> -->
                 <span class="product-name"> {{ product[1] }} </span>
               </div>
             </a>
@@ -224,14 +227,16 @@ endblock %} {% block content %}
           </div>
         </div>
 
+        <!--Pa que no salga-->
         <div class="table-responsive" style="max-height: 400px; overflow-y: auto">
+          <!--Tabla de cambio-->
           <table id="saleTable" class="table table-bordered table-striped table-rounded mb-3">
             <thead>
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">id</th>
                 <th scope="col">
-                  <span data-section="Sale" data-value="Name">nombre</span>
+                  <span data-section="Sale" data-value="Name">Nombre</span>
                 </th>
                 <th scope="col">
                   <span data-section="Sale" data-value="Quantity">Cantidad</span>
@@ -253,6 +258,18 @@ endblock %} {% block content %}
     </div>
   </div>
 </section>
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- TOAST DE ALERTAS-->
 <div id="toastContainer" aria-live="assertive" aria-atomic="true" class="mt-5 position-fixed p-3 end-0 bottom-0"></div>
@@ -588,10 +605,10 @@ endblock %} {% block content %}
         const listItem = document.createElement("div");
         listItem.classList.add("dropdown-item");
         listItem.innerHTML = `
-          <div class="product-info border-bottom border-2 border-dark">
-            <div class="divider">ID: ${product.dataset.id}</div>
+          <div class="product-info border-bottom border-2 border-gray desc-inventario">
+            
             <div>Nombre: ${product.dataset.name}</div>
-            <div>Precio: ${product.dataset.price}$</div>
+            <div>Precio: $${product.dataset.price}</div>
             <div>Stock: ${product.dataset.amount}</div>
           </div>
         `;
