@@ -29,7 +29,7 @@
     height: 100%;
     /* Altura del elemento */
     /* filter: blur(5px); */
-    background: linear-gradient(to right, rgba(90, 88, 88, 0.105), transparent);
+    /* background: linear-gradient(to right, rgba(90, 88, 88, 0.105), transparent); */
 }
 
 .menu__flex {

@@ -8,6 +8,7 @@
     --color-banda-amarillo: rgb(252, 238, 216);
     --color-banda-amarillo-text: rgb(185, 87, 50);
     --color-acento: rgb(46, 101, 246);
+    --color-fondo: #f1f0f333;
 }
 
 * {
@@ -16,10 +17,13 @@
     box-sizing: border-box;
 }
 
+section{
+    background-color: var(--color-fondo);
+}
+
 .inventario {
     display: flex;
     /* background-color: rgb(119, 255, 0); */
-    /* background-color: #f1f0f3de; */
 }
 
 .titulo-inventario {
@@ -64,7 +68,6 @@
 /*pagina de provedores*/
 .proveedores {
     display: flex;
-    background-color: #f1f0f3de;
 }
 
 .proveedores__contenedor {
@@ -75,25 +78,9 @@
 /*pagina de prodcutos*/
 .productos {
     display: flex;
-    /* background-color: #f1f0f3de; */
 }
 
-/* .buscador-container {
-    position: relative;
-    display: inline-block;
-}
 
-.buscador-container i {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    color: #888;
-}
-
-.buscador-container input {
-    padding-left: 50px;
-} */
 .buscador-container {
     display: flex;
     /* background-color: red; */
@@ -105,7 +92,6 @@
     border: 2px solid var(--color-celeste);
     font-size: 14px;
     color: var(--color-texto);
-    box-shadow: 0px 4px 10px -3px rgba(83, 81, 81, 0.435);
 }
 
 .buscador-btn {
@@ -118,6 +104,7 @@
 }
 
 .tabla {
+    width: 100%;
     /* background-color: rgba(128, 128, 128, 0.453); */
 }
 
@@ -182,18 +169,18 @@ td {
 /*pagina de reporte de ventas*/
 .reporteVentas {
     display: flex;
-    background-color: #f1f0f3de;
+    /* background-color: #f1f0f3de; */
 }
 
 .reporteVentas__container {
     padding: 20px;
     width: 100%;
+    /* background-color: red; */
 }
 
 /*pagina de reporte de ventas*/
 .ventas {
     display: flex;
-    background-color: #f1f0f3de;
     /* background-color: red; */
 }
 
@@ -207,13 +194,11 @@ td {
 /*pagina de reporte de usuarios*/
 .usuarios {
     display: flex;
-    background-color: #f1f0f3de;
 }
 
 .usuarios__container {
     padding: 20px;
     width: 90%;
-
 }
 
 /* < !-- ESTILOS PARA EL DISEÑO DE LOS BOTONES AL AGREGAR PRODUCTOS--> */

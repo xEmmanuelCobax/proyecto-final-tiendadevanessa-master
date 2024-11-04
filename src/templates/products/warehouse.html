@@ -1,5 +1,9 @@
-{% extends 'top navbar/top-navbar.html' %} {% block title %} Inventario {%
-endblock %} {% block content %}
+{% extends 'top navbar/top-navbar.html' %}
+{% block title %} Inventario {%endblock %}
+{% block estilos%}
+
+{% endblock%}
+{% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}" />
 
 
@@ -18,8 +22,7 @@ endblock %} {% block content %}
         <!-- <i class="fas fa-door-open form__logo--icon"></i> -->
 
         <input class="form-control buscador" type="search" placeholder="Buscar" name="search_term" />
-        <button class="buscador-btn" type="submit"><span data-section="werehouse"
-            data-value="Search">Buscar</span>
+        <button class="buscador-btn" type="submit"><span data-section="werehouse" data-value="Search">Buscar</span>
         </button>
       </div>
       <!--Btn-->
@@ -28,7 +31,7 @@ endblock %} {% block content %}
 
     <div class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start">
       <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
-        <table class="tabla  table-striped  mb-3">
+        <table class="tabla ">
           <!-- Mantenemos las clases existentes y agregamos espaciado -->
           <thead class="tabla-encabezado">
             <tr class="">

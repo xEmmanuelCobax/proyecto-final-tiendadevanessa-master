@@ -21,8 +21,9 @@ endblock %} {% block content %}
 
         <div class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start">
           <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
-            <table class="table table-bordered table-striped table-rounded mb-3" id="intermedaries-table">
-              <thead>
+            <!--Tabla-->
+            <table class="tabla" id="intermedaries-table">
+              <thead class="tabla-encabezado">
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">
@@ -37,7 +38,7 @@ endblock %} {% block content %}
                   </th>
                 </tr>
               </thead>
-              <tbody class="table-group-divider">
+              <tbody class="tabla-cuerpo">
                 {% for relation in relations %}
                 <tr data-relation-id="{{ relation[2] }}" data-first-name="{{ relation[3] }}"
                   data-last-name-paternal="{{ relation[4] }}" data-last-name-maternal="{{ relation[5] }}">

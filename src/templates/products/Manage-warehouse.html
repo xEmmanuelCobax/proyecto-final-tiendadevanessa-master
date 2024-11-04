@@ -22,37 +22,31 @@
 
     <div class="table-responsive" style="max-height: 70vh; ">
       <!--tabla-->
-      <table class="table table-bordered table-striped table-rounded mb-3" id="product-table">
-        <thead>
+      <table class="tabla" id="product-table">
+        <thead class="tabla-encabezado">
           <tr>
             <th scope="col">#</th>
-
             <th scope="col">
               <span data-section="werehouse" data-value="Name Product">Nombre del producto</span>
             </th>
-
             <th scope="col">
               <span data-section="werehouse" data-value="Company">Compañia</span>
             </th>
-
             <th scope="col">
               <span data-section="werehouse" data-value="Name Intermedary">Nombre del intermediario</span>
             </th>
-
             <th scope="col">
               <span data-section="werehouse" data-value="Stock">Stock</span>
             </th>
-
             <th scope="col">
               <span data-section="werehouse" data-value="Unit Price">Precio unitario</span>
             </th>
-
             <th scope="col">
               <span data-section="manage-company" data-value="Actions">Acciones</span>
             </th>
           </tr>
         </thead>
-        <tbody class="table-group-divider">
+        <tbody class="tabla-cuerpo">
           {% for product in products %}
           <tr data-product-id="{{ product[0] }}">
             <th scope="row">{{ product[0] }}</th>

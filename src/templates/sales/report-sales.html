@@ -10,11 +10,10 @@
   {% include 'top navbar/top-width-navbar.html' %}
 
   <div class="reporteVentas__container">
-    <div class="row">
       <div class="col-lg-12 my-2">
         <div class="table-container">
-          <table class="table table-bordered table-striped table-rounded mb-3">
-            <thead>
+          <table class="tabla">
+            <thead class="tabla-encabezado">
               <tr>
                 <th scope="col">ID</th>
                 <th scope="col"><span data-section="warehouse" data-value="Date">Fecha</span></th>
@@ -24,7 +23,7 @@
                 <th scope="col"><span data-section="warehouse" data-value="Actions">Acciones</span></th>
               </tr>
             </thead>
-            <tbody class="table-group-divider">
+            <tbody class="tabla-cuerpo">
               {% for sale in sales %}
               <tr>
                 <th scope="row">{{ sale[0] }}</th>
