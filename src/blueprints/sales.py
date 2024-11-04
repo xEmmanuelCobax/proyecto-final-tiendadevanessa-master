@@ -36,8 +36,6 @@ def addsalesworker():
     ErrorProductoInexistente = False
     # Capa 1: Verificar si el usuario está autenticado
     if current_user.is_authenticated:
-       
-        
         if request.method == "POST":
             try:
                 print("<#################### MakeSales ####################")
