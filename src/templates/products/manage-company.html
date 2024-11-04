@@ -9,7 +9,11 @@ endblock %} {% block content %}
   {% include 'top navbar/top-width-navbar.html' %}
 
   <div class="proveedores__contenedor">
+    <h2 class="titulo-inventario">Proveedores</h2>
+    <p class="desc-inventario">Aquí encontrarás las herramientas necesarias para gestionar y eliminar las compañías
+      asociadas.
 
+    </p>
 
     <div class="d-flex flex-wrap mt-3">
       <!-- Formulario para el primer botón -->
@@ -44,16 +48,20 @@ endblock %} {% block content %}
                 <td class="text-center d-flex justify-content-center align-items-center">
                 </td>
                 <td class="text-center d-flex justify-content-center align-items-center">
-                  <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal"
+                  <button type="button" class="btn btn-secondary mx-2" data-bs-toggle="modal"
                     data-bs-target="#editCompany" data-company-name="{{ relation[1] }}"
                     data-Intermediary-id="{{ relation[0] }}"
                     onclick="setEditProductId('{{ relation[0] }}', '{{ relation[1] }}')">
-                    <span class="material-symbols-outlined">edit_square</span>
+                    <i class="bi bi-pencil-square"></i>
+
+                    <!-- <span class="material-symbols-outlined">edit_square</span> -->
                   </button>
                   <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal"
                     data-bs-target="#deleteCompany" data-Intermediary-id="{{ relation[0] }}"
                     onclick="setIntermediaryId('{{ relation[0] }}')">
-                    <span class="material-symbols-outlined">delete_forever</span>
+                    <i class="bi bi-trash3-fill"></i>
+
+                    <!-- <span class="material-symbols-outlined">delete_forever</span> -->
                   </button>
                 </td>
               </tr>

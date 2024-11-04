@@ -5,66 +5,73 @@ endblock %} {% block content %}
 
 <section class="intermediarios">
 
-    {% include 'top navbar/top-width-navbar.html' %}
+  {% include 'top navbar/top-width-navbar.html' %}
 
-    <div class="intermediarios__contenedor">
+  <div class="intermediarios__contenedor">
+    <h2 class="titulo-inventario">Intermediarios</h2>
+    <p class="desc-inventario">Aquí podrás acceder a las herramientas para administrar y eliminar a tus repartidores.
+
+    </p>
 
 
-      <div class="d-flex flex-wrap mt-3">
-        <!-- Formulario para el primer botón -->
-        <form class="mb-2 mb-md-0">
-          <button type="button" class="btn btn-primary me-5" data-bs-toggle="modal" data-bs-target="#createmodal"
-            data-bs-whatever="@mdo">
-            <span>Crear intermediario</span>
-          </button>
-        </form>
+    <div class="d-flex flex-wrap mt-3">
+      <!-- Formulario para el primer botón -->
+      <form class="mb-2 mb-md-0">
+        <button type="button" class="btn btn-primary me-5" data-bs-toggle="modal" data-bs-target="#createmodal"
+          data-bs-whatever="@mdo">
+          <span>Crear intermediario</span>
+        </button>
+      </form>
 
-        <div class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start">
-          <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
-            <!--Tabla-->
-            <table class="tabla" id="intermedaries-table">
-              <thead class="tabla-encabezado">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">
-                    <span>Nueva compañia</span>
-                  </th>
-                  <th scope="col">
-                    <span>Nombre del intermediario</span>
-                  </th>
-                  <th scope="col">Tel.</th>
-                  <th scope="col">
-                    <span>Acciones</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="tabla-cuerpo">
-                {% for relation in relations %}
-                <tr data-relation-id="{{ relation[2] }}" data-first-name="{{ relation[3] }}"
-                  data-last-name-paternal="{{ relation[4] }}" data-last-name-maternal="{{ relation[5] }}">
-                  <th scope="row">{{ relation[2] }}</th>
-                  <td>{{ relation[1] }}</td>
-                  <td>{{ relation[3] ~ relation[4] ~ relation[5] }}</td>
-                  <td>{{ relation[6] }}</td>
-                  <td class="text-center d-flex justify-content-center align-items-center">
-                    <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal"
-                      data-bs-target="#editCompany" data-Intermediary-id="{{ relation[2] }}"
-                      onclick="setEditProductId('{{ relation[2] }}')">
-                      <span class="material-symbols-outlined">edit_square</span>
-                    </button>
-                    <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal"
-                      data-bs-target="#deleteCompany" data-Intermediary-id="{{ relation[2] }}"
-                      onclick="setIntermediaryId('{{ relation[2] }}')">
-                      <span class="material-symbols-outlined">delete_forever</span>
-                    </button>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+      <div class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start">
+        <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
+          <!--Tabla-->
+          <table class="tabla" id="intermedaries-table">
+            <thead class="tabla-encabezado">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">
+                  <span>Nueva compañia</span>
+                </th>
+                <th scope="col">
+                  <span>Nombre del intermediario</span>
+                </th>
+                <th scope="col">Tel.</th>
+                <th scope="col">
+                  <span>Acciones</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="tabla-cuerpo">
+              {% for relation in relations %}
+              <tr data-relation-id="{{ relation[2] }}" data-first-name="{{ relation[3] }}"
+                data-last-name-paternal="{{ relation[4] }}" data-last-name-maternal="{{ relation[5] }}">
+                <th scope="row">{{ relation[2] }}</th>
+                <td>{{ relation[1] }}</td>
+                <td>{{ relation[3] ~ relation[4] ~ relation[5] }}</td>
+                <td>{{ relation[6] }}</td>
+                <td class="text-center d-flex justify-content-center align-items-center">
+                  <button type="button" class="btn btn-secondary mx-2" data-bs-toggle="modal"
+                    data-bs-target="#editCompany" data-Intermediary-id="{{ relation[2] }}"
+                    onclick="setEditProductId('{{ relation[2] }}')">
+                    <i class="bi bi-pencil-square"></i>
+                    <!-- <span class="material-symbols-outlined">edit_square</span> -->
+                  </button>
+                  <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal"
+                    data-bs-target="#deleteCompany" data-Intermediary-id="{{ relation[2] }}"
+                    onclick="setIntermediaryId('{{ relation[2] }}')">
+                    <i class="bi bi-trash3-fill"></i>
+
+                    <!-- <span class="material-symbols-outlined">delete_forever</span> -->
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
 </section>
 
 

@@ -21,6 +21,16 @@ section{
     background-color: var(--color-fondo);
 }
 
+/*Cambiar botonos coloes import*/
+.btn-primary{
+    background-color: var(--color-acento) !important;
+}
+
+.btn-mover{
+    /* margin: 0 40px !important; */
+}
+
+
 .inventario {
     display: flex;
     /* background-color: rgb(119, 255, 0); */

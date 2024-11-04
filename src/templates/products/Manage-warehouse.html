@@ -15,10 +15,15 @@
   {% include 'top navbar/top-width-navbar.html' %}
 
   <div class="inventario__contenedor">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createmodal"
-      data-bs-whatever="@mdo">
-      <span data-section="manage-werehouse" data-value="Create">Crear producto</span>
-    </button>
+    <h2 class="titulo-inventario">Gestion del inventario</h2>
+    <!-- <p class="desc-inventario">Aquí encontrarás las herramientas necesarias para administrar y eliminar tus productos de
+      manera eficiente. -->
+
+      <!-- <br> -->
+      <button type="button" class="btn btn-primary btn-mover" data-bs-toggle="modal" data-bs-target="#createmodal"
+        data-bs-whatever="@mdo">
+        <span data-section="manage-werehouse" data-value="Create">Crear producto</span>
+      </button>
 
     <div class="table-responsive" style="max-height: 70vh; ">
       <!--tabla-->
@@ -59,16 +64,19 @@
 
             <td>{{ product[3] }}</td>
 
-            <td>{{ product[2] }} $</td>
+            <td>${{ product[2] }} </td>
             <td class="text-center d-flex justify-content-center align-items-center">
-              <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#editproduct"
-                data-product-id="{{ product[0] }}" onclick="setEditProductId('{{ product[0] }}')">
-                <span class="material-symbols-outlined">edit_square</span>
+              <button type="button" class="btn btn-secondary " data-bs-toggle="modal" data-bs-target="#editproduct"
+                data-product-id="{{ product[0] }}" onclick="setEditProductId('{{ product[0] }}')"> <i
+                  class="bi bi-pencil-square"></i>
+
+                <!-- <span class="material-symbols-outlined">edit_square</span> -->
               </button>
               <button type="button" class="btn btn-danger mx-2 delete-product-btn" data-bs-toggle="modal"
                 data-bs-target="#deleteproduct" data-product-id="{{ product[0] }}"
                 onclick="setProductId('{{ product[0] }}')">
-                <span class="material-symbols-outlined">delete_forever</span>
+                <i class="bi bi-trash3-fill"></i>
+                <!-- <span class="material-symbols-outlined">delete_forever</span> -->
               </button>
             </td>
           </tr>

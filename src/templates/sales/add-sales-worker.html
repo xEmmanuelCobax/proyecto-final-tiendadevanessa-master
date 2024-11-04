@@ -108,145 +108,150 @@ endblock %} {% block content %}
 
 <!-- CUERPO -->
 <section class="ventas">
-    {% include 'top navbar/top-width-navbar.html' %}
+  {% include 'top navbar/top-width-navbar.html' %}
 
-    <div class="ventas__container">
-      <div class="container">
-        <div class="row">
-          <div class="col-md col-lg-6 my-2">
-            <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
-            <div class="input-group">
-              <input id="searchInput" class="form-control" type="search" placeholder="Buscar producto"
-                aria-label="Search Product" />
-              <button id="addButton" type="button" class="btn btn-outline-primary btn-sm ms-2">
-                <span data-section="Sale" data-value="Add Product">Agregar producto</span>
-              </button>
-            </div>
-            <div id="searchResults" class="dropdown-menu"></div>
-          </div>
-          <div class="col-md col-lg-6 my-2">
-            <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
-            <button id="addSale" type="button" class="btn btn-success w-100">
-              <span data-section="Sale" data-value="Make sale">Realizar Venta</span>
+  <div class="ventas__container">
+    <h2 class="titulo-inventario">Vender</h2>
+    <p class="desc-inventario">Aquí tendrás todo lo necesario para administrar tus transacciones y maximizar tus ventas.
+
+    </p>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md col-lg-6 my-2">
+          <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
+          <div class="input-group">
+            <input id="searchInput" class="form-control" type="search" placeholder="Buscar producto"
+              aria-label="Search Product" />
+            <button id="addButton" type="button" class="btn btn-outline-primary btn-sm ms-2">
+              <span data-section="Sale" data-value="Add Product">Agregar producto</span>
             </button>
           </div>
+          <div id="searchResults" class="dropdown-menu"></div>
         </div>
-      </div>
-
-      <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
-
-      <div class="row">
-        <div class="col-md-5">
-
-
-          <div class="btn-group mt-2 d-none" role="group" aria-label="Basic outlined">
-            <button type="button" class="btn btn-outline-secondary">Left</button>
-            <button type="button" class="btn btn-outline-secondary">Middle</button>
-            <button type="button" class="btn btn-outline-secondary">Right</button>
-            <button type="button" class="btn btn-outline-secondary">Right</button>
-            <button type="button" class="btn btn-outline-secondary">Right</button>
-          </div>
-
-
-          <div
-            class="buttons mt-3 border border-Tertiary p-3 rounded d-flex flex-wrap justify-content-center align-items-center"
-            style="max-height: 600px; overflow-y: auto">
-            {% for product in products %}
-            <div class="col mb-2 d-flex justify-content-center align-items-center" style="display: none">
-              <a class="btn custom-btn mx-1 product-btn" data-id="{{ product[0] }}" data-name="{{ product[1] }}"
-                data-price="{{ product[2] }}" data-amount="{{ product[3] }}" data-status="{{ product[4] }}"
-                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                title="ID: {{ product[0] }} &#10;Nombre: {{ product[1] }} &#10;Precio: {{ product[2] }}$ &#10;Stock: {{ product[3] }} &#10;Estado: {{ product[4] }}">
-                <div class="d-flex flex-column align-items-center">
-                  <span class="material-symbols-outlined"> inventory_2 </span>
-                  <span class="product-name"> {{ product[1] }} </span>
-                </div>
-              </a>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-
-        <div class="col-md-7 mt-3 flex-wrap justify-content-center align-items-start">
-          <div class="container mb-1">
-            <div class="row">
-              <div class="col-md-8">
-                <!-- Columna para los totales -->
-                <div class="total-container d-flex justify-content-start mt-1">
-                  <h6 id="totalSum"></h6>
-                </div>
-
-                <div class="total-container d-flex justify-content-start mt-1">
-                  <h6 id="totalSumIVA"></h6>
-                </div>
-
-                <div class="total-container d-flex justify-content-start mt-1">
-                  <h6 id="totalSumALL"></h6>
-                </div>
-
-
-              </div>
-
-              <div class="col-md-4 d-flex align-items-end justify-content-end">
-                <!-- Columna para el botón -->
-                <div class="total-container d-flex justify-content-end mt-1">
-                  <button class="btn d-none btn-outline-secondary w-100" id="updateTotalButton">
-                    <span id="spinner-total" class="spinner-border spinner-border-sm d-none" role="status"
-                      aria-hidden="true"></span>
-                    Actualizar total
-                  </button>
-                </div>
-              </div>
-
-              <form>
-                <div class="form-group row ">
-                  <label for="paymentInput" class="col-sm-4 col-form-label">Pago en efectivo</label>
-                  <div class="col-sm-8">
-                    <div class="input-group">
-                      <input type="number" class="form-control" id="paymentInput" min="1" maxlength="6"
-                        placeholder="Ingrese la cantidad" />
-                      <span class="input-group-text" id="basic-addon1">$</span>
-                    </div>
-                  </div>
-                </div>
-              </form>
-
-              <div class="total-container d-flex justify-content-start mt-1">
-                <h6 id="cambiocliente"></h6>
-              </div>
-
-
-            </div>
-          </div>
-
-          <div class="table-responsive" style="max-height: 400px; overflow-y: auto">
-            <table id="saleTable" class="table table-bordered table-striped table-rounded mb-3">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">id</th>
-                  <th scope="col">
-                    <span data-section="Sale" data-value="Name">nombre</span>
-                  </th>
-                  <th scope="col">
-                    <span data-section="Sale" data-value="Quantity">Cantidad</span>
-                  </th>
-                  <th scope="col">
-                    <span data-section="Sale" data-value="Price">Precio</span>
-                  </th>
-                  <th scope="col">
-                    <span data-section="Sale" data-value="Actions">Acciones</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="table-group-divider">
-                <!-- Aquí se añadirán dinámicamente las filas de los productos -->
-              </tbody>
-            </table>
-          </div>
+        <div class="col-md col-lg-6 my-2">
+          <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
+          <button id="addSale" type="button" class="btn btn-success w-100">
+            <span data-section="Sale" data-value="Make sale">Realizar Venta</span>
+          </button>
         </div>
       </div>
     </div>
+
+    <!-- Utilizamos clases de Bootstrap para diseño responsivo y espaciado -->
+
+    <div class="row">
+      <div class="col-md-5">
+
+
+        <div class="btn-group mt-2 d-none" role="group" aria-label="Basic outlined">
+          <button type="button" class="btn btn-outline-secondary">Left</button>
+          <button type="button" class="btn btn-outline-secondary">Middle</button>
+          <button type="button" class="btn btn-outline-secondary">Right</button>
+          <button type="button" class="btn btn-outline-secondary">Right</button>
+          <button type="button" class="btn btn-outline-secondary">Right</button>
+        </div>
+
+
+        <div
+          class="buttons mt-3 border border-Tertiary p-3 rounded d-flex flex-wrap justify-content-center align-items-center"
+          style="max-height: 600px; overflow-y: auto">
+          {% for product in products %}
+          <div class="col mb-2 d-flex justify-content-center align-items-center" style="display: none">
+            <a class="btn custom-btn mx-1 product-btn" data-id="{{ product[0] }}" data-name="{{ product[1] }}"
+              data-price="{{ product[2] }}" data-amount="{{ product[3] }}" data-status="{{ product[4] }}"
+              data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+              title="ID: {{ product[0] }} &#10;Nombre: {{ product[1] }} &#10;Precio: {{ product[2] }}$ &#10;Stock: {{ product[3] }} &#10;Estado: {{ product[4] }}">
+              <div class="d-flex flex-column align-items-center">
+                <span class="material-symbols-outlined"> inventory_2 </span>
+                <span class="product-name"> {{ product[1] }} </span>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col-md-7 mt-3 flex-wrap justify-content-center align-items-start">
+        <div class="container mb-1">
+          <div class="row">
+            <div class="col-md-8">
+              <!-- Columna para los totales -->
+              <div class="total-container d-flex justify-content-start mt-1">
+                <h6 id="totalSum"></h6>
+              </div>
+
+              <div class="total-container d-flex justify-content-start mt-1">
+                <h6 id="totalSumIVA"></h6>
+              </div>
+
+              <div class="total-container d-flex justify-content-start mt-1">
+                <h6 id="totalSumALL"></h6>
+              </div>
+
+
+            </div>
+
+            <div class="col-md-4 d-flex align-items-end justify-content-end">
+              <!-- Columna para el botón -->
+              <div class="total-container d-flex justify-content-end mt-1">
+                <button class="btn d-none btn-outline-secondary w-100" id="updateTotalButton">
+                  <span id="spinner-total" class="spinner-border spinner-border-sm d-none" role="status"
+                    aria-hidden="true"></span>
+                  Actualizar total
+                </button>
+              </div>
+            </div>
+
+            <form>
+              <div class="form-group row ">
+                <label for="paymentInput" class="col-sm-4 col-form-label">Pago en efectivo</label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                    <input type="number" class="form-control" id="paymentInput" min="1" maxlength="6"
+                      placeholder="Ingrese la cantidad" />
+                    <span class="input-group-text" id="basic-addon1">$</span>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div class="total-container d-flex justify-content-start mt-1">
+              <h6 id="cambiocliente"></h6>
+            </div>
+
+
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 400px; overflow-y: auto">
+          <table id="saleTable" class="table table-bordered table-striped table-rounded mb-3">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">id</th>
+                <th scope="col">
+                  <span data-section="Sale" data-value="Name">nombre</span>
+                </th>
+                <th scope="col">
+                  <span data-section="Sale" data-value="Quantity">Cantidad</span>
+                </th>
+                <th scope="col">
+                  <span data-section="Sale" data-value="Price">Precio</span>
+                </th>
+                <th scope="col">
+                  <span data-section="Sale" data-value="Actions">Acciones</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <!-- Aquí se añadirán dinámicamente las filas de los productos -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- TOAST DE ALERTAS-->
