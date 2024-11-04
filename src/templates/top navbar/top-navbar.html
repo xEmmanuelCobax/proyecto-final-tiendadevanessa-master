@@ -55,10 +55,18 @@
           </li>
 
           {% if 'products' in request.path or 'sales' in request.path %}
-          <!-- Si está en el gestor, se quita Entrar -->
+          <!-- Si está en el gestor, se quita "Entrar" y agrega clase -->
+          <li class="nav__item">
+            <a class="nav__link cerrar-btn" href="{{ url_for('auth.cerrar_sesion') }}">Cerrar Sesión
+              <!-- <i class="fas fa-door-open form__logo--icon"></i> -->
+            </a>
+          </li>
           {% elif '/' == request.path %} <!--Inicio-->
           <li class="nav__item">
             <a class="nav__link" href="{{ url_for('auth.signin') }}">Entrar</a>
+          </li>
+          <li class="nav__item">
+            <a class="nav__link" href="{{ url_for('auth.cerrar_sesion') }}">Cerrar Sesión</a>
           </li>
           {% endif %}
 
@@ -66,9 +74,7 @@
           <li class="nav__item">
             <a class="nav__link" href="{{ url_for('auth.signin') }}">Entrar</a>
           </li> -->
-          <li class="nav__item">
-            <a class="nav__link" href="{{ url_for('auth.cerrar_sesion') }}">Cerrar Sesión</a>
-          </li>
+
           {% endif %}
 
           <!--Sin correo iniciado, mostrar esto-->

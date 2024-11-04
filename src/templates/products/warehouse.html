@@ -1,4 +1,4 @@
-{% extends 'top navbar/top-navbar.html' %} {% block title %} Warehouse {%
+{% extends 'top navbar/top-navbar.html' %} {% block title %} Inventario {%
 endblock %} {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/products.css') }}" />
 
@@ -8,38 +8,48 @@ endblock %} {% block content %}
   {% include 'top navbar/top-width-navbar.html' %}
 
   <div class="productos__container">
+    <h2 class="titulo-inventario">Inventario</h2>
+    <p class="desc-inventario">¡Bienvenido! Aquí encontrarás todos los puntos clave para administrar tus
+      existencias.
+    </p>
     <form class="d-flex mt-3" method="POST" action="{{ url_for('products.warehouse') }}">
-      <div class="col-sm-4">
-        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" name="search_term" />
+      <!--Buscador-->
+      <div class="buscador-container">
+        <!-- <i class="fas fa-door-open form__logo--icon"></i> -->
+
+        <input class="form-control buscador" type="search" placeholder="Buscar" name="search_term" />
+        <button class="buscador-btn" type="submit"><span data-section="werehouse"
+            data-value="Search">Buscar</span>
+        </button>
       </div>
-      <button class="btn btn-primary" type="submit"><span data-section="werehouse" data-value="Search">Buscar</span>
-      </button>
+      <!--Btn-->
+
     </form>
 
     <div class="col-md-12 mt-3 flex-wrap justify-content-center align-items-start">
       <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
-        <table class="table table-bordered table-striped table-rounded mb-3">
+        <table class="tabla  table-striped  mb-3">
           <!-- Mantenemos las clases existentes y agregamos espaciado -->
-          <thead>
-            <tr>
+          <thead class="tabla-encabezado">
+            <tr class="">
               <th scope="col">#</th>
 
-              <th scope="col"><span data-section="werehouse" data-value="Name Product">Nombre del Producto</span></th>
+              <th scope="col"><span data-section="werehouse" data-value="Name Product">Nombre</span></th>
 
               <th scope="col"><span data-section="werehouse" data-value="Company">Compañia</span></th>
 
-              <th scope="col"><span data-section="werehouse" data-value="Name Intermedary">Nombre del
-                  intermediario</span></th>
+              <th scope="col"><span data-section="werehouse" data-value="Name Intermedary">
+                  Intermediario</span></th>
 
               <th scope="col"><span>Tel. </span></th>
 
               <th scope="col"><span data-section="werehouse" data-value="Stock">Stock</span></th>
 
-              <th scope="col"><span data-section="werehouse" data-value="Unit Price">Precio unitario</span></th>
+              <th scope="col"><span data-section="werehouse" data-value="Unit Price">Precio</span></th>
             </tr>
           </thead>
 
-          <tbody class="table-group-divider">
+          <tbody class="tabla-cuerpo">
             <!-- Enviar mediante un array llamada task los valores (el nombre lo vamos a cambiar a futuro) -->
             {% for product in products %}
             <tr>
@@ -54,9 +64,18 @@ endblock %} {% block content %}
 
               <td>{{ product[8] }}</td>
 
-              <td>{{ product[3] }}</td>
+              <td>
+                {% if product[3] > 70 %}
+                <span class="alto-stock">{{ product[3] }} - Alto Stock</span>
+                {% elif product[3] >= 50 %}
+                <span class="medio-stock">{{ product[3] }} - Medio Stock</span>
+                {% else %}
+                <span class="bajo-stock">{{ product[3] }} - Bajo Stock</span>
+                {% endif %}
+              </td>
 
-              <td>{{ product[2] }} $</td>
+
+              <td>${{ product[2] }}</td>
 
             </tr>
             {% endfor %}

@@ -10,6 +10,26 @@
     height: 90vh;
     padding: 20px;
     background-color: #fff;
+    position: relative;
+    /* background-color: red; */
+    /* border-right: 4px solid rgba(103, 97, 97, 0.221); */
+    /* box-shadow: 3px 0 10px -3px rgba(75, 72, 72, 0.384); */
+    /* sombra desenfocada en el borde derecho */
+}
+
+
+/*Sombra lateral*/
+.menu__lateral::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 10px;
+    width: 4px;
+    /* Ancho de la "sombra" */
+    height: 100%;
+    /* Altura del elemento */
+    /* filter: blur(5px); */
+    background: linear-gradient(to right, rgba(90, 88, 88, 0.105), transparent);
 }
 
 .menu__flex {
