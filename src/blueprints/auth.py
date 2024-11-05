@@ -172,6 +172,16 @@ def signup():
 @auth.route("/cerrar_sesion")
 def cerrar_sesion():
     if current_user.is_authenticated:
+        
+        CUD(
+            """
+            UPDATE usuarios
+            SET ESTADO_SESION = 0
+            WHERE ID_USUARIO = %s;
+                    """,
+            (current_user.id,),
+            ADMIN_CONECTION
+        )
         logout_user()
         flash("Sesión cerrada correctamente", "success")
         return redirect(url_for("auth.signin"))
