@@ -140,7 +140,9 @@ class ModelUser:
                         (row[0],),
                         ADMIN_CONECTION
                     )
-                    flash(f'Inicio de sesión exitoso como {Usuario.get_tipo_usuario}', 'success')
+                    flash(f'Inicio de sesión exitoso como {
+                          logged_user.get_tipo_usuario()}', 'success')
+
                     print("Contraseña correcta")
                     return logged_user
                 else:
