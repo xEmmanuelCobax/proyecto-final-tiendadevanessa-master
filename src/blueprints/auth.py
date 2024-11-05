@@ -141,8 +141,8 @@ def signup():
             # Registrar en base de datos
             CUD(
                 """
-                INSERT INTO proyecto.usuarios (NOMBRE, AP_PAT, AP_MAT, CORREO, CONTRASENA, ESTATUS, ID_ROL) 
-                VALUES (?, ?, ?, ?, ?, 1, 3)
+                INSERT INTO proyecto.usuarios (NOMBRE, AP_PAT, AP_MAT, CORREO, CONTRASENA, ESTATUS, ID_ROL, ESTADO_SESION) 
+                VALUES (?, ?, ?, ?, ?, 1, 3, 0)
                 """,
                 (
                     name,
