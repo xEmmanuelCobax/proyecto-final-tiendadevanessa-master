@@ -28,10 +28,10 @@ Temporary Items
 
 
 __pycache__/
-
 .venv/
+.venv
 .vscode/settings.json
-
+venv
 
 
 # Windows thumbnail cache files
