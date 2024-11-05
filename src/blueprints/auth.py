@@ -177,7 +177,7 @@ def cerrar_sesion():
             """
             UPDATE usuarios
             SET ESTADO_SESION = 0
-            WHERE ID_USUARIO = %s;
+            WHERE ID_USUARIO = ?;
                     """,
             (current_user.id,),
             ADMIN_CONECTION

@@ -32,8 +32,8 @@ socketio = SocketIO(app)
 # Configuración
 app.config["SECRET_KEY"] = DevelopmentConfig.SECRET_KEY
 login_manager.login_message = "Por favor, inicia sesión para acceder a esta página."
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(
-    minutes=10)  # Tiempo de sesión, ej. 5 minutos
+# app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(
+#     minutes=1)  # Tiempo de sesión, ej. 5 minutos
 
 
 # User loader
