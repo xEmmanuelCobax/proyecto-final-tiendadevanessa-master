@@ -56,8 +56,12 @@
           <tr data-product-id="{{ product[0] }}">
             <th scope="row">{{ product[0] }}</th>
 
-            <td>{{ product[1] }}</td>
-
+            {% if "_" in product[1] %}
+            <td style="text-transform: capitalize;">{{ product[1].replace("_", " ").title() }}</td>
+            {% else %}
+            <td style="text-transform: capitalize;">{{ product[1] }}</td>
+            {% endif %}
+            
             <td><span class="tabla-compañia">{{ product[9] }}</span></td>
 
 

@@ -141,6 +141,8 @@ def manage_products():
                         raise MyException("MaxLength", auxiliar)
                     # Datos formados
                     nombre = f"{marca}_{producto}_{quantity}"
+                    # nombre = f"{marca.title()} {producto.title()} {quantity}"
+                    
                     try:
                         cantidad = int(request.form.get("cantidad"))
                     except ValueError:

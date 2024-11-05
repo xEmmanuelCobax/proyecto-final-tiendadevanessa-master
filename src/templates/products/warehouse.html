@@ -58,10 +58,14 @@
             <tr>
 
               <th scope="row">{{ product[0] }}</th>
+              {% if "_" in product[1] %}
+              <td style="text-transform: capitalize;">{{ product[1].replace("_", " ").title() }}</td>
+              {% else %}
+              <td style="text-transform: capitalize;">{{ product[1] }}</td>
+              {% endif %}
 
-              <td>{{ product[1] }}</td>
 
-              
+
               <td><span class="tabla-compañia">{{ product[9] }}</span></td>
 
               <td>{{ product[5] }} {{ product[6] }} {{ product[7] }} </td>
