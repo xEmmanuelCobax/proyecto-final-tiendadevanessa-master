@@ -1,11 +1,15 @@
 # import mariadb
+from flask import flash
 import mariadb
 # import flask_login
 from flask_login import UserMixin
+from platformdirs import user_log_dir
 # import config
 from config import ADMIN_CONECTION, MANAGER_CONECTION, CASHIER_CONECTION
 # import werkzeug
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from db import CUD
 
 
 # NOTAS:
@@ -21,6 +25,7 @@ class Usuario(UserMixin):
         nombres="",
         ap_pat="",
         ap_mat="",
+        sesion=""
     ) -> None:
         super().__init__()
         self.id = id
@@ -30,6 +35,7 @@ class Usuario(UserMixin):
         self.nombres = nombres
         self.ap_pat = ap_pat
         self.ap_mat = ap_mat
+        self.sesion = sesion
         if tipo_usuario == "Admin":
             self._conection = ADMIN_CONECTION
         elif tipo_usuario == "Gerente":
@@ -54,6 +60,9 @@ class Usuario(UserMixin):
     def get_tipo_usuario(self):
         return self.tipo_usuario
 
+    def get_sesion(self):
+        return self.sesion
+
     def get_gmail(self):
         return f"{self.correo}"
 
@@ -74,16 +83,17 @@ class ModelUser:
             cursor = connection.cursor()
             cursor.execute(
                 """
-                SELECT 
+                SELECT
                     ID_USUARIO,
                     NOMBRE,
                     AP_PAT,
                     AP_MAT,
                     CORREO,
                     CONTRASENA,
-                    NOMBRE_ROL
-                FROM usuarios, roles 
-                WHERE usuarios.ID_ROL = roles.ID_ROL 
+                    NOMBRE_ROL,
+                    ESTADO_SESION
+                FROM usuarios, roles
+                WHERE usuarios.ID_ROL = roles.ID_ROL
                 AND ESTATUS = 1
                 AND CORREO = %s
                 """,
@@ -99,11 +109,12 @@ class ModelUser:
                 logged_user = Usuario(
                     row[0],  # ID_USUARIO
                     row[4],  # CORREO
-                    row[5],
+                    row[5],  # contraseña
                     row[6],  # NOMBRE_ROL
                     row[1],  # NOMBRE
                     row[2],  # AP_PAT
                     row[3],  # AP_MAT
+                    row[7],  # sesion
                 )
 
                 print(f"Contraseña ingresada desde el form: {user.contraseña}")
@@ -111,11 +122,32 @@ class ModelUser:
                     "Contraseña (hash) almacenada en la base de datos:", row[5])
                 # Validar la contraseña ingresada con el hash almacenado
                 if Usuario.check_password(row[5], user.contraseña):
+
+                    if row[7] == 1:  # Si el estado_sesion es True, hay una sesión activa
+                        print(
+                            'La sesión ya está activa. Por favor, cierra la sesión primero.', 'warning')
+                        flash(
+                            'La sesión ya está activa. Por favor, cierra la sesión primero.', 'warning')
+                        return None
+
+                    print(f"id es: {row[0]}")
+                    CUD(
+                        """
+                        UPDATE usuarios
+                        SET ESTADO_SESION = 1
+                        WHERE ID_USUARIO = %s;
+                                """,
+                        (row[0],),
+                        ADMIN_CONECTION
+                    )
+                    flash(f'Inicio de sesión exitoso como {Usuario.get_tipo_usuario}', 'success')
                     print("Contraseña correcta")
                     return logged_user
                 else:
                     print("Contraseña incorrecta")
+                    flash('la contraseña es incorrecta', 'warning')
                     return None
+
             else:
                 print(
                     "<-------------------- Usuario no encontrado -------------------->"

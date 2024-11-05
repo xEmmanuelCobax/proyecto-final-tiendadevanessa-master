@@ -48,18 +48,14 @@ def signin():
         user = Usuario(0, request.form["email"], request.form["password"])
         
         logged_user = ModelUser.login(user)
-        # if current_user.get_gmail() == user.get_gmail:
-        #     return render_template("auth/signin.html")
-        if logged_user is not None:
-            if logged_user.contraseña:
-                login_user(logged_user)
+        if logged_user is not None: # Si hay datos 
+            if logged_user.contraseña: #verificar contra
+                login_user(logged_user) 
                 print(logged_user.id)
                 print(logged_user.tipo_usuario)
                 return redirect(url_for("profile.welcomeuser"))
             else:
-                flash("Contraseña no incorrecta", "danger")
-        else:
-            flash("Contraseña incorrecta", "danger")
+                flash("Contraseña no encontrada", "danger")
 
     return render_template("auth/signin.html")
 
