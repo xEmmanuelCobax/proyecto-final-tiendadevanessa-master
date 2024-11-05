@@ -21,7 +21,8 @@
         <i class="bi bi-archive-fill menu__icono"></i>
         <p class="menu__desc">Inventario</p>
       </a>
-      <a class="menu__enlace" href="{{ url_for('products.manage_products') }}">
+      <a class="menu__enlace {% if current_user.get_tipo_usuario() == 'Cajero' %}menu_restringido{% endif %}"
+        href="{{ url_for('products.manage_products') }}">
         <i class="bi bi-shop menu__icono"></i>
         <p class="menu__desc">Gestionar Productos</p>
       </a>
@@ -29,21 +30,25 @@
         <i class="bi bi-box-arrow-right menu__icono"></i>
         <p class="menu__desc">Vender</p>
       </a>
-      <a class="menu__enlace" href="{{ url_for('products.manage_intermediary') }}">
+      <a class="menu__enlace {% if current_user.get_tipo_usuario() == 'Cajero' %}menu_restringido{% endif %}"
+        href="{{ url_for('products.manage_intermediary') }}">
         <i class="bi bi-person-fill menu__icono"></i>
         <p class="menu__desc">Intermediarios</p>
       </a>
-      <a class="menu__enlace" href="{{ url_for('products.manage_company') }}">
+      <a class="menu__enlace {% if current_user.get_tipo_usuario() == 'Cajero' %}menu_restringido{% endif %}"
+        href="{{ url_for('products.manage_company') }}">
         <i class="bi bi-truck menu__icono"></i>
         <p class="menu__desc">Proveedores</p>
       </a>
 
-      <a class="menu__enlace" href="{{url_for('sales.reportsales')}}">
+      <a class="menu__enlace {% if current_user.get_tipo_usuario() == 'Cajero' %}menu_restringido{% endif %}"
+        href="{{url_for('sales.reportsales')}}">
         <i class="bi bi-receipt menu__icono"></i>
 
         <p class="menu__desc">Reporte de ventas</p>
       </a>
-      <a class="menu__enlace" href="{{url_for('accounts.manage_accounts')}}">
+      <a class="menu__enlace {% if current_user.get_tipo_usuario() == 'Cajero' %}menu_restringido{% endif %}"
+        href="{{url_for('accounts.manage_accounts')}}">
         <i class="bi bi-person-circle menu__icono"></i>
         <p class="menu__desc">Usuarios</p>
       </a>

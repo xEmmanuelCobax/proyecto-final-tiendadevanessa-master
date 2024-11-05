@@ -7,7 +7,7 @@ from models.exceptions import MyException
 # importar las extenciones
 from extensions import login_manager
 #
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 
 # NOTAS:
@@ -18,10 +18,16 @@ products = Blueprint("products", __name__, url_prefix="/products")
 
 # region Mostrar productos
 @products.route("/warehouse", methods=["GET", "POST"])
+@login_required  # Esto evita el acceso de usuarios anónimos
 def warehouse():
+    
+    if not current_user.is_authenticated:
+        flash("Debes iniciar sesión para acceder a esta sección", "danger")
+        return redirect(url_for("auth.signin"))
+    
     print("<#################### warehouse ####################")
     # Capa 1: Verificar si el usuario está autenticado
-    if current_user.is_authenticated:   
+    if current_user.is_authenticated:
         # Capa 2: Verificar si el usuario es administrador
         if request.method == "POST":
             search_term = (str(request.form.get("search_term"))).strip()
@@ -76,10 +82,11 @@ def warehouse():
 
 # region manejar productos (SOLO GERENTES O ADMINS)
 @products.route("/manage_products", methods=["GET", "POST"])
+@login_required  # Esto evita el acceso de usuarios anónimos
 def manage_products():
     # Verificar autenticación y permisos
     # Capa 1: Verificar si el usuario está autenticado
-    if current_user.is_authenticated:   
+    if current_user.is_authenticated:
         tipo_usuario = current_user.get_tipo_usuario()
         # Capa 2: Verificar si el usuario es administrador o gerente
         if tipo_usuario not in ["Admin", "Gerente"]:
@@ -87,7 +94,7 @@ def manage_products():
             # Redirige a la URL anterior o a una página por defecto
             return redirect(request.referrer or url_for("products.warehouse"))
 
-            # return redirect(url_for("products.warehouse")) 
+            # return redirect(url_for("products.warehouse"))
         # Capa 3: Procesar los formularios POST
         if request.method == "POST":
             form_type = request.form.get("form_type")
@@ -106,7 +113,8 @@ def manage_products():
                     # Obtener datos del formulario
                     marca = request.form.get("marca")
                     producto = request.form.get("producto")
-                    unit_quantity = request.form.get("unitquantity")  # Cantidad
+                    unit_quantity = request.form.get(
+                        "unitquantity")  # Cantidad
                     select_unit_quantity = request.form.get(
                         "SelectUnitOfMeasure"
                     )  # Unidad de medida
@@ -163,7 +171,8 @@ def manage_products():
                     if cantidad <= 0 or precio <= 0:
                         raise MyException(
                             "NonPositive",
-                            f"Los valores proporcionados {cantidad, precio} no son positivos. Deben ser mayores que cero.",
+                            f"Los valores proporcionados {
+                                cantidad, precio} no son positivos. Deben ser mayores que cero.",
                         )
                     # Pruebas
                     print("<==================== DATOS OBTENIDOS ====================")
@@ -227,7 +236,8 @@ def manage_products():
                         print(
                             "====================! Existing product in the DB.====================>"
                         )
-                        raise MyException("ProductExists", "El producto existe")
+                        raise MyException(
+                            "ProductExists", "El producto existe")
                     elif productoinactivo:
                         print(
                             "====================! Producto existente (Oculto) en la BD.====================>"
@@ -302,7 +312,8 @@ def manage_products():
                     marca = request.form.get("newmarca")
                     producto = request.form.get("newproducto")
                     # Unidad de medida
-                    unit_quantity = int(request.form.get("editunitquantity"))  # Cantidad
+                    unit_quantity = int(request.form.get(
+                        "editunitquantity"))  # Cantidad
                     seslect_unit_quantity = request.form.get(
                         "EditSelectUnitOfMeasure"
                     )  # Unidad de medida
@@ -340,23 +351,27 @@ def manage_products():
                     cantidad = int(request.form.get("newcantidad"))
                     precio = float(request.form.get("newprecio"))
                     compania = int(request.form.get("company-new-select"))
-                    intermediario = int(request.form.get("intermedary-new-select"))
+                    intermediario = int(
+                        request.form.get("intermedary-new-select"))
                     # Errores
                     if cantidad <= 0 or precio <= 0:
                         if cantidad <= 0 or precio <= 0:
                             raise MyException(
                                 "NonPositive",
-                                f"Los valores proporcionados {cantidad,precio} no son positivos. Deben ser mayores que cero.",
+                                f"Los valores proporcionados {
+                                    cantidad, precio} no son positivos. Deben ser mayores que cero.",
                             )
                         elif cantidad <= 0:
                             raise MyException(
                                 "NonPositive",
-                                f"El valor proporcionado {cantidad} no es positivo. Debe ser mayor que cero.",
+                                f"El valor proporcionado {
+                                    cantidad} no es positivo. Debe ser mayor que cero.",
                             )
                         elif precio <= 0:
                             raise MyException(
                                 "NonPositive",
-                                f"El valor proporcionado {precio} no es positivo. Debe ser mayor que cero.",
+                                f"El valor proporcionado {
+                                    precio} no es positivo. Debe ser mayor que cero.",
                             )
                     # Pruebas
                     print("<==================== DATOS OBTENIDOS ====================")
@@ -481,6 +496,7 @@ def manage_products():
 
 # region Manejar intermediario
 @products.route("/manage_intermediary", methods=["GET", "POST"])
+@login_required  # Esto evita el acceso de usuarios anónimos
 def manage_intermediary():
     # Capa 1: Verificar si el usuario está autenticado
     if current_user.is_authenticated:
@@ -490,7 +506,6 @@ def manage_intermediary():
             flash("Esta seccion es solo para gerentes o administradores", "danger")
             # Redirige a la URL anterior o a una página por defecto
             return redirect(request.referrer or url_for("products.warehouse"))
-
 
             # return redirect(url_for("shortcut.shortcut"))
         #  Capa 3: Manejar la lógica del formulario POST
@@ -542,11 +557,13 @@ def manage_intermediary():
                     Tipo, Mensaje = ex.args
                     print(f"Type {Tipo} : {Mensaje}")
                     flash(f"{Mensaje}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
                 except Exception as e:
                     print(f"Type: {Mensaje}")
                     flash(f"{Mensaje}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
             # endregion
             # region Crear intermediario
             elif action == "create":
@@ -659,11 +676,13 @@ def manage_intermediary():
                     Tipo, Mensaje = ex.args
                     print(f"Type {Tipo} : {Mensaje}")
                     flash(f"{Mensaje}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
                 except Exception as e:
                     print(f"Type : {e}")
                     flash(f"{e}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
             # endregion
             # region editar intermediario
             elif action == "edit":
@@ -704,7 +723,8 @@ def manage_intermediary():
                         AND proyecto.intermediario.AP_MAT = ?
                         AND proyecto.intermediario.ID_INTERMEDIARIO != ?
                         """,
-                        (nombre, apellido_paterno, apellido_materno, int(id_intermediario)),
+                        (nombre, apellido_paterno,
+                         apellido_materno, int(id_intermediario)),
                     )
                     # Verificar si el teléfono ya está en uso
                     tel_existe = Read(
@@ -756,11 +776,13 @@ def manage_intermediary():
                     Tipo, Mensaje = ex.args
                     print(f"Type {Tipo} : {Mensaje}")
                     flash(f"{Mensaje}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
                 except Exception as e:
                     print(f"Type : {e}")
                     flash(f"{e}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
             # endregion
         # Datos que se envian siempre
         relations = []
@@ -795,6 +817,8 @@ def manage_intermediary():
 
 # region Manejar compañia
 @products.route("/manage_company", methods=["GET", "POST"])
+@login_required  # Esto evita el acceso de usuarios anónimos
+
 def manage_company():
     # Capa 1: Verificar si el usuario está autenticado
     if current_user.is_authenticated:
@@ -802,7 +826,8 @@ def manage_company():
         # Capa 2: Verificar si el usuario es administrador
         if tipo_usuario not in ["Admin", "Gerente"]:
             flash("Esta seccion es solo para gerentes o administradores", "danger")
-            return redirect(request.referrer or url_for("products.warehouse"))  # Redirige a la URL anterior o a una página por defecto
+            # Redirige a la URL anterior o a una página por defecto
+            return redirect(request.referrer or url_for("products.warehouse"))
 
         # Capa 3: Manejar la lógica del formulario POST
         if request.method == "POST":
@@ -871,11 +896,13 @@ def manage_company():
                     Tipo, Mensaje = ex.args
                     print(f"Type {Tipo} : {Mensaje}")
                     flash(f"{Mensaje}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
                 except Exception as e:
                     print(f"{e}")
                     flash(f"{e}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
             # endregion
             # region Crear compañia
             elif action == "create":
@@ -886,7 +913,8 @@ def manage_company():
                     print("<==================== DATOS OBTENIDOS ====================")
                     print(f"Nombre: {nombre}")
                     print("========================================>")
-                    print("<==================== VerificarInactivo ====================")
+                    print(
+                        "<==================== VerificarInactivo ====================")
                     # Existe pero esta inactivo
                     VerificarInactivo = Read(
                         """
@@ -949,18 +977,21 @@ def manage_company():
                     Tipo, Mensaje = ex.args
                     print(f"Type {Tipo} : {Mensaje}")
                     flash(f"{Mensaje}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
                 except Exception as e:
                     print(f"Type : {e}")
                     flash(f"Type : {e}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
             # endregion
             # region Editar compañia
             elif action == "edit":
                 try:
                     # Obtener datos del formulario, incluido company_id
                     nombre = request.form.get("editcompanyName")
-                    id_intermediario = int(request.form.get("EditIntermediary_id"))
+                    id_intermediario = int(
+                        request.form.get("EditIntermediary_id"))
                     # Pruebas
                     print("<==================== DATOS OBTENIDOS ====================")
                     print(f"nombre - {nombre}")
@@ -1014,11 +1045,13 @@ def manage_company():
                     Tipo, Mensaje = ex.args
                     print(f"Type {Tipo} : {Mensaje}")
                     flash(f"{Mensaje}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
                 except Exception as e:
                     print(f"Type : {e}")
                     flash(f"Type : {e}")
-                    print("#################### FIN (No se inserto) ####################>")
+                    print(
+                        "#################### FIN (No se inserto) ####################>")
                 # endregion
         # region Datos
         relations = []

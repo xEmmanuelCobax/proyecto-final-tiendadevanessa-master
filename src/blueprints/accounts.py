@@ -13,7 +13,7 @@ from models.exceptions import MyException
 # importar las extenciones
 from extensions import login_manager
 #
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 # NOTAS:
 
@@ -23,6 +23,7 @@ accounts = Blueprint("accounts", __name__, url_prefix="/accounts")
 
 # region Manejar cuentas
 @accounts.route("/manage_accounts", methods=["GET", "POST"])
+@login_required
 def manage_accounts():
     # Capa 1: Verificar si el usuario está autenticado
     if current_user.is_authenticated:

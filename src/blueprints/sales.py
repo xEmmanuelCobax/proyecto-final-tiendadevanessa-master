@@ -29,6 +29,7 @@ sales = Blueprint("sales", __name__, url_prefix="/sales")
 
 # region Agregar Ventas
 @sales.route("/addsalesworker", methods=["GET", "POST"])
+@login_required
 def addsalesworker():
     # Errores
     ErrorCantidad = False
@@ -267,6 +268,8 @@ def addsalesworker():
 # endregion
 
 @sales.route("/reportsales", methods=["POST", "GET"])
+@login_required
+
 def reportsales():
     print("<#################### reportsales ####################")
     # Capa 1: Verificar si el usuario está autenticado

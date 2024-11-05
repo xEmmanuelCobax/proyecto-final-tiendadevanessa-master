@@ -7,8 +7,8 @@
 
 .menu__lateral {
     width: 110px;
-    height: 90vh;
-    padding: 20px;
+    /* height: 90vh; */
+    padding: 0px 20px;
     background-color: #fff;
     position: relative;
     /* background-color: red; */
@@ -86,4 +86,9 @@
 .menu__enlace.active {
     background-color: #007bff;
     color: #fff;
+}
+
+.menu_restringido{
+    /* display: none; */
+    background-color: #a6a4a41f;
 }

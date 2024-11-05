@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_login import LoginManager
 # Importar los blueprints
 from blueprints.accounts import accounts
 from blueprints.auth import auth
@@ -29,6 +30,7 @@ socketio = SocketIO(app)
 
 # Configuración
 app.config["SECRET_KEY"] = DevelopmentConfig.SECRET_KEY
+login_manager.login_message = "Por favor, inicia sesión para acceder a esta página."
 
 
 # User loader
