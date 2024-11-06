@@ -29,9 +29,13 @@ def CUD(query, params=None, CONECTION = None):
         else:
             cursor.execute(query)
         connection.commit()  # Confirmar los cambios en la base de datos
+        last_id = cursor.lastrowid
+        print(f"<-------------------- ID insertado: {last_id} -------------------->")
         print("<-------------------- Conexión exitosa --------------------")
+        return last_id
     except Exception as ex:
         print(f"<-------------------- Error: {ex} -------------------->")
+        return None
     finally:
         if connection:  # Solo cierra si connection fue asignada
             connection.close()

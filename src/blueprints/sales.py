@@ -190,7 +190,7 @@ def addsalesworker():
                         print("Total de productos vendidos:", TotalProductos)
                         print("Total con iva:", Total)
                         #
-                        CUD(
+                        id=CUD(
                             """
                             INSERT INTO proyecto.ventas (CANTIDAD_VENTA, TOTAL, ESTATUS, ID_DIA, ID_MES, ID_ANIO) 
                             VALUES (?,?,1,?,?,?)
@@ -203,7 +203,6 @@ def addsalesworker():
                                 int(Anio),
                             ),
                         )
-                        id = int(Read("SELECT LAST_INSERT_ID() AS NewID;")[0][0])
                         #
                         print("ID-VENTA>", id)
                         for y in range(len(TablaDetalles)):
