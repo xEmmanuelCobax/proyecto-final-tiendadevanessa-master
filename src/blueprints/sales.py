@@ -18,6 +18,11 @@ from extensions import login_manager
 from datetime import datetime
 #
 from flask_login import login_user, logout_user, login_required, current_user
+#
+import locale
+from datetime import datetime
+
+locale.setlocale(locale.LC_TIME, "es_ES.UTF-8")
 
 # NOTAS:
 
@@ -37,8 +42,7 @@ def addsalesworker():
     ErrorProductoInexistente = False
     # Capa 1: Verificar si el usuario está autenticado
     if current_user.is_authenticated:
-       
-        
+
         if request.method == "POST":
             try:
                 print("<#################### MakeSales ####################")
@@ -112,6 +116,7 @@ def addsalesworker():
                             (DiaA,),
                         )[0][0]
                     )
+
                     # Encontrar ID_MES en BD MES
                     print("Paso 2: Encontrar ID_MES en BD MES")
                     Mes = int(

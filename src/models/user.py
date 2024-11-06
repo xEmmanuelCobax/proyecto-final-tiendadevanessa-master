@@ -3,7 +3,6 @@ from flask import flash
 import mariadb
 # import flask_login
 from flask_login import UserMixin
-from platformdirs import user_log_dir
 # import config
 from config import ADMIN_CONECTION, MANAGER_CONECTION, CASHIER_CONECTION
 # import werkzeug
