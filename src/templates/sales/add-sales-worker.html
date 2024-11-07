@@ -306,6 +306,39 @@ endblock %} {% block content %}
   </div>
 </div>
 
+
+<!-- DIV OCULTO PARA GUARDAR LOS MENSAJES -->
+<div id="flash-messages" style="display: none;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }}" role="alert">
+    {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+</div>
+
+<!-- MOTAL PARA MOSTRAR FLASH -->
+<div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="flashModalLabel">Notification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="flashModalBody">
+        <!-- LOS MENSAJES SE MOSTRARAN AQUI -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MUESTRA EL TOTAL DE LA COMPRA -->
 <script>
   function sumTableNumbers() {
@@ -744,10 +777,29 @@ endblock %} {% block content %}
         }, 1000); // 1000 milisegundos = 1 segundo
       } else {
         console.error("Error:", xhr.statusText);
-      }
+            let errorMessage = "Ha ocurrido un error.";
+
+            // Si el servidor responde con un mensaje de error más específico
+            if (xhr.responseText) {
+                try {
+                    const responseJson = JSON.parse(xhr.responseText);
+                    errorMessage = responseJson.message || errorMessage;
+                } catch (e) {
+                    errorMessage = "Error inesperado al procesar la venta.";
+                    
+                }
+                setTimeout(() => {
+                location.reload(); // Recargar la página después de 1 segundo
+                }, 1000);
+                
+            }
+
+            showToast(errorMessage, "danger");
+        }
     };
     xhr.onerror = function () {
       console.error("Error:", xhr.statusText);
+      showToast("Error de conexión. Intente nuevamente.", "danger");
     };
     xhr.send(JSON.stringify(salesData));
   });
@@ -852,5 +904,19 @@ endblock %} {% block content %}
       toast.remove();
     });
   }
+</script>
+
+
+
+
+<!-- MOSTRAR EL MODAL PARA MOSTRAR ERRORES Y MENSAJES  -->
+<script>
+  $(document).ready(function () {
+    var flashMessages = $('#flash-messages').html().trim();
+    if (flashMessages) {
+      $('#flashModalBody').html(flashMessages);
+      $('#flashModal').modal('show');
+    }
+  });
 </script>
 {% endblock %}

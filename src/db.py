@@ -21,9 +21,18 @@ def CUD(query, params=None, CONECTION = None):
             print(current_user._conection)
             connection = mariadb.connect(**current_user._conection)
             cursor = connection.cursor()
+            
         else:
             connection = mariadb.connect(**CONECTION)
             cursor = connection.cursor()
+             # Establecer el nivel de aislamiento a SERIALIZABLE
+        connection.autocommit = False     
+        cursor.execute("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
+        cursor.execute("SELECT @@tx_isolation;")
+        current_isolation_level = cursor.fetchone()[0]
+        print(f"El nivel de aislamiento actual es: {current_isolation_level}")
+            # Iniciar la transacción
+        cursor.execute("BEGIN")
         if params:
             cursor.execute(query, params)
         else:
@@ -35,6 +44,8 @@ def CUD(query, params=None, CONECTION = None):
         return last_id
     except Exception as ex:
         print(f"<-------------------- Error: {ex} -------------------->")
+        if connection:
+            connection.rollback()
         return None
     finally:
         if connection:  # Solo cierra si connection fue asignada
@@ -55,6 +66,7 @@ def Read(query, params=None, CONECTION=None):
         else:
             connection = mariadb.connect(**CONECTION)
             cursor = connection.cursor()
+            
         cursor = connection.cursor()
         if params:
             cursor.execute(query, params)
@@ -70,6 +82,7 @@ def Read(query, params=None, CONECTION=None):
     except Exception as ex:
         results = False
         print(f"<-------------------- Error: {ex} -------------------->")
+        
         return None
     finally:
         if connection:

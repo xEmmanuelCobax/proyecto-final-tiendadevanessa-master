@@ -1,7 +1,7 @@
 #
 import locale
 # import flask
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 # importar modelos para query
 from models.queries import (
     Read,
@@ -84,6 +84,7 @@ def addsalesworker():
                     # Si un producto no existe, entonces terminamos el ciclo y el booleano ValidarExistencia es falso
                     if not ExisteProducto:
                         ValidarExistencia = False
+                        
                         break
                     # Si no hay errores entonces el booleano ValidarExistencia es verdadero
                     ValidarExistencia = True
@@ -91,6 +92,7 @@ def addsalesworker():
                     print(producto)
                 # Si los productos existen(Estan activos) y estan en la BD entonces>
                 if ValidarExistencia == False:
+                    
                     raise MyException(
                         "ErrorEntrada",
                         "Se intentaron cambiar los datos.",
@@ -177,10 +179,13 @@ def addsalesworker():
                             TablaDetalles[i].append(round(IvaValue))  # IVA
                             TablaDetalles[i].append(tabla[i][0])  # ID_PRODUCTO
                     if ErrorVenta:
+                        
+                    
                         raise MyException(
                             "ErrorVenta",
                             "No hay existencias para reaelizar la venta.",
                         )
+
                     if not ErrorVenta:
                         # Datos
                         Total = SumaCosto + SumaIva  # Costo de la venta
@@ -241,8 +246,13 @@ def addsalesworker():
                                     int(tabla[z][0]),
                                 ),
                             )
+                         
+                        return jsonify({"message": "Venta procesada con éxito"}), 200  
             except Exception as e:
                 print(e)
+                flash('Ha ocurrido un error, intentelo de nuevo.', 'danger')
+                return jsonify({"message": "Error en la venta. Intente nuevamente."}), 500
+                
         # Siempre se envia estos datos
         products = Read(
             """
@@ -259,6 +269,7 @@ def addsalesworker():
         print(
             "#################### FIN (sales/add-sales-worker.html) ####################>"
         )
+        
         return render_template(
             "sales/add-sales-worker.html",
             products=products,
