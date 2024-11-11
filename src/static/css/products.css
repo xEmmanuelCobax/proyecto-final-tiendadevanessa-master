@@ -18,21 +18,21 @@
     /* outline: 1px solid red; */
 }
 
-.dropdown-menu{
+.dropdown-menu {
     width: 450px;
 }
 
 
-section{
+section {
     background-color: var(--color-fondo);
 }
 
 /*Cambiar botonos coloes import*/
-.btn-primary{
+.btn-primary {
     background-color: var(--color-acento) !important;
 }
 
-.btn-mover{
+.btn-mover {
     /* margin: 0 40px !important; */
 }
 
@@ -124,7 +124,7 @@ section{
     /* background-color: rgba(128, 128, 128, 0.453); */
 }
 
-.tabla-compañia {
+.tabla-compañia, .rolid{
     padding: 4px 7px;
     background-color: rgb(241, 237, 237);
     border-radius: 8px;
@@ -195,7 +195,7 @@ td {
     /* background-color: red; */
 }
 
-tr > th:first-child {
+tr>th:first-child {
     /* background-color: red; */
     padding-left: 10px;
 }
@@ -248,7 +248,7 @@ tr > th:first-child {
 
 
 .custom-btn {
-    background-color: red ;
+    background-color: red;
     border: 3px solid #ffffff;
     border-radius: 10px;
     width: 100px;
@@ -260,7 +260,7 @@ tr > th:first-child {
     overflow: hidden;
     background-color: rgb(247, 247, 247);
     box-shadow: 0 2px 4px rgba(126, 123, 123, 0.1), 0 6px 8px rgba(0, 0, 0, 0.1);
-   
+
 }
 
 .custom-btn:hover {
@@ -293,3 +293,8 @@ tr > th:first-child {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.flex-graficos {
+    /* display: flex; */
+}
+

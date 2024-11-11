@@ -152,15 +152,22 @@ def manage_accounts():
         relations = []
         relations = Read(
             """
-            SELECT 
-                proyecto.usuarios.ID_USUARIO,
-                proyecto.usuarios.NOMBRE,
-                proyecto.usuarios.AP_PAT,
-                proyecto.usuarios.AP_MAT,
-                proyecto.usuarios.CORREO 
-            FROM proyecto.usuarios 
-            WHERE proyecto.usuarios.ESTATUS = 1 
-            AND proyecto.usuarios.ID_ROL = 3
+            SELECT
+                usuarios.ID_USUARIO,
+                usuarios.NOMBRE,
+                usuarios.AP_PAT,
+                usuarios.AP_MAT,
+                usuarios.CORREO,
+                usuarios.ESTATUS,
+                roles.NOMBRE_ROL
+            FROM
+                proyecto.usuarios
+            JOIN
+                proyecto.roles ON usuarios.ID_ROL = roles.ID_ROL
+            WHERE
+                usuarios.ESTATUS = 1
+                AND usuarios.ID_ROL = 3;
+
             """
         )
         print(

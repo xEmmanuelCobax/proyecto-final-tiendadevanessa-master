@@ -68,12 +68,12 @@ def addsalesworker():
                 for i in range(len(Entrada)):
                     ExisteProducto = Read(
                         """
-                        SELECT 
+                        SELECT
                             proyecto.almacen.ID_PRODUCTO,
                             proyecto.almacen.PRECIO_UNITARIO,
                             proyecto.almacen.EXISTENCIAS
-                        FROM proyecto.almacen 
-                        WHERE proyecto.almacen.ESTATUS = 1 
+                        FROM proyecto.almacen
+                        WHERE proyecto.almacen.ESTATUS = 1
                         AND proyecto.almacen.ID_PRODUCTO = ?
                         """,
                         (Entrada[i][0],),
@@ -84,7 +84,7 @@ def addsalesworker():
                     # Si un producto no existe, entonces terminamos el ciclo y el booleano ValidarExistencia es falso
                     if not ExisteProducto:
                         ValidarExistencia = False
-                        
+
                         break
                     # Si no hay errores entonces el booleano ValidarExistencia es verdadero
                     ValidarExistencia = True
@@ -92,7 +92,7 @@ def addsalesworker():
                     print(producto)
                 # Si los productos existen(Estan activos) y estan en la BD entonces>
                 if ValidarExistencia == False:
-                    
+
                     raise MyException(
                         "ErrorEntrada",
                         "Se intentaron cambiar los datos.",
@@ -111,8 +111,8 @@ def addsalesworker():
                     Dia = int(
                         Read(
                             """
-                        SELECT proyecto.dia.ID_DIA 
-                        FROM proyecto.dia 
+                        SELECT proyecto.dia.ID_DIA
+                        FROM proyecto.dia
                         WHERE proyecto.dia.DIA = ?
                         """,
                             (DiaA,),
@@ -124,8 +124,8 @@ def addsalesworker():
                     Mes = int(
                         Read(
                             """
-                        SELECT proyecto.mes.ID_MES 
-                        FROM proyecto.mes 
+                        SELECT proyecto.mes.ID_MES
+                        FROM proyecto.mes
                         WHERE proyecto.mes.MES = ?
                         """,
                             (MesA,),
@@ -136,8 +136,8 @@ def addsalesworker():
                     Anio = int(
                         Read(
                             """
-                        SELECT proyecto.anio.ID_ANIO 
-                        FROM proyecto.anio 
+                        SELECT proyecto.anio.ID_ANIO
+                        FROM proyecto.anio
                         WHERE proyecto.anio.ANIO = ?
                         """,
                             (AnioA,),
@@ -166,10 +166,12 @@ def addsalesworker():
                             break
                         else:
                             # Operaciones
-                            Cost = (tabla[i][1]) * (Entrada[i][1])  # Costo por producto
+                            # Costo por producto
+                            Cost = (tabla[i][1]) * (Entrada[i][1])
                             IvaValue = Cost * 0.16  # Asumiendo que el IVA es del 16%
                             SumaCosto += Cost  # Sumar los costos por producto
-                            SumaIva += round(IvaValue)  # Sumar los iva por producto
+                            # Sumar los iva por producto
+                            SumaIva += round(IvaValue)
                             TotalProductos += Entrada[i][
                                 1
                             ]  # Sumar la cantidad de productos
@@ -179,8 +181,7 @@ def addsalesworker():
                             TablaDetalles[i].append(round(IvaValue))  # IVA
                             TablaDetalles[i].append(tabla[i][0])  # ID_PRODUCTO
                     if ErrorVenta:
-                        
-                    
+
                         raise MyException(
                             "ErrorVenta",
                             "No hay existencias para reaelizar la venta.",
@@ -195,9 +196,9 @@ def addsalesworker():
                         print("Total de productos vendidos:", TotalProductos)
                         print("Total con iva:", Total)
                         #
-                        id=CUD(
+                        id = CUD(
                             """
-                            INSERT INTO proyecto.ventas (CANTIDAD_VENTA, TOTAL, ESTATUS, ID_DIA, ID_MES, ID_ANIO) 
+                            INSERT INTO proyecto.ventas (CANTIDAD_VENTA, TOTAL, ESTATUS, ID_DIA, ID_MES, ID_ANIO)
                             VALUES (?,?,1,?,?,?)
                             """,
                             (
@@ -213,7 +214,7 @@ def addsalesworker():
                         for y in range(len(TablaDetalles)):
                             CUD(
                                 """
-                                INSERT INTO proyecto.detalles(CANTIDAD,IMPORTE,IVA,ESTATUS,ID_PRODUCTO,ID_VENTA) 
+                                INSERT INTO proyecto.detalles(CANTIDAD,IMPORTE,IVA,ESTATUS,ID_PRODUCTO,ID_VENTA)
                                 VALUES (?,?,?,1,?,?);
                                 """,
                                 (
@@ -232,44 +233,45 @@ def addsalesworker():
                                 ESTATUS = 1
                             CUD(
                                 """
-                                UPDATE proyecto.almacen 
-                                SET 
-                                    EXISTENCIAS = ?, 
+                                UPDATE proyecto.almacen
+                                SET
+                                    EXISTENCIAS = ?,
                                     PRECIO_EXISTENCIA = ?,
                                     ESTATUS = ?
                                 WHERE ID_PRODUCTO = ?
                                 """,
                                 (
                                     int(tabla[z][2] - Entrada[z][1]),
-                                    int(tabla[i][1] * (tabla[z][2] - Entrada[z][1])),
+                                    int(tabla[i][1] *
+                                        (tabla[z][2] - Entrada[z][1])),
                                     ESTATUS,
                                     int(tabla[z][0]),
                                 ),
                             )
-                         
-                        return jsonify({"message": "Venta procesada con éxito"}), 200  
+
+                        return jsonify({"message": "Venta procesada con éxito"}), 200
             except Exception as e:
                 print(e)
                 flash('Ha ocurrido un error, intentelo de nuevo.', 'danger')
                 return jsonify({"message": "Error en la venta. Intente nuevamente."}), 500
-                
+
         # Siempre se envia estos datos
         products = Read(
             """
-                    SELECT 
-                        ID_PRODUCTO, 
-                        NOMBRE, 
-                        PRECIO_UNITARIO, 
+                    SELECT
+                        ID_PRODUCTO,
+                        NOMBRE,
+                        PRECIO_UNITARIO,
                         EXISTENCIAS,
                         ESTATUS
-                    FROM proyecto.almacen 
+                    FROM proyecto.almacen
                     WHERE proyecto.almacen.ESTATUS = 1
                     """
         )
         print(
             "#################### FIN (sales/add-sales-worker.html) ####################>"
         )
-        
+
         return render_template(
             "sales/add-sales-worker.html",
             products=products,
@@ -282,9 +284,9 @@ def addsalesworker():
     return redirect(url_for("main.index"))
 # endregion
 
+
 @sales.route("/reportsales", methods=["POST", "GET"])
 @login_required
-
 def reportsales():
     print("<#################### reportsales ####################")
     # Capa 1: Verificar si el usuario está autenticado
@@ -295,7 +297,6 @@ def reportsales():
             flash("Esta seccion es solo para gerentes o administradores", "danger")
             # Redirige a la URL anterior o a una página por defecto
             return redirect(request.referrer or url_for("products.warehouse"))
-
 
         # Capa 3: Procesar la solicitud POST
         if request.method == "POST":
@@ -311,12 +312,12 @@ def reportsales():
             )
             sales = Read(
                 """
-                SELECT 
-                    proyecto.ventas.ID_VENTA, 
-                    proyecto.dia.DIA, 
-                    proyecto.mes.MES, 
-                    proyecto.anio.ANIO, 
-                    proyecto.ventas.CANTIDAD_VENTA, 
+                SELECT
+                    proyecto.ventas.ID_VENTA,
+                    proyecto.dia.DIA,
+                    proyecto.mes.MES,
+                    proyecto.anio.ANIO,
+                    proyecto.ventas.CANTIDAD_VENTA,
                     proyecto.ventas.TOTAL
                 FROM proyecto.ventas, proyecto.dia, proyecto.mes, proyecto.anio
                 WHERE proyecto.ventas.ID_DIA = proyecto.dia.ID_DIA
@@ -334,12 +335,12 @@ def reportsales():
         print("<==================== DATOS OBTENIDOS ====================")
         sales = Read(
             """
-            SELECT 
-                proyecto.ventas.ID_VENTA, 
-                proyecto.dia.DIA, 
-                proyecto.mes.MES, 
-                proyecto.anio.ANIO, 
-                proyecto.ventas.CANTIDAD_VENTA, 
+            SELECT
+                proyecto.ventas.ID_VENTA,
+                proyecto.dia.DIA,
+                proyecto.mes.MES,
+                proyecto.anio.ANIO,
+                proyecto.ventas.CANTIDAD_VENTA,
                 proyecto.ventas.TOTAL
             FROM proyecto.ventas, proyecto.dia, proyecto.mes, proyecto.anio
             WHERE proyecto.ventas.ID_DIA = proyecto.dia.ID_DIA
@@ -347,13 +348,96 @@ def reportsales():
             AND proyecto.ventas.ID_ANIO = proyecto.anio.ID_ANIO
             """
         )
+
+        # Consulta de ventas mensuales si no se envía solicitud POST
+        ventas_mensuales = Read(
+            """
+            SELECT
+                meses.ID_MES,
+                COALESCE(COUNT(v.ID_VENTA), 0) AS NUMERO_DE_VENTAS
+            FROM
+                (SELECT 1 AS ID_MES UNION ALL
+                 SELECT 2 UNION ALL
+                 SELECT 3 UNION ALL
+                 SELECT 4 UNION ALL
+                 SELECT 5 UNION ALL
+                 SELECT 6 UNION ALL
+                 SELECT 7 UNION ALL
+                 SELECT 8 UNION ALL
+                 SELECT 9 UNION ALL
+                 SELECT 10 UNION ALL
+                 SELECT 11 UNION ALL
+                 SELECT 12) AS meses
+            LEFT JOIN
+                proyecto.ventas v ON meses.ID_MES = v.ID_MES
+            GROUP BY
+                meses.ID_MES
+            ORDER BY
+                meses.ID_MES;
+            """
+        )
+
+        # Consulta del promedio de ventas mensuales
+        promedio_ventas_mensuales = Read(
+            """
+            SELECT
+                ID_MES,
+                ROUND(AVG(total), 2) AS promedio_ventas_mensual
+            FROM
+                proyecto.ventas
+            GROUP BY
+                ID_MES
+            ORDER BY
+                ID_MES;
+            """
+        )
+
+        # Consulta de ventas diarias para el día actual
+        ventas_diarias = Read(
+            """
+            SELECT 
+                COUNT(v.ID_VENTA) AS NUMERO_DE_VENTAS
+            FROM 
+                ventas v
+            JOIN 
+                dia d ON v.ID_DIA = d.ID_DIA
+            JOIN 
+                mes m ON v.ID_MES = m.ID_MES
+            JOIN 
+                anio a ON v.ID_ANIO = a.ID_ANIO
+            WHERE 
+                CONCAT(a.anio, '-', LPAD(m.ID_MES, 2, '0'), '-', LPAD(d.dia, 2, '0')) = CURDATE()
+            GROUP BY 
+                DIA;
+            """
+        )
+
+        # Si no hay ventas en el día actual, lo establecemos como cero
+
+        if ventas_diarias:
+            ventas_diarias_totales = ventas_diarias[0][0]  # El primer valor de la primera fila es el total de ventas
+        else:
+            ventas_diarias_totales = 0
+
+
+        # Convertimos los resultados en un formato adecuado para JSON
+        # ventas_mensuales = [item["NUMERO_DE_VENTAS"]
+        #                     for item in ventas_mensuales]
+
+        print(ventas_diarias_totales)  # Verifica que tienes todos los meses
+        print(ventas_mensuales)  # Verifica que tienes todos los meses
+
+        print(promedio_ventas_mensuales)  # Verifica que tienes todos los meses
+
+        print(f"products > {sales}")
         print(f"products > {sales}")
         print("========================================>")
         print(
             "#################### FIN RenderT(products/warehouse.html) ####################>"
         )
         return render_template(
-            "sales/report-sales.html", sales=sales
+            "sales/report-sales.html", sales=sales, ventas_mensuales=ventas_mensuales, promedio_ventas=promedio_ventas_mensuales,  ventas_diarias_totales=ventas_diarias_totales
+
         )
     print("#################### NO HAY SESIÓN ####################>")
     return redirect(url_for("main.index"))
