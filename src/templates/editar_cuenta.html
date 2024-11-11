@@ -49,7 +49,7 @@
         <div class="container__perfil">
             <h1 class="titulo__perfil">Editar Perfil</h1>
             <figure class="perfil__container__img">
-                <img src="../static/img/Defaultperfil.png" alt="imagen" class="perfil__img">
+                <img src="../static/img/gigachat.jpg" alt="imagen" class="perfil__img">
             </figure>
             <div class="flex__perfil">
                 <h2 class="user__perfil">Nombres: </h2>
@@ -72,7 +72,7 @@
             <div class="flex__perfil">
                 <h2 class="user__perfil">Correo: </h2>
                 <a data-bs-toggle="offcanvas" href="#perfi_lateral">
-                    <h2 class="data__perfil">{{dato[4]}} </h2>
+                    <h2 class="data__perfil data__perfil--correo">{{dato[4]}} </h2>
                 </a>
             </div>
 
@@ -95,7 +95,7 @@
                 <form action="{{ url_for('accounts.actualizar_cuenta') }}" method="POST" autocomplete="off">
 
                     <label for="nombres">Nombres</label>
-                    <input type="text" onpaste="return false;" class="login__input " id="nombres" name="nombres"
+                    <input type="text" onpaste="return false;" class="login__input  " id="nombres" name="nombres"
                         minlength="4" maxlength="20" pattern="(?=.{2,})([A-Za-zÀ-ÿ]+(\s[A-Za-zÀ-ÿ]+)*)"
                         autocomplete="off" value="{{dato[1]}}" required>
 

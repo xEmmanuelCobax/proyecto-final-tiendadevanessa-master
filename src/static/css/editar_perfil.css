@@ -41,6 +41,7 @@
     font-size: 1.3rem;
 }
 
+
 body.dark-mode .data__perfil {
     color: white !important;
 }
@@ -48,12 +49,16 @@ body.dark-mode .data__perfil {
 
 .perfil__container__img {
     width: 95px;
-    border-radius: 50%;
+    height: 95px;
+    /* background-color: red; */
 }
 
 .perfil__img {
     width: 100%;
     height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
 }
 
 #generatePasswordBtn {

@@ -13,6 +13,8 @@ from db import CUD
 # NOTAS:
 
 # region clase usuario
+
+
 class Usuario(UserMixin):
     def __init__(
         self,
@@ -152,6 +154,8 @@ class ModelUser:
                 print(
                     "<-------------------- Usuario no encontrado -------------------->"
                 )
+                # Flash para correo no encontrado
+                flash('Correo no encontrado', 'danger')
                 return None
         except Exception as ex:
             print(f"<-------------------- Error: {ex} -------------------->")

@@ -28,6 +28,9 @@
   <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
+  <!-- Icono de la pagina -->
+  <link rel="icon" href="{{ url_for('static', filename='img/logo1.webp') }}" type="image/x-icon">
+
   {% block estilos%}
   {% endblock%}
 
@@ -56,7 +59,7 @@
             <a class="nav__link">{{ email }}</a>
           </li>
 
-          {% if 'products' in request.path or 'sales' or 'accounts' in request.path %}
+          {% if 'products' in request.path or 'sales' in request.path %}
           <!-- Si está en el gestor, se quita "Entrar" y agrega clase -->
           <li class="nav__item">
             <a class="nav__link cerrar-btn" href="{{ url_for('auth.cerrar_sesion') }}">Cerrar Sesión
@@ -75,6 +78,14 @@
           </li>
 
           {% endif %}
+
+          {% if 'accounts' in request.path%}
+          <li class="nav__item">
+            <a class="nav__link cerrar-btn" href="{{ url_for('auth.cerrar_sesion') }}">Cerrar Sesión
+              <!-- <i class="fas fa-door-open form__logo--icon"></i> -->
+            </a>
+          </li>
+          {%endif%}
 
           <!-- 
           <li class="nav__item">
