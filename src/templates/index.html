@@ -39,6 +39,22 @@
     <img src="/static/img/portada2.webp" class="inicio__img--img">
   </figure>
 
+  <!--Musica-->
+  <audio id="audio-fondo" autoplay>
+    <source src="../static/Audio/mavine.mp3" type="audio/mpeg">
+    Tu navegador no soporta el elemento de audio
+  </audio>
+
+  <!--Audio Btn-->
+  <a href="#" id="audio" class="Audio__Btn  "><i class="bi bi-pause-fill"></i>
+  </a>
+
+  <!--Control de volumen-->
+  <input type="range" id="volume" class="mt-4  d-none" name="volume" min="0" max="1" step="0.01" value="1">
+  <script src="../../static/Js/audio.js"></script>
+
+
+
   <footer class="py-2">
     <ul class="nav justify-content-center ">
       <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>

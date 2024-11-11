@@ -99,6 +99,32 @@ footer ul {
     display: none;
 }
 
+
+/*Otros*/
+.Audio__Btn {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    text-decoration: none;
+    width: 58px;
+    height: 58px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: rgb(27, 27, 28);
+    color: white;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    /* opacity: .02; */
+}
+
+.volume-control {
+    margin-top: 20px;
+    width: 100px;
+}
+
 /*4K*/
 
 @media screen and (min-width: 1440px) {
