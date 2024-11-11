@@ -56,12 +56,15 @@
             <a class="nav__link">{{ email }}</a>
           </li>
 
-          {% if 'products' in request.path or 'sales' in request.path %}
+          {% if 'products' in request.path or 'sales' or 'accounts' in request.path %}
           <!-- Si está en el gestor, se quita "Entrar" y agrega clase -->
           <li class="nav__item">
             <a class="nav__link cerrar-btn" href="{{ url_for('auth.cerrar_sesion') }}">Cerrar Sesión
               <!-- <i class="fas fa-door-open form__logo--icon"></i> -->
             </a>
+          </li>
+          <li class="nav__item">
+            <a class="nav__link" href="{{ url_for('accounts.editar_datos_cuenta') }}">Editar cuenta</a>
           </li>
           {% elif '/' == request.path %} <!--Inicio-->
           <li class="nav__item">
@@ -70,6 +73,7 @@
           <li class="nav__item">
             <a class="nav__link" href="{{ url_for('auth.cerrar_sesion') }}">Cerrar Sesión</a>
           </li>
+
           {% endif %}
 
           <!-- 

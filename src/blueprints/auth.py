@@ -46,13 +46,19 @@ def signin():
         return redirect(url_for("sales.addsalesworker"))
     if request.method == "POST":
         user = Usuario(0, request.form["email"], request.form["password"])
-        
+
         logged_user = ModelUser.login(user)
-        if logged_user is not None: # Si hay datos 
-            if logged_user.contraseña: #verificar contra
-                login_user(logged_user) 
+        if logged_user is not None:  # Si hay datos
+            if logged_user.contraseña:  # verificar contra
+                login_user(logged_user)
                 print(logged_user.id)
                 print(logged_user.tipo_usuario)
+                print(logged_user.correo)
+                session['correo'] = logged_user.correo
+                session['usuario_id'] = logged_user.id
+
+                print(f"Correo en sesión: {session['correo']}")
+
                 return redirect(url_for("profile.welcomeuser"))
             else:
                 flash("Contraseña no encontrada", "danger")
@@ -172,7 +178,7 @@ def signup():
 @auth.route("/cerrar_sesion")
 def cerrar_sesion():
     if current_user.is_authenticated:
-        
+
         CUD(
             """
             UPDATE usuarios

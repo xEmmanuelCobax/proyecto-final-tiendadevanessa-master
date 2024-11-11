@@ -1,4 +1,5 @@
 # import flask
+import re
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 # importar modelos para query
 from models.queries import (
@@ -41,7 +42,8 @@ def manage_accounts():
             if action == "delete":
                 try:
                     print("<#################### delete ####################")
-                    id_intermediario = int(request.form.get("DeleteIntermediaryId"))
+                    id_intermediario = int(
+                        request.form.get("DeleteIntermediaryId"))
                     print(f"id para eliminar usuarios - {id_intermediario}")
                     CUD(
                         """
@@ -97,7 +99,8 @@ def manage_accounts():
                         AND proyecto.usuarios.AP_MAT= ?
                         AND proyecto.usuarios.ID_USUARIO != ?
                         """,
-                        (nombre, apellido_paterno, apellido_materno, int(id_usuario)),
+                        (nombre, apellido_paterno,
+                         apellido_materno, int(id_usuario)),
                     )
                     # Cualquier error
                     if existing_email or existing_user:
@@ -180,3 +183,115 @@ def manage_accounts():
             companies=ConsultaCompanias(),
         )
     return render_template("auth/signin.html")
+
+
+@accounts.route('/editar_datos_cuenta')
+@login_required
+def editar_datos_cuenta():
+    usuario_id = session.get('usuario_id', None)
+    print("El correo en sesión es:", usuario_id)
+
+    # Verificar si el correo está en la sesión
+    if usuario_id is None:
+        flash("No se ha encontrado el correo en la sesión.", "error")
+        return redirect(url_for('auth.signin'))
+
+    # Obtener los datos de la cuenta
+    try:
+        informacion_perfil = Read(
+            """
+            SELECT
+            	usuarios.ID_USUARIO,
+                usuarios.NOMBRE,
+                usuarios.AP_PAT,
+                usuarios.AP_MAT,
+                usuarios.CORREO,
+                usuarios.CONTRASENA
+            FROM
+                usuarios
+            WHERE
+                ID_USUARIO = %s;
+            """,
+            (usuario_id,)  # Usar el correo como parámetro
+        )
+    except Exception as e:
+        flash(f"Error al consultar la base de datos: {e}", "error")
+        return redirect(url_for('auth.signin'))
+
+    print("Información del nutriólogo:", informacion_perfil)
+
+    # Comprobar si se encontró al nutriólogo
+    if not informacion_perfil:
+        flash("No se encontró el nutriólogo.", "error")
+        return redirect(url_for('auth.signin'))
+
+    # Pasar la información correctamente a la plantilla
+    return render_template("editar_cuenta.html", dato=informacion_perfil[0])
+
+
+@accounts.route('/actualizar_cuenta', methods=['POST'])
+@login_required
+def actualizar_cuenta():
+
+    if request.method == 'POST':
+        nombres = str(request.form['nombres']).strip().lower()  # Minusculas
+        ap_paterno = str(request.form['apellido_p']).strip().lower()
+        ap_materno = str(request.form['apellido_m']).strip().lower()
+        correo = str(request.form['correo']).strip().lower()
+        indice_id = str(request.form['indice_id']).strip().lower()
+
+        # Validar que el correo electrónico termine en ".com"
+        if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[cC][oO][mM]$", correo):
+            flash("El correo electrónico debe terminar en '.com'", "error_email")
+            return redirect(url_for('editar_perfil'))
+
+        # Comprobar si el correo ya está registrado
+        try:
+            correo_ya_existe = Read(
+                """
+                SELECT
+                    *
+                FROM
+                    usuarios
+                WHERE
+                    CORREO = %s;
+                    AND ID_USUARIO != %s;
+                """,
+                (correo, indice_id)  # Usar el correo como parámetro
+            )
+
+        except Exception as e:
+            flash(f"Error al consultar la base de datos: {e}", "error")
+            return redirect(url_for('index'))
+
+        if correo_ya_existe:
+            flash("El correo electrónico ya está registrado", "error_email")
+            return redirect(url_for('accounts.editar_datos_cuenta'))
+
+        else:
+            # Actualizar los datos del usuario
+            try:
+                CUD(
+                    """
+                    UPDATE
+                        usuarios
+                    SET
+                        NOMBRE = %s,
+                        AP_PAT = %s,
+                        AP_MAT = %s,
+                        CORREO = %s
+                    WHERE
+                        ID_USUARIO = %s
+                    """,
+                    (nombres, ap_paterno, ap_materno, correo,
+                     indice_id)  # Usar el correo como parámetro
+                )
+            except Exception as e:
+                flash(f"Error al consultar la base de datos: {e}", "error")
+                return redirect(url_for('accounts.editar_datos_cuenta'))
+            # Actualizar la sesión
+            session["email"] = correo
+            flash("Perfil editado correctamente", "perfil_editado")
+            return redirect(url_for('accounts.editar_datos_cuenta'))
+
+    return redirect(url_for('accounts.editar_datos_cuenta'))
