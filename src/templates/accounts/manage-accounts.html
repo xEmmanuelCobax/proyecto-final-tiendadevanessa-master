@@ -24,8 +24,14 @@ endblock %} {% block content %}
                 <th scope="col">
                   <span data-section="manage-intermediary" data-value="">Nombre</span>
                 </th>
+                <th scope="col" >
+                  <span  data-section="werehouse" data-value="">Correo</span>
+                </th>
                 <th scope="col">
-                  <span data-section="werehouse" data-value="">Correo</span>
+                  <span data-section="werehouse" data-value="">Status</span>
+                </th>
+                <th scope="col">
+                  <span data-section="werehouse" data-value="">Rol</span>
                 </th>
                 <th scope="col">
                   <span data-section="manage-intermediary" data-value="Actions">Acciones</span>
@@ -37,7 +43,9 @@ endblock %} {% block content %}
               <tr data-relation-id="{{ relation[0] }}">
                 <th scope="row">{{ relation[0] }}</th>
                 <td>{{ relation[1] ~ ' ' ~ relation[2] ~ ' ' ~ relation[3] }}</td>
-                <td>{{ relation[4] }}</td>
+                <td style="padding-inline: 1px;">{{ relation[4] }}</td>
+                <td>{{ relation[5] }}</td>
+                <td > <span class="rolid">{{ relation[6] }}</span></td>
                 <td class="text-center d-flex justify-content-center align-items-center">
                   <!--
                   <button

@@ -12,7 +12,7 @@
   <div class="reporteVentas__container">
     <h2 class="titulo-inventario">Reporte de ventas</h2>
     <p class="desc-inventario">Accede a los informes detallados de tus ventas y análisis de rendimiento
-    
+
     </p>
     <div class="col-lg-12 my-2">
       <div class="table-container">
@@ -80,6 +80,135 @@
       {% endif %}
     </div>
   </div>
+  <div class="flex-graficos">
+    <div id="container" style="width:80%; height:420px; margin-top: 20px;"></div>
+    <!--Promdeio de ventas mes -->
+    <div id="promedio_ventas_mes" style="width:80%; height:420px; margin-top: 20px;"></div>
+    <!-- Div para el gráfico de ventas diarias -->
+    <div id="ventas_diarias_chart" style="width:80%; height:400px; margin-top: 20px;"></div>
+
   </div>
+
+
+  </div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const monthlySalesData = {{ ventas_mensuales | tojson
+    }};
+
+    // Definir colores para cada mes (puedes personalizarlos a tu gusto)
+    const colors = [
+      '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8C33', '#33FFF7',
+      '#F7FF33', '#FF33D4', '#33FF8C', '#8C33FF', '#FF5733', '#33FF57'
+    ];
+
+    const chart = Highcharts.chart('container', {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'Ventas por Mes'
+      },
+      xAxis: {
+        categories: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+      },
+      yAxis: {
+        title: {
+          text: 'Número de Ventas'
+        }
+      },
+      series: [{
+        name: 'Ventas',
+        data: monthlySalesData.map((data, index) => {
+          return {
+            y: data[1], // Valor de las ventas
+            color: colors[index] // Asignar color del mes
+          };
+        })
+      }]
+    });
+  });
+  </script>
+
+  <!--Gradfico dos-->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Datos de promedio de ventas mensuales desde Flask
+      const promedioVentasMensuales = {{ promedio_ventas | tojson
+    }};
+
+    // Convertimos los datos en el formato adecuado para el gráfico de pie
+    const dataForPieChart = promedioVentasMensuales.map(item => {
+      const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      return { name: monthNames[item[0] - 1], y: item[1] };
+    });
+
+    Highcharts.chart('promedio_ventas_mes', {
+      chart: {
+        type: 'pie'
+      },
+      title: {
+        text: 'Promedio de Ventas Mensual $'
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.y:.2f}'
+          }
+        }
+      },
+      series: [{
+        name: 'Promedio de Ventas',
+        colorByPoint: true,
+        data: dataForPieChart
+      }]
+    });
+  });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Datos de ventas diarias desde Flask
+      const ventasDiariasTotales = {{ ventas_diarias_totales 
+    }};
+
+    // Configuración del gráfico de ventas diarias
+    Highcharts.chart('ventas_diarias_chart', {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'Ventas del día actual'
+      },
+      xAxis: {
+        categories: ['Ventas de hoy']
+      },
+     
+      series: [{
+        name: 'Ventas',
+        colorByPoint: true,
+        data: [{
+          name: 'Total Ventas',
+          y: ventasDiariasTotales,
+          color: '#007bff'  // Color azul para el total de ventas
+        }, {
+          name: 'Ventas ',
+          y: ventasDiariasTotales > 0 ? 0 : 100, // Representación de no ventas si no hay ventas
+          color: '#d3d3d3'  // Color gris para sin ventas
+        }]
+      }]
+    });
+  });
+  </script>
+
 </section>
 {% endblock %}

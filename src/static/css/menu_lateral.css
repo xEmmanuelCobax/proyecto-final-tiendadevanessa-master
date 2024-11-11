@@ -54,6 +54,7 @@
     /* background-color: purple; */
     margin-bottom: 10px;
     /* transition: background-color 0.3s ease, color 0.3s ease; */
+    transition: all .4s ease-out
 }
 
 .menu__enlace:hover {

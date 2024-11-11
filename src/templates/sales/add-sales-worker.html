@@ -110,7 +110,9 @@ endblock %} {% block content %}
 <section class="ventas">
   {% include 'top navbar/top-width-navbar.html' %}
 
+
   <div class="ventas__container">
+   
     <h2 class="titulo-inventario">Vender</h2>
     <p class="desc-inventario">Aquí tendrás todo lo necesario para administrar tus transacciones y maximizar tus ventas.
 
@@ -118,24 +120,22 @@ endblock %} {% block content %}
 
     <div class="container">
       <div class="row">
-        <div class="col-md col-lg-6 my-2">
-          <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
-          <div class="input-group">
-            <!--Buscador-->
-            <input id="searchInput" class="form-control buscador" type="search" placeholder="Buscar producto"
-              aria-label="Search Product" />
+        <!-- <div class="col-md col-lg-6 my-2"> -->
+        <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
+        <!-- <div class="input-group"> -->
+        <!--Buscador-->
+        <!-- <input id="searchInput" class="form-control buscador" type="search" placeholder="Buscar producto"
+              aria-label="Search Product" /> -->
 
-            <button id="addButton" type="button" class="btn btn-outline-primary btn-sm " style="margin: 0;">
+        <!-- <button id="addButton" type="button" class="btn btn-outline-primary btn-sm " style="margin: 0;">
               <span data-section="Sale" data-value="Add Product">Agregar producto</span>
-            </button>
-          </div>
-          <div id="searchResults" class="dropdown-menu "></div>
-        </div>
+            </button> -->
+        <!-- </div> -->
+        <!-- <div id="searchResults" class="dropdown-menu "></div> -->
+        <!-- </div> -->
         <div class="col-md col-lg-6 my-2">
           <!-- Para pantallas pequeñas, ocupará el ancho completo; para medianas y grandes, ocupará 6 columnas -->
-          <button id="addSale" type="button" class="btn btn-success w-100">
-            <span data-section="Sale" data-value="Make sale">Realizar Venta</span>
-          </button>
+
         </div>
       </div>
     </div>
@@ -159,7 +159,7 @@ endblock %} {% block content %}
           class="buttons mt-3 border border-Tertiary p-3 rounded d-flex flex-wrap justify-content-center align-items-center"
           style="max-height: 600px; overflow-y: auto; background-color: rgba(245, 245, 245, 0.797);">
           {% for product in products %}
-          <div class="col mb-2 d-flex justify-content-center align-items-center " >
+          <div class="col mb-2 d-flex justify-content-center align-items-center ">
             <a class="btn custom-btn mx-1 product-btn " data-id="{{ product[0] }}" data-name="{{ product[1] }}"
               data-price="{{ product[2] }}" data-amount="{{ product[3] }}" data-status="{{ product[4] }}"
               data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
@@ -226,7 +226,9 @@ endblock %} {% block content %}
 
           </div>
         </div>
-
+        <button id="addSale" type="button" class="btn btn-success w-100">
+          <span data-section="Sale" data-value="Make sale">Realizar Venta</span>
+        </button>
         <!--Pa que no salga-->
         <div class="table-responsive" style="max-height: 400px; overflow-y: auto">
           <!--Tabla de cambio-->
@@ -777,25 +779,25 @@ endblock %} {% block content %}
         }, 1000); // 1000 milisegundos = 1 segundo
       } else {
         console.error("Error:", xhr.statusText);
-            let errorMessage = "Ha ocurrido un error.";
+        let errorMessage = "Ha ocurrido un error.";
 
-            // Si el servidor responde con un mensaje de error más específico
-            if (xhr.responseText) {
-                try {
-                    const responseJson = JSON.parse(xhr.responseText);
-                    errorMessage = responseJson.message || errorMessage;
-                } catch (e) {
-                    errorMessage = "Error inesperado al procesar la venta.";
-                    
-                }
-                setTimeout(() => {
-                location.reload(); // Recargar la página después de 1 segundo
-                }, 1000);
-                
-            }
+        // Si el servidor responde con un mensaje de error más específico
+        if (xhr.responseText) {
+          try {
+            const responseJson = JSON.parse(xhr.responseText);
+            errorMessage = responseJson.message || errorMessage;
+          } catch (e) {
+            errorMessage = "Error inesperado al procesar la venta.";
 
-            showToast(errorMessage, "danger");
+          }
+          setTimeout(() => {
+            location.reload(); // Recargar la página después de 1 segundo
+          }, 1000);
+
         }
+
+        showToast(errorMessage, "danger");
+      }
     };
     xhr.onerror = function () {
       console.error("Error:", xhr.statusText);
