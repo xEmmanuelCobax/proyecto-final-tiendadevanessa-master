@@ -92,11 +92,11 @@
 
   </div>
 
+</section>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const monthlySalesData = {{ ventas_mensuales | tojson
-    }};
+      const monthlySalesData = {{ ventas_mensuales | tojson | safe }};
 
     // Definir colores para cada mes (puedes personalizarlos a tu gusto)
     const colors = [
@@ -137,8 +137,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       // Datos de promedio de ventas mensuales desde Flask
-      const promedioVentasMensuales = {{ promedio_ventas | tojson
-    }};
+      const promedioVentasMensuales = {{ promedio_ventas | tojson }};
 
     // Convertimos los datos en el formato adecuado para el gráfico de pie
     const dataForPieChart = promedioVentasMensuales.map(item => {
@@ -210,5 +209,5 @@
   });
   </script>
 
-</section>
+
 {% endblock %}

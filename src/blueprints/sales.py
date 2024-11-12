@@ -411,6 +411,9 @@ def reportsales():
                 DIA;
             """
         )
+        print("consulta de ventas_diarias")
+        print(ventas_diarias)
+        print("aqui termina")
 
         # Si no hay ventas en el día actual, lo establecemos como cero
 
