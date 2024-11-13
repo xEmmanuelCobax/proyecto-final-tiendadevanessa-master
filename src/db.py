@@ -29,6 +29,7 @@ def CUD(query, params=None, CONECTION = None):
         connection.autocommit = False     
         cursor.execute("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
         cursor.execute("SELECT @@tx_isolation;")
+
         current_isolation_level = cursor.fetchone()[0]
         print(f"El nivel de aislamiento actual es: {current_isolation_level}")
             # Iniciar la transacción
@@ -54,7 +55,7 @@ def CUD(query, params=None, CONECTION = None):
 
 
 # region Read
-def Read(query, params=None, CONECTION=None):
+def Read(query, params=None, CONECTION=None, is_procedure=False ):
     print("<-------------------- Conectando... --------------------")
     connection = None
     try:
@@ -68,12 +69,25 @@ def Read(query, params=None, CONECTION=None):
             cursor = connection.cursor()
             
         cursor = connection.cursor()
-        if params:
-            cursor.execute(query, params)
+
+        if is_procedure:
+            if params is None:
+                params = []  # Asegura que params esté definido como lista vacía si no hay parámetros
+            cursor.callproc(query, params)  # Ejecuta el procedimiento
+            results = []
+            for result in cursor.stored_results():
+                rows = result.fetchall()
+                results.extend([list(row) for row in rows])
         else:
-            cursor.execute(query)
-        rows = cursor.fetchall()
-        results = [list(row) for row in rows]  # Convert each row to a list
+            # Ejecuta una consulta normal
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+            rows = cursor.fetchall()
+            results = [list(row) for row in rows] # Convierte cada fila a lista
+
+
         print("<-------------------- Conexión exitosa --------------------")
         for result in results:
             print(result)

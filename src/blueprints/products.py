@@ -1,7 +1,7 @@
 # import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 # importar modelos para query
-from models.queries import Read, CUD, ConsultaPIA, ConsultaCompanias, ConsultaIntermediarios
+from models.queries import Read, CUD,ConsultaPIA, ConsultaCompanias, ConsultaIntermediarios
 # importar las excepciones
 from models.exceptions import MyException
 # importar las extenciones

@@ -3,32 +3,11 @@ from db import Read, CUD
 
 # NOTAS:
 # Usar la importacion para evitar conflictos:
-# from models.queries import Read, CUD, ConsultaPIA, ConsultaCompanias, ConsultaIntermediarios 
 
 # region PIA
 def ConsultaPIA():
     Cpia = []
-    Cpia = Read(
-        """
-    SELECT 
-        proyecto.almacen.ID_PRODUCTO,
-        proyecto.almacen.NOMBRE, 
-        proyecto.almacen.PRECIO_UNITARIO, 
-        proyecto.almacen.EXISTENCIAS,
-        proyecto.almacen.PRECIO_EXISTENCIA, 
-        proyecto.intermediario.NOMBRE,
-        proyecto.intermediario.AP_PAT,
-        proyecto.intermediario.AP_MAT,
-        proyecto.intermediario.TEL,
-        proyecto.proveedor.NOMBRE
-    FROM proyecto.proveedor, proyecto.intermediario, proyecto.almacen
-    WHERE proyecto.proveedor.ID_COMPANIA = proyecto.intermediario.ID_COMPANIA
-    AND proyecto.intermediario.ID_INTERMEDIARIO = proyecto.almacen.ID_INTERMEDIARIO
-    AND proyecto.almacen.ESTATUS = 1
-
-    ORDER BY 
-    proyecto.almacen.ID_PRODUCTO ASC;
-        """
+    Cpia = Read("CALL ConsultaPIA();"
     )
     return Cpia
 # endregion
