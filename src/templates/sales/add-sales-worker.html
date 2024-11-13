@@ -212,7 +212,7 @@ endblock %} {% block content %}
                 <div class="col-sm-8">
                   <div class="input-group">
                     <input type="number" class="form-control" id="paymentInput" min="1" maxlength="6"
-                      placeholder="Ingrese la cantidad" />
+                      placeholder="Ingrese la cantidad" oninput="validateInput()"/>
                     <span class="input-group-text" id="basic-addon1">$</span>
                   </div>
                 </div>
@@ -226,7 +226,7 @@ endblock %} {% block content %}
 
           </div>
         </div>
-        <button id="addSale" type="button" class="btn btn-success w-100">
+        <button id="addSale" type="button" class="btn btn-success w-100" disabled>
           <span data-section="Sale" data-value="Make sale">Realizar Venta</span>
         </button>
         <!--Pa que no salga-->
@@ -364,6 +364,7 @@ endblock %} {% block content %}
 
     const inputElement = document.getElementById('paymentInput');
     const inputValue = inputElement.value;
+    // console.log(inputValue);
 
     // Sumar todos los subtotales para obtener el subtotal total
     let subtotal = subtotals.reduce((acc, val) => acc + val, 0);
@@ -373,7 +374,9 @@ endblock %} {% block content %}
 
     // Calcular el total de la compra
     let totalTotalWithIVA = (subtotal * 1.16).toFixed(2);
-
+    
+  
+    
     if (inputValue === "") {
       var cambiocliente = 0.0;
     } else {
@@ -389,7 +392,10 @@ endblock %} {% block content %}
       "Total de la compra: " + totalTotalWithIVA + "$";
     document.getElementById("cambiocliente").innerText =
       "Cambio a entregar: " + cambiocliente + "$";
+
   }
+
+  
 
   // Crear un MutationObserver para observar cambios en el tbody de la tabla
   const targetNode = document.querySelector("#saleTable tbody");
@@ -399,6 +405,7 @@ endblock %} {% block content %}
     characterData: true,
     attributes: true,
   };
+
 
   const callback = function (mutationsList, observer) {
     for (const mutation of mutationsList) {
@@ -448,6 +455,55 @@ endblock %} {% block content %}
 
   // Llamar a la función para calcular la suma cuando se carga la página
   window.onload = sumTableNumbers;
+  
+  function validateInput() {
+    let table = document.getElementById("saleTable");
+    let rows = table.getElementsByTagName("tr");
+    let total = 0.0;
+
+    // Crear un array para almacenar los subtotales de cada producto
+    let subtotals1 = [];
+
+    // Iterar sobre las filas y calcular los subtotales de cada producto
+    for (let i = 1; i < rows.length; i++) {
+      let cells = rows[i].getElementsByTagName("td");
+      if (cells.length > 0) {
+        let price = parseFloat(cells[3].innerText);
+        let quantity = parseFloat(cells[2].querySelector("input").value);
+        let subtotal = price * quantity;
+        subtotals1.push(subtotal);
+      }
+    }
+
+  // Sumar todos los subtotales para obtener el subtotal total
+  let subtotal = subtotals1.reduce((acc, val) => acc + val, 0);
+
+// Calcular el total con IVA
+let totalWithIVA = (subtotal * 1.16).toFixed(2);
+
+// Calcular el total de la compra
+let totalTotalWithIVA = (subtotal * 1.16).toFixed(2);  
+
+  const addSaleButton = document.getElementById('addSale');
+  const inputElement = document.getElementById('paymentInput');
+  const inputValue = parseFloat(inputElement.value);
+  console.log("Botón addSale:", addSaleButton);
+  console.log("Valor ingresado:", inputValue);
+  console.log("Valor ingresado2:", totalTotalWithIVA);
+  if (inputValue<totalTotalWithIVA) {
+    // Muestra el mensaje de advertencia
+    // showToast("Por favor, ingrese un valor mayor al de la venta.", "warning");
+
+    // Deshabilita el botón si la condición no se cumple
+    addSaleButton.disabled = true;
+    console.log("Botón deshabilitado");
+    
+  } else if (inputValue>totalTotalWithIVA && totalTotalWithIVA>0) {
+    // Habilita el botón si la condición se cumple
+    addSaleButton.disabled = false;
+    console.log("Botón habilitado");
+  }
+  }
 </script>
 
 <!-- SCRIPT PARA CARGAR TOOLTIPS -->
@@ -757,7 +813,8 @@ endblock %} {% block content %}
       );
       return;
     }
-
+    
+   
     // Mostrar el spinner de carga
     document.getElementById("spinner-container").style.display = "flex";
 
