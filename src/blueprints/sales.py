@@ -48,14 +48,18 @@ def addsalesworker():
                 print("<#################### MakeSales ####################")
                 sales_data = request.get_json()
                 Entrada = []
+                
                 print("Sales Data Received:", sales_data)
                 for i in range(len(sales_data)):
                     id = sales_data[i].get("id")
                     cantidad = sales_data[i].get("quantity")
+                    
+
                     print("ID>", id)  # El id
                     print("cantidad>", cantidad)
                     Entrada.append([int(id), int(cantidad)])
                 #
+                
                 print("<==================== DATOS OBTENIDOS ====================")
                 for producto in Entrada:
                     print(producto)
@@ -64,6 +68,7 @@ def addsalesworker():
                 tabla = [[] for _ in range(len(Entrada))]
                 # Verificar que existe en la base de datos>
                 print("Paso 1: verificar existencia del producto")
+               
                 ValidarExistencia = False
                 try:
                     for i in range(len(Entrada)):
@@ -97,12 +102,13 @@ def addsalesworker():
                 for producto in tabla:
                     print(producto)
                 # Si los productos existen(Estan activos) y estan en la BD entonces>
+                
                 if ValidarExistencia == False:
-
                     raise MyException(
                         "ErrorEntrada",
                         "Se intentaron cambiar los datos.",
                     )
+                
                 if ValidarExistencia == True:
                     # Obtenemos la fecha actual
                     Auxiliar = datetime.now()

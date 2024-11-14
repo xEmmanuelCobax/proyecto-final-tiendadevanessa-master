@@ -27,8 +27,8 @@ def CUD(query, params=None, CONECTION = None):
             cursor = connection.cursor()
              # Establecer el nivel de aislamiento a SERIALIZABLE
         connection.autocommit = False     
-        cursor.execute("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
-        cursor.execute("SELECT @@tx_isolation;")
+        # cursor.execute("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
+        # cursor.execute("SELECT @@tx_isolation;")
 
         current_isolation_level = cursor.fetchone()[0]
         print(f"El nivel de aislamiento actual es: {current_isolation_level}")
@@ -69,6 +69,7 @@ def Read(query, params=None, CONECTION=None, is_procedure=False ):
             cursor = connection.cursor()
             
         cursor = connection.cursor()
+        
 
         if is_procedure:
             if params is None:
