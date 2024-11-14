@@ -48,14 +48,18 @@ def addsalesworker():
                 print("<#################### MakeSales ####################")
                 sales_data = request.get_json()
                 Entrada = []
+                
                 print("Sales Data Received:", sales_data)
                 for i in range(len(sales_data)):
                     id = sales_data[i].get("id")
                     cantidad = sales_data[i].get("quantity")
+                    
+
                     print("ID>", id)  # El id
                     print("cantidad>", cantidad)
                     Entrada.append([int(id), int(cantidad)])
                 #
+                
                 print("<==================== DATOS OBTENIDOS ====================")
                 for producto in Entrada:
                     print(producto)
@@ -64,39 +68,49 @@ def addsalesworker():
                 tabla = [[] for _ in range(len(Entrada))]
                 # Verificar que existe en la base de datos>
                 print("Paso 1: verificar existencia del producto")
+               
                 ValidarExistencia = False
-                for i in range(len(Entrada)):
-                    ExisteProducto = Read(
-                        """
-                        SELECT
-                            proyecto.almacen.ID_PRODUCTO,
-                            proyecto.almacen.PRECIO_UNITARIO,
-                            proyecto.almacen.EXISTENCIAS
-                        FROM proyecto.almacen
-                        WHERE proyecto.almacen.ESTATUS = 1
-                        AND proyecto.almacen.ID_PRODUCTO = ?
-                        """,
-                        (Entrada[i][0],),
-                    )
-                    tabla[i].append(ExisteProducto[0][0])
-                    tabla[i].append(ExisteProducto[0][1])
-                    tabla[i].append(ExisteProducto[0][2])
-                    # Si un producto no existe, entonces terminamos el ciclo y el booleano ValidarExistencia es falso
-                    if not ExisteProducto:
-                        ValidarExistencia = False
-
-                        break
+                
+                try:
+                    for i in range(len(Entrada)):
+                        ExisteProducto = Read(
+                            """
+                            SELECT
+                                proyecto.almacen.ID_PRODUCTO,
+                                proyecto.almacen.PRECIO_UNITARIO,
+                                proyecto.almacen.EXISTENCIAS,
+                                proyecto.almacen.NOMBRE
+                            FROM proyecto.almacen
+                            WHERE proyecto.almacen.ESTATUS = 1
+                            AND proyecto.almacen.ID_PRODUCTO = ?
+                            """,
+                            (Entrada[i][0],),
+                        )
+                        tabla[i].append(ExisteProducto[0][0])
+                        tabla[i].append(ExisteProducto[0][1])
+                        tabla[i].append(ExisteProducto[0][2])
+                      
+                        # Si un producto no existe, entonces terminamos el ciclo y el booleano ValidarExistencia es falso
+                        if not ExisteProducto:
+                            ValidarExistencia = False
+                            break
+                                  
+                except Exception as e:
+                    print(e)
+                    flash("El producto no se encuentra disponible.", 'danger')
+                    return jsonify({"message": "Error en la venta. Intente nuevamente."}), 500        
                     # Si no hay errores entonces el booleano ValidarExistencia es verdadero
-                    ValidarExistencia = True
+                ValidarExistencia = True
                 for producto in tabla:
                     print(producto)
                 # Si los productos existen(Estan activos) y estan en la BD entonces>
+                
                 if ValidarExistencia == False:
-
                     raise MyException(
                         "ErrorEntrada",
                         "Se intentaron cambiar los datos.",
                     )
+                
                 if ValidarExistencia == True:
                     # Obtenemos la fecha actual
                     Auxiliar = datetime.now()
@@ -151,42 +165,46 @@ def addsalesworker():
                     # Inicializar new como una lista de listas vacías
                     TablaDetalles = [[] for _ in range(len(Entrada))]
                     ErrorVenta = False
-                    for i in range(len(Entrada)):
-                        # Datos
-                        """
-                        tabla[i][0] = ID_Producto
-                        tabla[i][1] = Costo Unitario
-                        tabla[i][2] = Stock
-                        Entrada[i][0] = ID_Producto
-                        Entrada[i][1] = Cantidad de compra
-                        """
-                        if tabla[i][2] - Entrada[i][1] < 0:
-                            print("Error en la venta")
-                            ErrorVenta = True
-                            break
-                        else:
-                            # Operaciones
-                            # Costo por producto
-                            Cost = (tabla[i][1]) * (Entrada[i][1])
-                            IvaValue = Cost * 0.16  # Asumiendo que el IVA es del 16%
-                            SumaCosto += Cost  # Sumar los costos por producto
-                            # Sumar los iva por producto
-                            SumaIva += round(IvaValue)
-                            TotalProductos += Entrada[i][
-                                1
-                            ]  # Sumar la cantidad de productos
-                            # Apartado en donde se agregar datos a array
-                            TablaDetalles[i].append(Entrada[i][1])  # CANTIDAD
-                            TablaDetalles[i].append(Cost)  # IMPORTE
-                            TablaDetalles[i].append(round(IvaValue))  # IVA
-                            TablaDetalles[i].append(tabla[i][0])  # ID_PRODUCTO
-                    if ErrorVenta:
-
-                        raise MyException(
-                            "ErrorVenta",
-                            "No hay existencias para reaelizar la venta.",
-                        )
-
+                    try:
+                        for i in range(len(Entrada)):
+                            # Datos
+                            """
+                            tabla[i][0] = ID_Producto
+                            tabla[i][1] = Costo Unitario
+                            tabla[i][2] = Stock
+                            Entrada[i][0] = ID_Producto
+                            Entrada[i][1] = Cantidad de compra
+                            """
+                            if tabla[i][2] - Entrada[i][1] < 0:
+                                print("Error en la venta")
+                                ErrorVenta = True
+                                break
+                            else:
+                                # Operaciones
+                                # Costo por producto
+                                Cost = (tabla[i][1]) * (Entrada[i][1])
+                                IvaValue = Cost * 0.16  # Asumiendo que el IVA es del 16%
+                                SumaCosto += Cost  # Sumar los costos por producto
+                                # Sumar los iva por producto
+                                SumaIva += round(IvaValue)
+                                TotalProductos += Entrada[i][
+                                    1
+                                ]  # Sumar la cantidad de productos
+                                # Apartado en donde se agregar datos a array
+                                TablaDetalles[i].append(Entrada[i][1])  # CANTIDAD
+                                TablaDetalles[i].append(Cost)  # IMPORTE
+                                TablaDetalles[i].append(round(IvaValue))  # IVA
+                                TablaDetalles[i].append(tabla[i][0])  # ID_PRODUCTO
+                        if ErrorVenta:
+                        
+                            raise MyException(
+                                "ErrorVenta",
+                                "No hay existencias para reaelizar la venta.",
+                            )
+                    except Exception as e:
+                        print(e)
+                        flash('La existencia de algún producto no es suficiente para concretar la venta, intentelo de nuevo.', 'danger')
+                        return jsonify({"message": "Error en la venta. Intente nuevamente."}), 500    
                     if not ErrorVenta:
                         # Datos
                         Total = SumaCosto + SumaIva  # Costo de la venta
