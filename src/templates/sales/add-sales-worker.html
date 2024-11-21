@@ -383,6 +383,8 @@ endblock %} {% block content %}
       var cambiocliente = (inputValue - totalTotalWithIVA);
     }
 
+    cambiocliente = cambiocliente.toFixed(2);
+
     // Actualizar los elementos HTML con los resultados
     document.getElementById("totalSum").innerText =
       "Subtotal: " + subtotal.toFixed(2) + "$";

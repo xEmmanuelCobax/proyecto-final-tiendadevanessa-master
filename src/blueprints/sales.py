@@ -1,5 +1,6 @@
 #
 import locale
+import json
 # import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 # importar modelos para query
@@ -67,15 +68,7 @@ def addsalesworker():
                 ValidarExistencia = False
                 for i in range(len(Entrada)):
                     ExisteProducto = Read(
-                        """
-                        SELECT
-                            proyecto.almacen.ID_PRODUCTO,
-                            proyecto.almacen.PRECIO_UNITARIO,
-                            proyecto.almacen.EXISTENCIAS
-                        FROM proyecto.almacen
-                        WHERE proyecto.almacen.ESTATUS = 1
-                        AND proyecto.almacen.ID_PRODUCTO = ?
-                        """,
+                        "CALL GetProductoExistente(%s);",
                         (Entrada[i][0],),
                     )
                     tabla[i].append(ExisteProducto[0][0])
@@ -110,12 +103,8 @@ def addsalesworker():
                     print("Paso 1: Encontrar ID_DIA en BD DIA")
                     Dia = int(
                         Read(
-                            """
-                        SELECT proyecto.dia.ID_DIA
-                        FROM proyecto.dia
-                        WHERE proyecto.dia.DIA = ?
-                        """,
-                            (DiaA,),
+                        "CALL GetDiaId(%s);",
+                        (DiaA,)
                         )[0][0]
                     )
 
@@ -123,24 +112,17 @@ def addsalesworker():
                     print("Paso 2: Encontrar ID_MES en BD MES")
                     Mes = int(
                         Read(
-                            """
-                        SELECT proyecto.mes.ID_MES
-                        FROM proyecto.mes
-                        WHERE proyecto.mes.MES = ?
-                        """,
-                            (MesA,),
-                        )[0][0]
+                        "CALL GetIdMesByNombre(%s);", 
+                            (MesA,)
+                        )
+                        [0][0]
                     )
                     # Encontrar ID_ANIO en BD ANIO
                     print("Paso 3: Encontrar ID_ANIO en BD ANIO")
                     Anio = int(
                         Read(
-                            """
-                        SELECT proyecto.anio.ID_ANIO
-                        FROM proyecto.anio
-                        WHERE proyecto.anio.ANIO = ?
-                        """,
-                            (AnioA,),
+                            "CALL GetIdAnioByNombre(%s);",  # Llamada al procedimiento almacenado
+                        (AnioA,)  # Aquí pasa el valor de 'AnioA' como parámetro
                         )[0][0]
                     )
                     # Valores en 0
@@ -257,16 +239,7 @@ def addsalesworker():
 
         # Siempre se envia estos datos
         products = Read(
-            """
-                    SELECT
-                        ID_PRODUCTO,
-                        NOMBRE,
-                        PRECIO_UNITARIO,
-                        EXISTENCIAS,
-                        ESTATUS
-                    FROM proyecto.almacen
-                    WHERE proyecto.almacen.ESTATUS = 1
-                    """
+         "CALL GetProductosActivos();"
         )
         print(
             "#################### FIN (sales/add-sales-worker.html) ####################>"
@@ -285,6 +258,8 @@ def addsalesworker():
 # endregion
 
 
+
+
 @sales.route("/reportsales", methods=["POST", "GET"])
 @login_required
 def reportsales():
@@ -301,30 +276,12 @@ def reportsales():
         # Capa 3: Procesar la solicitud POST
         if request.method == "POST":
             sale_id = request.form.get("sale_id")
+            print("este es el id para detalles de venta: "+ sale_id)
+            
             details = Read(
-                """
-                SELECT proyecto.detalles.ID_PRODUCTO, proyecto.almacen.NOMBRE, proyecto.detalles.CANTIDAD, proyecto.detalles.IMPORTE, proyecto.detalles.IVA
-                FROM proyecto.almacen, proyecto.detalles
-                WHERE proyecto.almacen.ID_PRODUCTO = proyecto.detalles.ID_PRODUCTO
-                AND proyecto.detalles.ID_VENTA = ?
-                """,
-                (sale_id,),
-            )
-            sales = Read(
-                """
-                SELECT
-                    proyecto.ventas.ID_VENTA,
-                    proyecto.dia.DIA,
-                    proyecto.mes.MES,
-                    proyecto.anio.ANIO,
-                    proyecto.ventas.CANTIDAD_VENTA,
-                    proyecto.ventas.TOTAL
-                FROM proyecto.ventas, proyecto.dia, proyecto.mes, proyecto.anio
-                WHERE proyecto.ventas.ID_DIA = proyecto.dia.ID_DIA
-                AND proyecto.ventas.ID_MES = proyecto.mes.ID_MES
-                AND proyecto.ventas.ID_ANIO = proyecto.anio.ID_ANIO
-                """
-            )
+                "CALL GetDetallesVenta(%s);", (sale_id,), )
+           
+            sales = Read( "CALL GetSales();" )
             return render_template(
                 "sales/report-sales.html",
                 sales=sales,
@@ -333,49 +290,10 @@ def reportsales():
 
         # Capa 4: Obtener todas las ventas si no hay método POST
         print("<==================== DATOS OBTENIDOS ====================")
-        sales = Read(
-            """
-            SELECT
-                proyecto.ventas.ID_VENTA,
-                proyecto.dia.DIA,
-                proyecto.mes.MES,
-                proyecto.anio.ANIO,
-                proyecto.ventas.CANTIDAD_VENTA,
-                proyecto.ventas.TOTAL
-            FROM proyecto.ventas, proyecto.dia, proyecto.mes, proyecto.anio
-            WHERE proyecto.ventas.ID_DIA = proyecto.dia.ID_DIA
-            AND proyecto.ventas.ID_MES = proyecto.mes.ID_MES
-            AND proyecto.ventas.ID_ANIO = proyecto.anio.ID_ANIO
-            """
-        )
+        sales = Read( "CALL GetSales();" )
 
         # Consulta de ventas mensuales si no se envía solicitud POST
-        ventas_mensuales = Read(
-            """
-            SELECT
-                meses.ID_MES,
-                COALESCE(COUNT(v.ID_VENTA), 0) AS NUMERO_DE_VENTAS
-            FROM
-                (SELECT 1 AS ID_MES UNION ALL
-                 SELECT 2 UNION ALL
-                 SELECT 3 UNION ALL
-                 SELECT 4 UNION ALL
-                 SELECT 5 UNION ALL
-                 SELECT 6 UNION ALL
-                 SELECT 7 UNION ALL
-                 SELECT 8 UNION ALL
-                 SELECT 9 UNION ALL
-                 SELECT 10 UNION ALL
-                 SELECT 11 UNION ALL
-                 SELECT 12) AS meses
-            LEFT JOIN
-                proyecto.ventas v ON meses.ID_MES = v.ID_MES
-            GROUP BY
-                meses.ID_MES
-            ORDER BY
-                meses.ID_MES;
-            """
-        )
+        ventas_mensuales = Read( "CALL GetVentasMensuales();")
 
         # Consulta del promedio de ventas mensuales
         promedio_ventas_mensuales = Read(
@@ -426,7 +344,7 @@ def reportsales():
         # Convertimos los resultados en un formato adecuado para JSON
         # ventas_mensuales = [item["NUMERO_DE_VENTAS"]
         #                     for item in ventas_mensuales]
-
+        
         print(ventas_diarias_totales)  # Verifica que tienes todos los meses
         print(ventas_mensuales)  # Verifica que tienes todos los meses
 
