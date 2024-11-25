@@ -19,22 +19,6 @@ from models.user import Usuario
 import mariadb
 
 from flask_socketio import SocketIO, emit
-# NOTAS:
-# # Solicita al usuario que ingrese una contraseña
-# password = input("12345")
-
-# # Genera el hash de la contraseña
-# hashed_password = generate_password_hash(password)
-
-# # Muestra el hash generado
-# print("Hash generado:", hashed_password)
-
-# # Verifica la contraseña ingresada
-# password_check = input("12345")
-# if check_password_hash(hashed_password, password_check):
-#     print("¡La contraseña es correcta!")
-# else:
-#     print("La contraseña es incorrecta.")
 
 # Inicializar la app y configurar login manager
 app = Flask(__name__)
