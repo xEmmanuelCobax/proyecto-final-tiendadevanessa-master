@@ -1,7 +1,7 @@
 # import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 # import
-from models.queries import Read, CUD
+from models.queries import CUD, Read
 # importar config
 from models.user import ModelUser, Usuario, mariadb
 #
@@ -13,12 +13,15 @@ from werkzeug.security import generate_password_hash
 #
 import re
 from config import ADMIN_CONECTION
+import smtplib
+import random
+import string
+import os
 
 # NOTAS:
 
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
-
 
 # Metodos de validacion:
 def validar_entrada(texto):
@@ -36,32 +39,76 @@ def validar_entrada(texto):
     else:
         return True
 
+def send_verification_code(email, code):
+    try:
+        # Configuración del servidor SMTP
+        smtp_server = "smtp.gmail.com"
+        smtp_port = 587
+        smtp_user = "e8467388@gmail.com"  # Reemplaza con tu correo
+        smtp_password = "xaxk tnds cays jkgb"  # Reemplaza con tu contraseña de aplicación
 
+        # Crear el mensaje
+        subject = "Código de verificación"
+        body = f"Tu código de verificación es: {code}"
+        message = f"Subject: {subject}\n\n{body}".encode('utf-8')  # Codificar el mensaje en UTF-8
+
+        # Conectar al servidor SMTP y enviar el correo
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.sendmail(smtp_user, email, message)
+        server.quit()
+
+        return True
+    except Exception as e:
+        print(f"Error al enviar el correo: {e}")
+        return False
+    
 # region Iniciar sesión
 @auth.route("/signin", methods=["GET", "POST"])
 def signin():
-
     if current_user.is_authenticated:
-        # print(current_user.get_gmail())
         return redirect(url_for("sales.addsalesworker"))
     if request.method == "POST":
         user = Usuario(0, request.form["email"], request.form["password"])
-        
         logged_user = ModelUser.login(user)
-        # if current_user.get_gmail() == user.get_gmail:
-        #     return render_template("auth/signin.html")
         if logged_user is not None:
             if logged_user.contraseña:
-                login_user(logged_user)
-                print(logged_user.id)
-                print(logged_user.tipo_usuario)
-                return redirect(url_for("profile.welcomeuser"))
+                # Generar y enviar el código de verificación
+                code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+                session['verification_code'] = code
+                if send_verification_code(logged_user.correo, code):
+                    session['temp_user_id'] = logged_user.id
+                    return redirect(url_for("auth.verify_code"))
+                else:
+                    flash("Error al enviar el código de verificación", "danger")
             else:
-                flash("Contraseña no incorrecta", "danger")
+                flash("Contraseña incorrecta", "danger")
         else:
             flash("Contraseña incorrecta", "danger")
-
     return render_template("auth/signin.html")
+
+@auth.route("/verify_code", methods=["GET", "POST"])
+def verify_code():
+    # Verificar si el usuario tiene permiso para acceder a esta página
+    if "verification_code" not in session:
+        flash("No tienes permiso para acceder a esta página.", "danger")
+        return redirect(url_for("auth.signin"))
+
+    if request.method == "POST":
+        code = request.form.get("code")
+        if code == session.get("verification_code"):
+            user_id = session.pop("temp_user_id", None)
+            if user_id:
+                logged_user = ModelUser.get_by_id(user_id)
+                login_user(logged_user)
+                session.pop("verification_code", None)  # Eliminar la variable de sesión
+                return redirect(url_for("profile.welcomeuser"))
+            else:
+                flash("Error al verificar el usuario.", "danger")
+        else:
+            flash("Código de verificación incorrecto.", "danger")
+    return render_template("auth/verify_code.html")
 
 
 # region Registro de usuario

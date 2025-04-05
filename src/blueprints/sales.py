@@ -1,4 +1,3 @@
-#
 import locale
 # import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
@@ -18,6 +17,8 @@ from extensions import login_manager
 from datetime import datetime
 #
 from flask_login import login_user, logout_user, login_required, current_user
+#
+import logging
 
 # NOTAS:
 
@@ -30,12 +31,16 @@ sales = Blueprint("sales", __name__, url_prefix="/sales")
 # region Agregar Ventas
 @sales.route("/addsalesworker", methods=["GET", "POST"])
 def addsalesworker():
+    logging.info(f"Usuario autenticado: {current_user.id}, Rol: {current_user.tipo_usuario}")
     # Errores
     ErrorCantidad = False
     ErrorPrecio = False
     ErrorProductoInexistente = False
     # Capa 1: Verificar si el usuario está autenticado
     if current_user.is_authenticated:
+        user_id = current_user.id if current_user.is_authenticated else 'guest'
+        user_role = current_user.tipo_usuario
+        print(f"User ID: {user_id}, User Role: {user_role}")
         if request.method == "POST":
             try:
                 print("<#################### MakeSales ####################")
@@ -254,6 +259,8 @@ def addsalesworker():
         )
         return render_template(
             "sales/add-sales-worker.html",
+            user_id=user_id,
+            user_role=user_role,
             products=products,
             ErrorCantidad=ErrorCantidad,
             ErrorPrecio=ErrorPrecio,

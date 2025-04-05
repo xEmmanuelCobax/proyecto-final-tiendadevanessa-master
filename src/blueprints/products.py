@@ -1,7 +1,8 @@
 # import flask
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 # importar modelos para query
-from models.queries import Read, CUD, ConsultaPIA, ConsultaCompanias, ConsultaIntermediarios
+from models.decorator import block_sales_if_active
+from models.queries import Read, CUD, ConsultaPIA, ConsultaCompanias, ConsultaIntermediarios,CallProcedure
 # importar las excepciones
 from models.exceptions import MyException
 # importar las extenciones
@@ -75,12 +76,16 @@ def warehouse():
 
 
 # region manejar productos (SOLO GERENTES O ADMINS)
+@block_sales_if_active
 @products.route("/manage_products", methods=["GET", "POST"])
 def manage_products():
     # Verificar autenticación y permisos
     # Capa 1: Verificar si el usuario está autenticado
     if current_user.is_authenticated:   
         tipo_usuario = current_user.get_tipo_usuario()
+        user_id = current_user.id if current_user.is_authenticated else 'guest'
+        user_role = current_user.tipo_usuario # Asegúrate de que el rol esté disponible en el modelo de usuario
+        print(f"User ID: {user_id}, User Role: {user_role}")
         # Capa 2: Verificar si el usuario es administrador o gerente
         if tipo_usuario not in ["Admin", "Gerente"]:
             flash("Esta seccion es solo para gerentes", "danger")
@@ -177,23 +182,7 @@ def manage_products():
                     print(
                         "<==================== VERIFICAR RELACION COMPANIA - INTERMEDIARIO ===================="
                     )
-                    existe = Read(
-                        """
-                        SELECT 
-                            proyecto.intermediario.ID_INTERMEDIARIO, 
-                            proyecto.intermediario.NOMBRE, 
-                            proyecto.intermediario.AP_PAT, 
-                            proyecto.intermediario.AP_MAT, 
-                            proyecto.proveedor.ID_COMPANIA, 
-                            proyecto.proveedor.NOMBRE 
-                        FROM proyecto.proveedor 
-                        INNER JOIN proyecto.intermediario ON proyecto.intermediario.ID_COMPANIA = proyecto.proveedor.ID_COMPANIA 
-                        WHERE proyecto.proveedor.ESTATUS = 1 AND proyecto.intermediario.ESTATUS = 1 
-                        AND proyecto.intermediario.ID_INTERMEDIARIO = ? 
-                        AND proyecto.proveedor.ID_COMPANIA = ?
-                        """,
-                        (intermediario, compania),
-                    )
+                    existe = CallProcedure("ObtenerIntermediarioProveedor", (intermediario, compania))
                     print("========================================>")
                     print("<==================== productoinactivo ====================")
                     productoinactivo = Read(
@@ -475,7 +464,10 @@ def manage_products():
             products=ConsultaPIA(),
             relations=ConsultaIntermediarios(),
             companies=ConsultaCompanias(),
+            user_id=user_id,
+            user_role=user_role,
         )
+    pass
 # endregion
 
 

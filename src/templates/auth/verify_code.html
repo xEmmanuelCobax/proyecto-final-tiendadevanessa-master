@@ -1,0 +1,99 @@
+{% extends 'top navbar/top-navbar.html' %}
+{% block title %} Verificación de Código {% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/inicio_sesion.css') }}" />
+<style>
+/* Estilos adicionales específicos para verify_code */
+.inicio__titulo {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.inicio__desc {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.input-container {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.input-container label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: bold;
+}
+
+.btn__submit {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn__submit:hover {
+    background-color: #0056b3;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="inicio__sesion">
+    <div class="inicio__container">
+
+   
+      <h1 class="inicio__titulo">Verificación de Código</h1>
+      <p class="inicio__desc">Ingrese el código de verificación enviado a su correo electrónico.</p>
+
+      <!-- Formulario -->
+      <form method="POST">
+        <div class="input-container">
+          <label for="code">Código de Verificación</label>
+          <input type="text" id="code" name="code" class="form__input" placeholder="Ingrese su código" required>
+        </div>
+
+        <!-- Botón de enviar -->
+        <button type="submit" class="btn__submit form__input">
+          Verificar
+        </button>
+      </form> <!-- Fin formulario -->
+
+      <p class="marca__registrada">Copyright 2024 | Privacy Policy</p>
+    </div>
+
+    <!-- Ilustraciones -->
+    <div class="imagen__izq">
+      <figure class="imagen__izq--figure">
+        <img src="/static/img/login1.1.webp" class="imagen__izq--img">
+      </figure>
+    </div>
+
+    <div class="imagen__der">
+      <figure class="imagen__der--figure">
+        <img src="/static/img/login2.2.webp" class="imagen__der--img">
+      </figure>
+    </div>
+</div>
+</section>
+{% endblock %}
