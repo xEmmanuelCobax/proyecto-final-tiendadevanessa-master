@@ -20,6 +20,7 @@ class Usuario(UserMixin):
         nombres="",
         ap_pat="",
         ap_mat="",
+        last_password_change=None,
     ) -> None:
         super().__init__()
         self.id = id
@@ -29,6 +30,7 @@ class Usuario(UserMixin):
         self.nombres = nombres
         self.ap_pat = ap_pat
         self.ap_mat = ap_mat
+        self.last_password_change = last_password_change
         # Asigna la conexión según el tipo de usuario
         if tipo_usuario == "Admin":
             self._connection = ADMIN_CONECTION
@@ -80,7 +82,8 @@ class ModelUser:
                     AP_MAT,
                     CORREO,
                     CONTRASENA,
-                    NOMBRE_ROL
+                    NOMBRE_ROL,
+                    last_password_change
                 FROM usuarios, roles 
                 WHERE usuarios.ID_ROL = roles.ID_ROL 
                 AND ESTATUS = 1
@@ -102,6 +105,7 @@ class ModelUser:
                     row[1],  # NOMBRE
                     row[2],  # AP_PAT
                     row[3],  # AP_MAT
+                    row[7],  # last_password_change
                 )
 
                 print(f"Contraseña ingresada desde el form: {user.contraseña}")
@@ -139,7 +143,8 @@ class ModelUser:
                     NOMBRE_ROL,
                     NOMBRE,
                     AP_PAT,
-                    AP_MAT
+                    AP_MAT,
+                    last_password_change
                 FROM usuarios, roles 
                 WHERE usuarios.ID_ROL = roles.ID_ROL 
                 AND ESTATUS = 1
@@ -157,6 +162,7 @@ class ModelUser:
                     row[4],  # NOMBRE
                     row[5],  # AP_PAT
                     row[6],  # AP_MAT
+                    row[7],  # last_password_change
                 )
             return None
         except Exception as ex:

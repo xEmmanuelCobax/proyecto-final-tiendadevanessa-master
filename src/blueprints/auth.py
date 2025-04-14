@@ -18,6 +18,9 @@ import random
 import string
 import os
 
+from datetime import datetime, timedelta
+
+
 # NOTAS:
 
 
@@ -39,31 +42,129 @@ def validar_entrada(texto):
     else:
         return True
 
+
+# region Validar correo
+def send_password_reminder(email, username):
+    try:
+        # Configuración del servidor SMTP
+        smtp_server = "smtp.gmail.com"
+        smtp_port = 587
+        smtp_user = "e8467388@gmail.com"  # Reemplaza con tu correo
+        smtp_password = (
+            "xaxk tnds cays jkgb"  # Reemplaza con tu contraseña de aplicación
+        )
+
+        # Crear el mensaje en formato HTML
+        subject = "Recordatorio: Cambia tu contraseña"
+        html_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+            <table style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <tr>
+                    <td style="text-align: center; padding-bottom: 20px;">
+                        <h2 style="color: #4CAF50;">Hola, {username}</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 16px; line-height: 1.6; color: #333333; text-align: center;">
+                        <p>Han pasado más de <strong>30 días</strong> desde que cambiaste tu contraseña.</p>
+                        <p>Por favor, actualízala para mantener tu cuenta segura.</p>
+                        <a href="https://Fynex.com/cambiar-contraseña" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px; margin-top: 20px;">Cambiar contraseña</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 12px; line-height: 1.6; color: #888888; text-align: center; padding-top: 20px;">
+                        <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
+                        <p>Gracias,<br>El equipo de Fynex</p>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
+        """
+
+        # Crear el mensaje con encabezados adicionales
+        message = f"Subject: {subject}\n"
+        message += "MIME-Version: 1.0\n"
+        message += "Content-Type: text/html; charset=utf-8\n"
+        message += f"From: Fynex <{smtp_user}>\n"
+        message += f"Reply-To: soporte@Fynex.com\n\n"
+        message += html_body
+
+        # Conectar al servidor SMTP y enviar el correo
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.sendmail(smtp_user, email, message.encode("utf-8"))
+        server.quit()
+
+        print(f"Correo de recordatorio enviado a {email}")
+    except Exception as e:
+        print(f"Error al enviar el correo de recordatorio: {e}")
+
+
+# region Enviar código de verificación
 def send_verification_code(email, code):
     try:
         # Configuración del servidor SMTP
         smtp_server = "smtp.gmail.com"
         smtp_port = 587
         smtp_user = "e8467388@gmail.com"  # Reemplaza con tu correo
-        smtp_password = "xaxk tnds cays jkgb"  # Reemplaza con tu contraseña de aplicación
+        smtp_password = (
+            "xaxk tnds cays jkgb"  # Reemplaza con tu contraseña de aplicación
+        )
 
-        # Crear el mensaje
+        # Crear el mensaje en formato HTML
         subject = "Código de verificación"
-        body = f"Tu código de verificación es: {code}"
-        message = f"Subject: {subject}\n\n{body}".encode('utf-8')  # Codificar el mensaje en UTF-8
+        html_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+            <table style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <tr>
+                    <td style="text-align: center; padding-bottom: 20px;">
+                        <h2 style="color: #4CAF50;">Hola,</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 16px; line-height: 1.6; color: #333333; text-align: center;">
+                        <p>Tu código de verificación es:</p>
+                        <h1 style="color: #4CAF50; font-size: 36px; margin: 20px 0;">{code}</h1>
+                        <p>Por favor, ingresa este código en la página de verificación para continuar.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 12px; line-height: 1.6; color: #888888; text-align: center; padding-top: 20px;">
+                        <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
+                        <p>Gracias,<br>El equipo de Fynex</p>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
+        """
+
+        # Crear el mensaje con encabezados adicionales
+        message = f"Subject: {subject}\n"
+        message += "MIME-Version: 1.0\n"
+        message += "Content-Type: text/html; charset=utf-8\n"
+        message += f"From: Fynex <{smtp_user}>\n"
+        message += f"Reply-To: soporte@Fynex.com\n\n"
+        message += html_body
 
         # Conectar al servidor SMTP y enviar el correo
         server = smtplib.SMTP(smtp_server, smtp_port)
         server.starttls()
         server.login(smtp_user, smtp_password)
-        server.sendmail(smtp_user, email, message)
+        server.sendmail(smtp_user, email, message.encode("utf-8"))
         server.quit()
 
+        print(f"Código de verificación enviado a {email}")
         return True
     except Exception as e:
-        print(f"Error al enviar el correo: {e}")
+        print(f"Error al enviar el código de verificación: {e}")
         return False
-    
+
+
 # region Iniciar sesión
 @auth.route("/signin", methods=["GET", "POST"])
 def signin():
@@ -74,6 +175,20 @@ def signin():
         logged_user = ModelUser.login(user)
         if logged_user is not None:
             if logged_user.contraseña:
+                # Verificar si la contraseña necesita ser actualizada
+                last_change = (
+                    logged_user.last_password_change
+                )  # Asegúrate de que este campo esté en el modelo
+                if last_change:
+                    # Si last_change ya es un objeto datetime.date, conviértelo a datetime para la comparación
+                    last_change_date = datetime.combine(last_change, datetime.min.time())
+                    if datetime.now() - last_change_date > timedelta(days=30):  # Más de 30 días
+                        flash(
+                            "Han pasado más de 30 días desde que cambiaste tu contraseña. Por favor, actualízala.",
+                            "warning",
+                        )
+                        send_password_reminder(logged_user.correo, logged_user.nombres)
+
                 # Generar y enviar el código de verificación
                 code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
                 session['verification_code'] = code
