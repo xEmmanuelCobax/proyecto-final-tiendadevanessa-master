@@ -1,5 +1,4 @@
 from gevent import monkey
-monkey.patch_all()
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 from flask import Flask, request, jsonify, render_template
@@ -20,6 +19,12 @@ import mariadb
 import logging
 import time
 from threading import Thread
+from threading import Lock
+
+# Bloqueo para proteger las variables globales
+global_lock = Lock()
+
+monkey.patch_all()
 
 # Configuración básica de logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
@@ -28,7 +33,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(m
 app = Flask(__name__)
 app.config["SECRET_KEY"] = DevelopmentConfig.SECRET_KEY
 login_manager.init_app(app)
-socketio = SocketIO(app, async_mode='gevent')
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Middleware para registrar las direcciones IP de las solicitudes entrantes
 @app.before_request
@@ -107,61 +112,137 @@ USER_LEVELS = {
     "Cajero": 1   # Nivel más bajo
 }
 
+
 # Evento para manejar usuarios activos en la página de ventas
-@socketio.on('sales_page_active')
+@socketio.on("sales_page_active")
 def sales_page_active(data):
     global sales_active_user, user_sessions
-    user_id = data.get('user_id')
-    user_role = data.get('user_role')
+    user_id = data.get("user_id")
+    user_role = data.get("user_role")
 
     if not user_id or not user_role:
         logging.error("Datos incompletos recibidos en sales_page_active.")
-        socketio.emit('error', {'message': 'Datos incompletos. No se puede acceder a la página de ventas.'}, to=request.sid)
+        socketio.emit(
+            "error",
+            {
+                "message": "Datos incompletos. No se puede acceder a la página de ventas."
+            },
+            to=request.sid,
+        )
         return
 
-    if not sales_active_user:  # Si no hay usuario activo
-        sales_active_user = {"id": user_id, "role": user_role}
-        user_sessions[user_id] = request.sid
-        logging.info(f"Usuario {user_id} ({user_role}) accedió a la página de ventas.")
-        socketio.emit('lock_sales', {'message': 'Un usuario está gestionando ventas. Espere a que termine.'}, skip_sid=request.sid)
-    else:
-        # Comparar niveles de usuario
-        active_user = sales_active_user
-        if USER_LEVELS[user_role] > USER_LEVELS[active_user["role"]]:  # Si el nuevo usuario tiene mayor nivel
-            socketio.emit('unlock_sales', {'message': 'Has sido desplazado por un usuario con mayor nivel.'}, to=user_sessions[active_user["id"]])
+    with global_lock:  # Asegura acceso exclusivo a las variables globales
+        # Si el usuario ya está registrado, actualiza su session_id
+        if user_id in user_sessions:
+            user_sessions[user_id] = request.sid
+            logging.info(
+                f"Usuario {user_id} recargó la página. Session ID actualizado."
+            )
+            return
+
+        if not sales_active_user:  # Si no hay usuario activo
             sales_active_user = {"id": user_id, "role": user_role}
             user_sessions[user_id] = request.sid
-            logging.info(f"Usuario {user_id} ({user_role}) desplazó al usuario {active_user['id']} ({active_user['role']}) en la página de ventas.")
+            logging.info(
+                f"Usuario {user_id} ({user_role}) accedió a la página de ventas."
+            )
+            socketio.emit(
+                "lock_sales",
+                {
+                    "message": "Un usuario está gestionando ventas. Espere a que termine."
+                },
+                skip_sid=request.sid,
+            )
         else:
-            socketio.emit('lock_sales', {'message': 'Un usuario con mayor nivel está gestionando ventas. Espere a que termine.'}, to=request.sid)
+            # Comparar niveles de usuario
+            active_user = sales_active_user
+            if (
+                USER_LEVELS[user_role] > USER_LEVELS[active_user["role"]]
+            ):  # Si el nuevo usuario tiene mayor nivel
+                socketio.emit(
+                    "unlock_sales",
+                    {"message": "Has sido desplazado por un usuario con mayor nivel."},
+                    to=user_sessions[active_user["id"]],
+                )
+                sales_active_user = {"id": user_id, "role": user_role}
+                user_sessions[user_id] = request.sid
+                logging.info(
+                    f"Usuario {user_id} ({user_role}) desplazó al usuario {active_user['id']} ({active_user['role']}) en la página de ventas."
+                )
+            else:
+                socketio.emit(
+                    "lock_sales",
+                    {
+                        "message": "Un usuario con mayor nivel está gestionando ventas. Espere a que termine."
+                    },
+                    to=request.sid,
+                )
 
-# Evento para manejar usuarios activos en la página de productos
-@socketio.on('products_page_active')
+
+@socketio.on("products_page_active")
 def products_page_active(data):
     global products_active_user, user_sessions
-    user_id = data.get('user_id')
-    user_role = data.get('user_role')
+    user_id = data.get("user_id")
+    user_role = data.get("user_role")
 
     if not user_id or not user_role:
         logging.error("Datos incompletos recibidos en products_page_active.")
-        socketio.emit('error', {'message': 'Datos incompletos. No se puede acceder a la página de productos.'}, to=request.sid)
+        socketio.emit(
+            "error",
+            {
+                "message": "Datos incompletos. No se puede acceder a la página de productos."
+            },
+            to=request.sid,
+        )
         return
 
-    if not products_active_user:  # Si no hay usuario activo
-        products_active_user = {"id": user_id, "role": user_role}
-        user_sessions[user_id] = request.sid
-        logging.info(f"Usuario {user_id} ({user_role}) accedió a la página de productos.")
-        socketio.emit('lock_products', {'message': 'Un usuario está gestionando productos. Espere a que termine.'}, skip_sid=request.sid)
-    else:
-        # Comparar niveles de usuario
-        active_user = products_active_user
-        if USER_LEVELS[user_role] > USER_LEVELS[active_user["role"]]:  # Si el nuevo usuario tiene mayor nivel
-            socketio.emit('unlock_products', {'message': 'Has sido desplazado por un usuario con mayor nivel.'}, to=user_sessions[active_user["id"]])
+    with global_lock:  # Asegura acceso exclusivo a las variables globales
+        # Si el usuario ya está registrado, actualiza su session_id
+        if user_id in user_sessions:
+            user_sessions[user_id] = request.sid
+            logging.info(
+                f"Usuario {user_id} recargó la página. Session ID actualizado."
+            )
+            return
+
+        if not products_active_user:  # Si no hay usuario activo
             products_active_user = {"id": user_id, "role": user_role}
             user_sessions[user_id] = request.sid
-            logging.info(f"Usuario {user_id} ({user_role}) desplazó al usuario {active_user['id']} ({active_user['role']}) en la página de productos.")
+            logging.info(
+                f"Usuario {user_id} ({user_role}) accedió a la página de productos."
+            )
+            socketio.emit(
+                "lock_products",
+                {
+                    "message": "Un usuario está gestionando productos. Espere a que termine."
+                },
+                skip_sid=request.sid,
+            )
         else:
-            socketio.emit('lock_products', {'message': 'Un usuario con mayor nivel está gestionando productos. Espere a que termine.'}, to=request.sid)
+            # Comparar niveles de usuario
+            active_user = products_active_user
+            if (
+                USER_LEVELS[user_role] > USER_LEVELS[active_user["role"]]
+            ):  # Si el nuevo usuario tiene mayor nivel
+                socketio.emit(
+                    "unlock_products",
+                    {"message": "Has sido desplazado por un usuario con mayor nivel."},
+                    to=user_sessions[active_user["id"]],
+                )
+                products_active_user = {"id": user_id, "role": user_role}
+                user_sessions[user_id] = request.sid
+                logging.info(
+                    f"Usuario {user_id} ({user_role}) desplazó al usuario {active_user['id']} ({active_user['role']}) en la página de productos."
+                )
+            else:
+                socketio.emit(
+                    "lock_products",
+                    {
+                        "message": "Un usuario con mayor nivel está gestionando productos. Espere a que termine."
+                    },
+                    to=request.sid,
+                )
+
 
 # Evento para manejar el "heartbeat"
 @socketio.on('heartbeat')
@@ -172,23 +253,38 @@ def handle_heartbeat(data):
         last_heartbeat[user_id] = time.time()  # Registrar el tiempo actual
         logging.debug(f"Heartbeat recibido de usuario {user_id}")
 
+
 # Evento para manejar desconexiones
-@socketio.on('disconnect')
-def disconnect_user(sid):
+@socketio.on("disconnect")
+def disconnect_user():
     global sales_active_user, products_active_user, user_sessions, last_heartbeat
+    sid = request.sid  # Obtén el Session ID del cliente desconectado
     for user_id, session_id in user_sessions.items():
         if session_id == sid:  # Verifica si el usuario desconectado es el activo
             if sales_active_user and sales_active_user["id"] == user_id:
                 sales_active_user = None
-                socketio.emit('unlock_sales', {'message': 'La página ahora está disponible.'}, skip_sid=sid)
-                logging.info(f"Usuario {user_id} se desconectó. Se desbloqueó la página de ventas.")
+                socketio.emit(
+                    "unlock_sales",
+                    {"message": "La página ahora está disponible."},
+                    skip_sid=sid,
+                )
+                logging.info(
+                    f"Usuario {user_id} se desconectó. Se desbloqueó la página de ventas."
+                )
             elif products_active_user and products_active_user["id"] == user_id:
                 products_active_user = None
-                socketio.emit('unlock_products', {'message': 'La página ahora está disponible.'}, skip_sid=sid)
-                logging.info(f"Usuario {user_id} se desconectó. Se desbloqueó la página de productos.")
+                socketio.emit(
+                    "unlock_products",
+                    {"message": "La página ahora está disponible."},
+                    skip_sid=sid,
+                )
+                logging.info(
+                    f"Usuario {user_id} se desconectó. Se desbloqueó la página de productos."
+                )
             user_sessions.pop(user_id, None)
             last_heartbeat.pop(user_id, None)
             break
+
 
 # Hilo para monitorear usuarios inactivos
 def monitor_heartbeats():

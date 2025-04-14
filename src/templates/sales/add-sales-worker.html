@@ -872,14 +872,22 @@ endblock %} {% block content %}
 <script>
   const userId = "{{ user_id }}"; // Inyecta el ID del usuario desde el backend
   const userRole = "{{ user_role }}"; // Inyecta el rol del usuario desde el backend
-  const socket = io('http://192.168.1.67:8000');
+  const socket = io(`${window.location.protocol}//${window.location.hostname}:8000`);
 
   // Función para mostrar el overlay
-  function showOverlay(message) {
+  function showOverlay(message, title = "La página está bloqueada") {
     const overlay = document.getElementById("overlay");
+    const overlayTitle = document.getElementById("overlay-title");
+    const overlayMessage = document.getElementById("overlay-message");
+
     if (overlay) {
       overlay.style.display = "flex"; // Mostrar el overlay
-      overlay.querySelector(".overlay-content h2").innerText = message || "La página está bloqueada";
+      if (overlayTitle) {
+        overlayTitle.innerText = title; // Actualizar el título
+      }
+      if (overlayMessage) {
+        overlayMessage.innerText = message || "Un usuario está gestionando esta sección. Espere a que termine."; // Actualizar el mensaje
+      }
     } else {
       console.error("Elemento con ID 'overlay' no encontrado.");
     }
@@ -899,8 +907,8 @@ endblock %} {% block content %}
   socket.on("connect", () => {
     console.log("Conexión establecida con el servidor de Socket.IO");
 
-    // Emitir evento para indicar que el usuario está activo en la página de ventas
-    socket.emit("sales_page_active", { user_id: userId, user_role: userRole });
+    // Emitir evento para indicar que el usuario está activo en la página
+    socket.emit("products_page_active", { user_id: userId, user_role: userRole });
 
     // Enviar un "heartbeat" cada segundo
     setInterval(() => {
@@ -913,12 +921,12 @@ endblock %} {% block content %}
   // Escuchar eventos de bloqueo
   socket.on("lock_products", (data) => {
     console.log("Evento recibido: lock_products", data);
-    showOverlay(data.message || "Un usuario está gestionando productos. Espere a que termine.");
+    showOverlay(data.message || "Un usuario está gestionando productos. Espere a que termine.", "Sección de Productos Bloqueada");
   });
 
   socket.on("lock_sales", (data) => {
     console.log("Evento recibido: lock_sales", data);
-    showOverlay(data.message || "Un usuario está gestionando ventas. Espere a que termine.");
+    showOverlay(data.message || "Un usuario está gestionando ventas. Espere a que termine.", "Sección de Ventas Bloqueada");
   });
 
   // Escuchar eventos de desbloqueo
@@ -934,13 +942,13 @@ endblock %} {% block content %}
 
   // Emitir evento cuando el usuario abandona la página
   document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "hidden" && socket && socket.connected) {
-          console.log("Enviando evento sales_page_inactive debido a cambio de visibilidad.");
-          socket.emit("sales_page_inactive", { user_id: userId });
-      } else if (document.visibilityState === "visible" && socket && socket.connected) {
-          console.log("Usuario volvió a la página.");
-          socket.emit("sales_page_active", { user_id: userId, user_role: userRole });
-      }
+    if (document.visibilityState === "hidden" && socket && socket.connected) {
+      console.log("Enviando evento products_page_inactive debido a cambio de visibilidad.");
+      socket.emit("products_page_inactive", { user_id: userId });
+    } else if (document.visibilityState === "visible" && socket && socket.connected) {
+      console.log("Usuario volvió a la página.");
+      socket.emit("products_page_active", { user_id: userId, user_role: userRole });
+    }
   });
 
   // Manejo de errores de conexión
@@ -952,6 +960,4 @@ endblock %} {% block content %}
     console.warn("Desconectado del servidor de Socket.IO");
   });
 </script>
-
-
 {% endblock %}

@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash
 
 # Contraseña que quieres encriptar
-password = "RaP1D0"
+password = " "
 
 # Generar el hash de la contraseña
 hashed_password = generate_password_hash(password)

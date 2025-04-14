@@ -29,7 +29,6 @@ class Usuario(UserMixin):
         self.nombres = nombres
         self.ap_pat = ap_pat
         self.ap_mat = ap_mat
-
         # Asigna la conexión según el tipo de usuario
         if tipo_usuario == "Admin":
             self._connection = ADMIN_CONECTION
